@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreeClaw - Deploy Your Own AI Assistant for Free</title>
+  <meta name="description" content="Free step-by-step guides to deploy OpenClaw on Telegram, Discord, WhatsApp, or Slack. No fees, no tokens, just help.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg: #0a0a0a;
+      --bg-card: #141414;
+      --border: #262626;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --accent: #22c55e;
+      --accent-hover: #16a34a;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    
+    /* Header */
+    header {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 24px;
+    }
+    
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--text);
+    }
+    
+    /* Hero */
+    .hero {
+      padding: 80px 0;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      line-height: 1.2;
+    }
+    
+    .hero h1 span {
+      color: var(--accent);
+    }
+    
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+    
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--text-muted);
+    }
+    
+    /* Promise Box */
+    .promise {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin: 60px 0;
+      text-align: center;
+    }
+    
+    .promise h2 {
+      font-size: 1.25rem;
+      margin-bottom: 16px;
+      color: var(--accent);
+    }
+    
+    .promise p {
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .promise strong {
+      color: var(--text);
+    }
+    
+    /* Platforms */
+    .platforms {
+      padding: 60px 0;
+    }
+    
+    .platforms h2 {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    
+    .platforms > p {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+    }
+    
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    
+    .platform-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    .platform-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    
+    .platform-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+    
+    .platform-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+    }
+    
+    .platform-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    
+    .platform-card .time {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 6px 12px;
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--accent);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    /* How it works */
+    .how-it-works {
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+    }
+    
+    .how-it-works h2 {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 32px;
+    }
+    
+    .step {
+      text-align: center;
+    }
+    
+    .step-number {
+      width: 48px;
+      height: 48px;
+      background: var(--accent);
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin: 0 auto 16px;
+    }
+    
+    .step h3 {
+      margin-bottom: 8px;
+    }
+    
+    .step p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    
+    /* Contact */
+    .contact {
+      padding: 60px 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+    
+    .contact h2 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+    
+    .contact p {
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    
+    .contact a.email {
+      color: var(--accent);
+      font-size: 1.25rem;
+      text-decoration: none;
+    }
+    
+    .contact a.email:hover {
+      text-decoration: underline;
+    }
+    
+    /* Donate */
+    .donate {
+      padding: 40px 0 80px;
+      text-align: center;
+    }
+    
+    .donate p {
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    
+    /* Footer */
+    footer {
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    
+    footer a:hover {
+      color: var(--text);
+    }
+    
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-content">
+      <a href="/" class="logo">FreeClaw</a>
+      <nav class="nav-links">
+        <a href="#platforms">Guides</a>
+        <a href="#how-it-works">How it Works</a>
+        <a href="#contact">Contact</a>
+        <a href="https://github.com/openclaw/openclaw" target="_blank">GitHub</a>
+      </nav>
+    </div>
+  </header>
+  
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Deploy Your Own AI Assistant.<br><span>Completely Free.</span></h1>
+        <p>Step-by-step guides to set up OpenClaw on your own infrastructure. No fees, no tokens, no BS. Just a believer helping others get started.</p>
+        <div class="hero-buttons">
+          <a href="#platforms" class="btn btn-primary">Get Started</a>
+          <a href="#contact" class="btn btn-secondary">Need Help? Email Me</a>
+        </div>
+      </div>
+    </section>
+    
+    <section class="promise">
+      <div class="container">
+        <h2>My Promise to You</h2>
+        <p>I will <strong>never</strong> create a token. I will <strong>never</strong> promote any token. I will <strong>never</strong> charge you for this. If you ever see me doing any of these things, it's fraud and you should report it. I'm doing this because I believe in making AI accessible to everyone.</p>
+      </div>
+    </section>
+    
+    <section class="platforms" id="platforms">
+      <div class="container">
+        <h2>Choose Your Platform</h2>
+        <p>Pick where you want your AI assistant to live. Each guide walks you through every step.</p>
+        <div class="platform-grid">
+          <a href="/guides/telegram.html" class="platform-card">
+            <div class="platform-icon">✈️</div>
+            <h3>Telegram</h3>
+            <p>Most popular choice. Works great on mobile and desktop.</p>
+            <span class="time">~15 min setup</span>
+          </a>
+          <a href="/guides/discord.html" class="platform-card">
+            <div class="platform-icon">🎮</div>
+            <h3>Discord</h3>
+            <p>Perfect for communities and servers.</p>
+            <span class="time">~15 min setup</span>
+          </a>
+          <a href="/guides/whatsapp.html" class="platform-card">
+            <div class="platform-icon">💬</div>
+            <h3>WhatsApp</h3>
+            <p>Use your existing WhatsApp account.</p>
+            <span class="time">~20 min setup</span>
+          </a>
+          <a href="/guides/slack.html" class="platform-card">
+            <div class="platform-icon">💼</div>
+            <h3>Slack</h3>
+            <p>Great for work and team productivity.</p>
+            <span class="time">~15 min setup</span>
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <section class="how-it-works" id="how-it-works">
+      <div class="container">
+        <h2>How It Works</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <h3>Get a Server</h3>
+            <p>I'll show you how to get a free or cheap cloud server. No experience needed.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <h3>Install OpenClaw</h3>
+            <p>Copy-paste a few commands. I explain what each one does.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <h3>Connect Your Platform</h3>
+            <p>Link to Telegram, Discord, or wherever you want your assistant.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <h3>Start Chatting</h3>
+            <p>That's it. Your AI assistant is ready 24/7.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="contact" id="contact">
+      <div class="container">
+        <h2>Stuck? Email Me.</h2>
+        <p>Seriously. If you get stuck at any point, just email me. I'll help you personally.</p>
+        <a href="mailto:drey@freeclaw.dev?subject=FreeClaw%20Help" class="email">drey@freeclaw.dev</a>
+      </div>
+    </section>
+    
+    <section class="donate">
+      <div class="container">
+        <p>If this helped you and you want to support the project:</p>
+        <a href="https://ko-fi.com/freeclaw" class="btn btn-secondary" target="_blank">Buy Me a Coffee ☕</a>
+      </div>
+    </section>
+  </main>
+  
+  <footer>
+    <div class="container">
+      <p>Built with love by <a href="https://x.com/andreymarey" target="_blank">Andrey Marey</a> • <a href="https://github.com/openclaw/openclaw" target="_blank">OpenClaw on GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>
