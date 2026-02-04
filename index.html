@@ -3,66 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FreeClaw - Deploy Your Own AI Assistant for Free</title>
-  <meta name="description" content="Free step-by-step guides to deploy OpenClaw on Telegram, Discord, WhatsApp, or Slack. No fees, no tokens, just help.">
+  <title>FreeClaw — Deploy OpenClaw for Free</title>
+  <meta name="description" content="Free step-by-step guides to deploy your own AI assistant. No fees, no tokens. Just help.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root {
-      --bg: #0a0a0a;
-      --bg-card: #141414;
-      --border: #262626;
-      --text: #fafafa;
-      --text-muted: #a1a1aa;
-      --accent: #22c55e;
-      --accent-hover: #16a34a;
+      --bg: #050505;
+      --surface: #0a0a0a;
+      --surface-2: #111111;
+      --border: #1a1a1a;
+      --border-hover: #2a2a2a;
+      --text: #e5e5e5;
+      --text-muted: #737373;
+      --text-dim: #525252;
+      --accent: #10b981;
+      --accent-dim: rgba(16, 185, 129, 0.1);
     }
+    
+    html { scroll-behavior: smooth; }
     
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
-      min-height: 100vh;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    ::selection {
+      background: var(--accent);
+      color: #000;
     }
     
     .container {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 0 24px;
     }
     
-    /* Header */
-    header {
-      padding: 24px 0;
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      background: rgba(5, 5, 5, 0.8);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
     
-    .header-content {
+    .nav-inner {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     
     .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
       text-decoration: none;
+      letter-spacing: -0.02em;
     }
     
     .nav-links {
       display: flex;
-      gap: 24px;
+      gap: 32px;
+      list-style: none;
     }
     
     .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
       transition: color 0.2s;
     }
     
@@ -72,39 +93,77 @@
     
     /* Hero */
     .hero {
-      padding: 80px 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
     }
     
-    .hero h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 24px;
-      line-height: 1.2;
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+      pointer-events: none;
     }
     
-    .hero h1 span {
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+    
+    .hero-badge span {
       color: var(--accent);
     }
     
-    .hero p {
-      font-size: 1.25rem;
-      color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 40px;
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      max-width: 700px;
     }
     
-    .hero-buttons {
+    .hero p {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      max-width: 500px;
+      margin-bottom: 48px;
+      font-weight: 300;
+    }
+    
+    .hero-cta {
       display: flex;
       gap: 16px;
-      justify-content: center;
       flex-wrap: wrap;
+      justify-content: center;
     }
     
     .btn {
-      padding: 14px 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
       border-radius: 8px;
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: 500;
       text-decoration: none;
       transition: all 0.2s;
@@ -118,126 +177,171 @@
     }
     
     .btn-primary:hover {
-      background: var(--accent-hover);
+      filter: brightness(1.1);
+      transform: translateY(-1px);
     }
     
     .btn-secondary {
-      background: transparent;
+      background: var(--surface-2);
       color: var(--text);
       border: 1px solid var(--border);
     }
     
     .btn-secondary:hover {
-      border-color: var(--text-muted);
+      border-color: var(--border-hover);
+      background: var(--surface);
     }
     
-    /* Promise Box */
+    /* Promise */
     .promise {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 32px;
-      margin: 60px 0;
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+    }
+    
+    .promise-inner {
+      max-width: 700px;
+      margin: 0 auto;
       text-align: center;
     }
     
     .promise h2 {
-      font-size: 1.25rem;
-      margin-bottom: 16px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
       color: var(--accent);
+      margin-bottom: 24px;
     }
     
     .promise p {
+      font-size: 1.25rem;
       color: var(--text-muted);
-      max-width: 700px;
-      margin: 0 auto;
+      font-weight: 300;
+      line-height: 1.7;
     }
     
     .promise strong {
       color: var(--text);
+      font-weight: 500;
     }
     
     /* Platforms */
     .platforms {
-      padding: 60px 0;
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
     }
     
-    .platforms h2 {
-      font-size: 2rem;
+    .section-header {
       text-align: center;
+      margin-bottom: 64px;
+    }
+    
+    .section-header h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
       margin-bottom: 16px;
     }
     
-    .platforms > p {
-      text-align: center;
+    .section-header p {
       color: var(--text-muted);
-      margin-bottom: 48px;
+      font-weight: 300;
     }
     
     .platform-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    
+    @media (max-width: 900px) {
+      .platform-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 500px) {
+      .platform-grid {
+        grid-template-columns: 1fr;
+      }
     }
     
     .platform-card {
-      background: var(--bg-card);
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 32px 24px;
-      text-align: center;
-      transition: all 0.2s;
       text-decoration: none;
       color: inherit;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
     
     .platform-card:hover {
-      border-color: var(--accent);
+      border-color: var(--border-hover);
       transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     }
     
     .platform-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      margin-bottom: 20px;
+      background: var(--surface-2);
+      border-radius: 12px;
     }
     
     .platform-card h3 {
-      font-size: 1.25rem;
+      font-size: 1rem;
+      font-weight: 500;
       margin-bottom: 8px;
     }
     
     .platform-card p {
+      font-size: 0.875rem;
       color: var(--text-muted);
-      font-size: 0.9rem;
+      margin-bottom: 20px;
+      font-weight: 300;
     }
     
-    .platform-card .time {
-      display: inline-block;
-      margin-top: 16px;
-      padding: 6px 12px;
-      background: rgba(34, 197, 94, 0.1);
+    .platform-time {
+      font-size: 0.75rem;
       color: var(--accent);
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 500;
+      padding: 6px 12px;
+      background: var(--accent-dim);
+      border-radius: 100px;
+      margin-top: auto;
     }
     
-    /* How it works */
-    .how-it-works {
-      padding: 60px 0;
+    /* Steps */
+    .steps {
+      padding: 80px 0;
       border-top: 1px solid var(--border);
     }
     
-    .how-it-works h2 {
-      font-size: 2rem;
-      text-align: center;
-      margin-bottom: 48px;
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
     }
     
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 32px;
+    @media (max-width: 800px) {
+      .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 500px) {
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
     }
     
     .step {
@@ -245,63 +349,78 @@
     }
     
     .step-number {
-      width: 48px;
-      height: 48px;
-      background: var(--accent);
-      color: #000;
-      border-radius: 50%;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 1.25rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
       margin: 0 auto 16px;
     }
     
     .step h3 {
+      font-size: 0.95rem;
+      font-weight: 500;
       margin-bottom: 8px;
     }
     
     .step p {
+      font-size: 0.875rem;
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-weight: 300;
     }
     
     /* Contact */
     .contact {
-      padding: 60px 0;
-      text-align: center;
+      padding: 100px 0;
       border-top: 1px solid var(--border);
+      text-align: center;
     }
     
     .contact h2 {
-      font-size: 2rem;
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
       margin-bottom: 16px;
     }
     
     .contact p {
       color: var(--text-muted);
-      margin-bottom: 24px;
+      margin-bottom: 32px;
+      font-weight: 300;
     }
     
-    .contact a.email {
+    .contact-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.125rem;
       color: var(--accent);
-      font-size: 1.25rem;
       text-decoration: none;
+      padding: 12px 24px;
+      background: var(--accent-dim);
+      border-radius: 8px;
+      transition: all 0.2s;
     }
     
-    .contact a.email:hover {
-      text-decoration: underline;
+    .contact-email:hover {
+      background: rgba(16, 185, 129, 0.15);
     }
     
     /* Donate */
     .donate {
-      padding: 40px 0 80px;
+      padding: 60px 0 100px;
       text-align: center;
     }
     
     .donate p {
-      color: var(--text-muted);
+      color: var(--text-dim);
+      font-size: 0.875rem;
       margin-bottom: 16px;
     }
     
@@ -310,29 +429,25 @@
       padding: 24px 0;
       border-top: 1px solid var(--border);
       text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
+    }
+    
+    footer p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
     }
     
     footer a {
       color: var(--text-muted);
       text-decoration: none;
+      transition: color 0.2s;
     }
     
     footer a:hover {
       color: var(--text);
     }
     
-    /* Responsive */
+    /* Mobile nav */
     @media (max-width: 640px) {
-      .hero h1 {
-        font-size: 2rem;
-      }
-      
-      .hero p {
-        font-size: 1rem;
-      }
-      
       .nav-links {
         display: none;
       }
@@ -340,93 +455,101 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="container header-content">
+  <nav>
+    <div class="container nav-inner">
       <a href="/" class="logo">FreeClaw</a>
-      <nav class="nav-links">
-        <a href="#platforms">Guides</a>
-        <a href="#how-it-works">How it Works</a>
-        <a href="#contact">Contact</a>
-        <a href="https://github.com/openclaw/openclaw" target="_blank">GitHub</a>
-      </nav>
+      <ul class="nav-links">
+        <li><a href="#platforms">Guides</a></li>
+        <li><a href="#how-it-works">How it Works</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="https://github.com/openclaw/openclaw" target="_blank">GitHub</a></li>
+      </ul>
     </div>
-  </header>
+  </nav>
   
   <main>
     <section class="hero">
-      <div class="container">
-        <h1>Deploy Your Own AI Assistant.<br><span>Completely Free.</span></h1>
-        <p>Step-by-step guides to set up OpenClaw on your own infrastructure. No fees, no tokens, no BS. Just a believer helping others get started.</p>
-        <div class="hero-buttons">
-          <a href="#platforms" class="btn btn-primary">Get Started</a>
-          <a href="#contact" class="btn btn-secondary">Need Help? Email Me</a>
-        </div>
+      <div class="hero-badge">
+        <span>100% Free</span> — No tokens, no fees, no BS
+      </div>
+      <h1>Deploy your own AI assistant</h1>
+      <p>Step-by-step guides to set up OpenClaw on your infrastructure. I'll personally help you if you get stuck.</p>
+      <div class="hero-cta">
+        <a href="#platforms" class="btn btn-primary">Get Started →</a>
+        <a href="#contact" class="btn btn-secondary">Need help?</a>
       </div>
     </section>
     
     <section class="promise">
       <div class="container">
-        <h2>My Promise to You</h2>
-        <p>I will <strong>never</strong> create a token. I will <strong>never</strong> promote any token. I will <strong>never</strong> charge you for this. If you ever see me doing any of these things, it's fraud and you should report it. I'm doing this because I believe in making AI accessible to everyone.</p>
+        <div class="promise-inner">
+          <h2>My Promise</h2>
+          <p>I will <strong>never</strong> create a token. I will <strong>never</strong> charge you for this. If you ever see me doing either, it's fraud. I'm doing this because I believe AI should be accessible to everyone.</p>
+        </div>
       </div>
     </section>
     
     <section class="platforms" id="platforms">
       <div class="container">
-        <h2>Choose Your Platform</h2>
-        <p>Pick where you want your AI assistant to live. Each guide walks you through every step.</p>
+        <div class="section-header">
+          <h2>Choose your platform</h2>
+          <p>Pick where you want your assistant. Each guide covers everything.</p>
+        </div>
         <div class="platform-grid">
           <a href="/guides/telegram.html" class="platform-card">
             <div class="platform-icon">✈️</div>
             <h3>Telegram</h3>
-            <p>Most popular choice. Works great on mobile and desktop.</p>
-            <span class="time">~15 min setup</span>
+            <p>Most popular. Works everywhere.</p>
+            <span class="platform-time">~15 min</span>
           </a>
           <a href="/guides/discord.html" class="platform-card">
             <div class="platform-icon">🎮</div>
             <h3>Discord</h3>
-            <p>Perfect for communities and servers.</p>
-            <span class="time">~15 min setup</span>
+            <p>Great for communities.</p>
+            <span class="platform-time">~15 min</span>
           </a>
           <a href="/guides/whatsapp.html" class="platform-card">
             <div class="platform-icon">💬</div>
             <h3>WhatsApp</h3>
-            <p>Use your existing WhatsApp account.</p>
-            <span class="time">~20 min setup</span>
+            <p>Use your existing account.</p>
+            <span class="platform-time">~20 min</span>
           </a>
           <a href="/guides/slack.html" class="platform-card">
             <div class="platform-icon">💼</div>
             <h3>Slack</h3>
-            <p>Great for work and team productivity.</p>
-            <span class="time">~15 min setup</span>
+            <p>Perfect for work.</p>
+            <span class="platform-time">~15 min</span>
           </a>
         </div>
       </div>
     </section>
     
-    <section class="how-it-works" id="how-it-works">
+    <section class="steps" id="how-it-works">
       <div class="container">
-        <h2>How It Works</h2>
-        <div class="steps">
+        <div class="section-header">
+          <h2>How it works</h2>
+          <p>Four steps. No experience needed.</p>
+        </div>
+        <div class="steps-grid">
           <div class="step">
             <div class="step-number">1</div>
-            <h3>Get a Server</h3>
-            <p>I'll show you how to get a free or cheap cloud server. No experience needed.</p>
+            <h3>Get a server</h3>
+            <p>Free or $4/mo. I'll show you.</p>
           </div>
           <div class="step">
             <div class="step-number">2</div>
             <h3>Install OpenClaw</h3>
-            <p>Copy-paste a few commands. I explain what each one does.</p>
+            <p>Copy-paste a few commands.</p>
           </div>
           <div class="step">
             <div class="step-number">3</div>
-            <h3>Connect Your Platform</h3>
-            <p>Link to Telegram, Discord, or wherever you want your assistant.</p>
+            <h3>Connect</h3>
+            <p>Link to Telegram, Discord, etc.</p>
           </div>
           <div class="step">
             <div class="step-number">4</div>
-            <h3>Start Chatting</h3>
-            <p>That's it. Your AI assistant is ready 24/7.</p>
+            <h3>Done</h3>
+            <p>Your AI is ready 24/7.</p>
           </div>
         </div>
       </div>
@@ -434,23 +557,23 @@
     
     <section class="contact" id="contact">
       <div class="container">
-        <h2>Stuck? Email Me.</h2>
-        <p>Seriously. If you get stuck at any point, just email me. I'll help you personally.</p>
-        <a href="mailto:drey@freeclaw.dev?subject=FreeClaw%20Help" class="email">drey@freeclaw.dev</a>
+        <h2>Stuck? Email me.</h2>
+        <p>I read every email and will help you personally.</p>
+        <a href="mailto:drey@freeclaw.co" class="contact-email">drey@freeclaw.co</a>
       </div>
     </section>
     
     <section class="donate">
       <div class="container">
-        <p>If this helped you and you want to support the project:</p>
-        <a href="https://ko-fi.com/freeclaw" class="btn btn-secondary" target="_blank">Buy Me a Coffee ☕</a>
+        <p>Found this useful?</p>
+        <a href="https://ko-fi.com/freeclaw" class="btn btn-secondary" target="_blank">Buy me a coffee</a>
       </div>
     </section>
   </main>
   
   <footer>
     <div class="container">
-      <p>Built with love by <a href="https://x.com/andreymarey" target="_blank">Andrey Marey</a> • <a href="https://github.com/openclaw/openclaw" target="_blank">OpenClaw on GitHub</a></p>
+      <p>Built by <a href="https://x.com/andreymarey" target="_blank">Andrey Marey</a> · <a href="https://github.com/openclaw/openclaw" target="_blank">OpenClaw</a></p>
     </div>
   </footer>
 </body>

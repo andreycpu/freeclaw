@@ -3,69 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deploy OpenClaw on Telegram - FreeClaw</title>
+  <title>Telegram Setup — FreeClaw</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root {
-      --bg: #0a0a0a;
-      --bg-card: #141414;
-      --bg-code: #1a1a1a;
-      --border: #262626;
-      --text: #fafafa;
-      --text-muted: #a1a1aa;
-      --accent: #22c55e;
-      --accent-hover: #16a34a;
-      --telegram: #0088cc;
+      --bg: #050505;
+      --surface: #0a0a0a;
+      --surface-2: #111111;
+      --border: #1a1a1a;
+      --border-hover: #2a2a2a;
+      --text: #e5e5e5;
+      --text-muted: #737373;
+      --text-dim: #525252;
+      --accent: #10b981;
+      --accent-dim: rgba(16, 185, 129, 0.1);
+      --warning: #f59e0b;
+      --warning-dim: rgba(245, 158, 11, 0.1);
     }
+    
+    html { scroll-behavior: smooth; }
     
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.7;
-      min-height: 100vh;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    ::selection {
+      background: var(--accent);
+      color: #000;
     }
     
     .container {
-      max-width: 800px;
+      max-width: 720px;
       margin: 0 auto;
       padding: 0 24px;
     }
     
-    header {
-      padding: 24px 0;
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      background: rgba(5, 5, 5, 0.8);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
     
-    .header-content {
+    .nav-inner {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
     }
     
     .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
       text-decoration: none;
     }
     
     .back-link {
+      font-size: 0.875rem;
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.9rem;
+      transition: color 0.2s;
     }
     
     .back-link:hover {
       color: var(--text);
     }
     
+    /* Header */
     .guide-header {
-      padding: 60px 0 40px;
+      padding: 120px 0 60px;
       text-align: center;
       border-bottom: 1px solid var(--border);
     }
@@ -74,70 +98,85 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
-      background: rgba(0, 136, 204, 0.1);
-      color: var(--telegram);
-      border-radius: 20px;
-      font-size: 0.9rem;
+      padding: 6px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
       margin-bottom: 24px;
     }
     
     .guide-header h1 {
       font-size: 2.5rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
       margin-bottom: 16px;
     }
     
     .guide-header p {
       color: var(--text-muted);
-      font-size: 1.1rem;
+      font-weight: 300;
     }
     
     .guide-meta {
       display: flex;
       justify-content: center;
-      gap: 32px;
+      gap: 24px;
       margin-top: 24px;
-      color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+      color: var(--text-dim);
     }
     
+    /* Content */
     .guide-content {
       padding: 60px 0;
     }
     
+    /* TOC */
     .toc {
-      background: var(--bg-card);
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 24px;
-      margin-bottom: 48px;
+      margin-bottom: 60px;
     }
     
-    .toc h2 {
-      font-size: 1rem;
+    .toc-title {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
       margin-bottom: 16px;
-      color: var(--text-muted);
     }
     
     .toc ol {
-      padding-left: 20px;
-    }
-    
-    .toc li {
-      margin-bottom: 8px;
+      list-style: none;
+      display: grid;
+      gap: 8px;
     }
     
     .toc a {
-      color: var(--text);
+      color: var(--text-muted);
       text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
     }
     
     .toc a:hover {
       color: var(--accent);
     }
     
+    /* Steps */
     .step {
       margin-bottom: 64px;
+      padding-bottom: 64px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .step:last-child {
+      border-bottom: none;
     }
     
     .step-header {
@@ -148,36 +187,41 @@
     }
     
     .step-number {
-      width: 40px;
-      height: 40px;
-      background: var(--accent);
-      color: #000;
-      border-radius: 50%;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
+      background: var(--accent);
+      color: #000;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
       flex-shrink: 0;
     }
     
     .step h2 {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 500;
     }
     
-    .step p {
-      margin-bottom: 16px;
+    .step > p {
       color: var(--text-muted);
+      margin-bottom: 16px;
+      font-weight: 300;
     }
     
-    .step p strong {
+    .step strong {
       color: var(--text);
+      font-weight: 500;
     }
     
+    /* Code blocks */
     .code-block {
-      background: var(--bg-code);
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 20px;
+      padding: 16px 20px;
       margin: 16px 0;
       overflow-x: auto;
       position: relative;
@@ -185,125 +229,152 @@
     
     .code-block code {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--accent);
+      line-height: 1.6;
     }
     
     .code-block .comment {
-      color: var(--text-muted);
+      color: var(--text-dim);
     }
     
     .copy-btn {
       position: absolute;
-      top: 12px;
-      right: 12px;
-      background: var(--border);
-      border: none;
-      color: var(--text-muted);
-      padding: 6px 12px;
+      top: 8px;
+      right: 8px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 4px 10px;
       border-radius: 4px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       cursor: pointer;
+      transition: all 0.2s;
     }
     
     .copy-btn:hover {
-      background: var(--text-muted);
-      color: var(--bg);
+      border-color: var(--border-hover);
+      color: var(--text-muted);
     }
     
+    /* Info boxes */
     .info-box {
-      background: rgba(34, 197, 94, 0.1);
-      border-left: 3px solid var(--accent);
+      background: var(--accent-dim);
+      border-left: 2px solid var(--accent);
       padding: 16px 20px;
-      margin: 16px 0;
+      margin: 20px 0;
       border-radius: 0 8px 8px 0;
     }
     
     .info-box.warning {
-      background: rgba(234, 179, 8, 0.1);
-      border-color: #eab308;
+      background: var(--warning-dim);
+      border-color: var(--warning);
     }
     
     .info-box p {
       color: var(--text);
       margin: 0;
+      font-size: 0.9rem;
     }
     
-    .numbered-list {
-      padding-left: 24px;
+    /* Lists */
+    .step ol {
+      padding-left: 20px;
       margin: 16px 0;
     }
     
-    .numbered-list li {
+    .step ol li {
       margin-bottom: 12px;
       color: var(--text-muted);
+      font-weight: 300;
     }
     
-    .numbered-list li strong {
+    .step ol li strong {
       color: var(--text);
     }
     
+    /* Links */
     a {
       color: var(--accent);
+      text-decoration: none;
     }
     
+    a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Help section */
     .help-section {
-      background: var(--bg-card);
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 32px;
+      padding: 40px;
       text-align: center;
-      margin-top: 48px;
+      margin-top: 40px;
     }
     
     .help-section h2 {
-      margin-bottom: 16px;
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 12px;
     }
     
     .help-section p {
       color: var(--text-muted);
-      margin-bottom: 16px;
+      font-weight: 300;
+      margin-bottom: 20px;
     }
     
-    .help-section a.email {
+    .help-section .email {
+      display: inline-flex;
+      font-size: 1rem;
       color: var(--accent);
-      font-size: 1.25rem;
+      padding: 10px 20px;
+      background: var(--accent-dim);
+      border-radius: 6px;
       text-decoration: none;
     }
     
+    .help-section .email:hover {
+      background: rgba(16, 185, 129, 0.15);
+      text-decoration: none;
+    }
+    
+    /* Footer */
     footer {
       padding: 24px 0;
       border-top: 1px solid var(--border);
       text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
     }
     
-    img {
-      max-width: 100%;
-      border-radius: 8px;
-      margin: 16px 0;
+    footer p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+    
+    footer a {
+      color: var(--text-muted);
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container header-content">
+  <nav>
+    <div class="nav-inner">
       <a href="/" class="logo">FreeClaw</a>
-      <a href="/" class="back-link">← Back to all guides</a>
+      <a href="/" class="back-link">← All guides</a>
     </div>
-  </header>
+  </nav>
   
   <main>
     <section class="guide-header">
       <div class="container">
         <div class="platform-badge">✈️ Telegram</div>
-        <h1>Deploy OpenClaw on Telegram</h1>
-        <p>A complete step-by-step guide. No experience required.</p>
+        <h1>Deploy on Telegram</h1>
+        <p>Complete guide. No experience needed.</p>
         <div class="guide-meta">
-          <span>⏱️ ~15 minutes</span>
-          <span>💰 ~$5/month (or free tier)</span>
-          <span>📊 Beginner friendly</span>
+          <span>~15 minutes</span>
+          <span>$4/mo or free tier</span>
+          <span>Beginner friendly</span>
         </div>
       </div>
     </section>
@@ -312,203 +383,155 @@
       <div class="container">
         
         <div class="toc">
-          <h2>What we'll do:</h2>
+          <div class="toc-title">In this guide</div>
           <ol>
-            <li><a href="#step-1">Get a server (5 min)</a></li>
-            <li><a href="#step-2">Connect to your server (3 min)</a></li>
-            <li><a href="#step-3">Install OpenClaw (3 min)</a></li>
-            <li><a href="#step-4">Create your Telegram bot (2 min)</a></li>
-            <li><a href="#step-5">Configure and launch (2 min)</a></li>
+            <li><a href="#step-1">Get a server</a></li>
+            <li><a href="#step-2">Connect to your server</a></li>
+            <li><a href="#step-3">Install OpenClaw</a></li>
+            <li><a href="#step-4">Create your Telegram bot</a></li>
+            <li><a href="#step-5">Configure and launch</a></li>
           </ol>
         </div>
         
-        <!-- Step 1 -->
         <div class="step" id="step-1">
           <div class="step-header">
             <div class="step-number">1</div>
-            <h2>Get a Server</h2>
+            <h2>Get a server</h2>
           </div>
           
           <p>You need a small server to run OpenClaw 24/7. Here are your options:</p>
           
-          <p><strong>Option A: Railway (Easiest - has free tier)</strong></p>
-          <ol class="numbered-list">
-            <li>Go to <a href="https://railway.app" target="_blank">railway.app</a></li>
-            <li>Sign up with GitHub</li>
-            <li>Click "New Project" → "Empty Project"</li>
-            <li>Skip to <a href="#step-3">Step 3</a> (Railway has a different setup)</li>
-          </ol>
-          
-          <p><strong>Option B: DigitalOcean ($4/month - more control)</strong></p>
-          <ol class="numbered-list">
+          <p><strong>DigitalOcean — $4/month (recommended for beginners)</strong></p>
+          <ol>
             <li>Go to <a href="https://digitalocean.com" target="_blank">digitalocean.com</a> and create an account</li>
-            <li>Click "Create" → "Droplets"</li>
+            <li>Click <strong>Create → Droplets</strong></li>
             <li>Choose <strong>Ubuntu 22.04</strong></li>
-            <li>Select the <strong>$4/month</strong> plan (1GB RAM is enough)</li>
-            <li>Choose a region close to you</li>
-            <li>Under "Authentication", choose <strong>Password</strong> and set a strong password</li>
-            <li>Click "Create Droplet"</li>
-            <li>Copy the IP address shown (looks like <code>123.45.67.89</code>)</li>
+            <li>Select the <strong>$4/month</strong> plan</li>
+            <li>Choose <strong>Password</strong> authentication and set a strong password</li>
+            <li>Click <strong>Create Droplet</strong></li>
+            <li>Copy the IP address (looks like <code>123.45.67.89</code>)</li>
           </ol>
           
-          <p><strong>Option C: AWS Free Tier (Free for 12 months)</strong></p>
-          <ol class="numbered-list">
+          <p><strong>AWS Free Tier — Free for 12 months</strong></p>
+          <ol>
             <li>Go to <a href="https://aws.amazon.com" target="_blank">aws.amazon.com</a></li>
             <li>Create an account (requires credit card but won't charge)</li>
             <li>Go to EC2 → Launch Instance</li>
-            <li>Choose Ubuntu 22.04, t2.micro (free tier eligible)</li>
-            <li>Create and download a key pair (.pem file)</li>
-            <li>Launch and note the public IP</li>
+            <li>Choose Ubuntu 22.04, t2.micro (free tier)</li>
+            <li>Create and download a key pair</li>
           </ol>
           
           <div class="info-box">
-            <p><strong>My recommendation:</strong> If you're new, start with DigitalOcean. It's $4/month but the simplest to use.</p>
+            <p><strong>My recommendation:</strong> Start with DigitalOcean. $4/month, simplest setup.</p>
           </div>
         </div>
         
-        <!-- Step 2 -->
         <div class="step" id="step-2">
           <div class="step-header">
             <div class="step-number">2</div>
-            <h2>Connect to Your Server</h2>
+            <h2>Connect to your server</h2>
           </div>
           
-          <p>Now we'll connect to your server using SSH (a secure way to control remote computers).</p>
-          
-          <p><strong>On Mac/Linux:</strong></p>
-          <p>Open Terminal and type:</p>
+          <p><strong>On Mac/Linux:</strong> Open Terminal and run:</p>
           <div class="code-block">
             <code>ssh root@YOUR_IP_ADDRESS</code>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
           </div>
-          <p>Replace <code>YOUR_IP_ADDRESS</code> with the IP from Step 1. Enter your password when asked.</p>
           
-          <p><strong>On Windows:</strong></p>
-          <ol class="numbered-list">
-            <li>Download <a href="https://putty.org" target="_blank">PuTTY</a></li>
-            <li>Open PuTTY, enter your IP address</li>
-            <li>Click "Open"</li>
-            <li>Login as <code>root</code> with your password</li>
-          </ol>
+          <p><strong>On Windows:</strong> Download <a href="https://putty.org" target="_blank">PuTTY</a>, enter your IP, click Open, login as <code>root</code>.</p>
           
           <div class="info-box">
-            <p><strong>You're in!</strong> You should see a command prompt like <code>root@ubuntu:~#</code></p>
+            <p>You should see a prompt like <code>root@ubuntu:~#</code></p>
           </div>
         </div>
         
-        <!-- Step 3 -->
         <div class="step" id="step-3">
           <div class="step-header">
             <div class="step-number">3</div>
             <h2>Install OpenClaw</h2>
           </div>
           
-          <p>Copy and paste these commands one at a time. I'll explain what each does.</p>
+          <p>Copy and paste these commands one at a time:</p>
           
-          <p><strong>First, update your system:</strong></p>
           <div class="code-block">
-            <code><span class="comment"># Updates the list of available software</span><br>sudo apt update && sudo apt upgrade -y</code>
+            <code><span class="comment"># Update system</span><br>sudo apt update && sudo apt upgrade -y</code>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
           </div>
           
-          <p><strong>Install Node.js:</strong></p>
           <div class="code-block">
-            <code><span class="comment"># Installs Node.js (the programming language OpenClaw uses)</span><br>curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -<br>sudo apt install -y nodejs</code>
+            <code><span class="comment"># Install Node.js</span><br>curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -<br>sudo apt install -y nodejs</code>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
           </div>
           
-          <p><strong>Install OpenClaw:</strong></p>
           <div class="code-block">
-            <code><span class="comment"># Installs OpenClaw globally</span><br>sudo npm install -g openclaw</code>
+            <code><span class="comment"># Install OpenClaw</span><br>sudo npm install -g openclaw</code>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
           </div>
           
-          <p><strong>Create a workspace:</strong></p>
           <div class="code-block">
-            <code><span class="comment"># Creates a folder for your assistant</span><br>mkdir ~/my-assistant && cd ~/my-assistant</code>
-            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-          </div>
-          
-          <p><strong>Initialize OpenClaw:</strong></p>
-          <div class="code-block">
-            <code><span class="comment"># Sets up the configuration</span><br>openclaw init</code>
+            <code><span class="comment"># Create workspace and initialize</span><br>mkdir ~/my-assistant && cd ~/my-assistant<br>openclaw init</code>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
           </div>
         </div>
         
-        <!-- Step 4 -->
         <div class="step" id="step-4">
           <div class="step-header">
             <div class="step-number">4</div>
-            <h2>Create Your Telegram Bot</h2>
+            <h2>Create your Telegram bot</h2>
           </div>
           
-          <p>Now we need to create a bot on Telegram that your assistant will use.</p>
-          
-          <ol class="numbered-list">
-            <li>Open Telegram and search for <strong>@BotFather</strong></li>
+          <ol>
+            <li>Open Telegram, search for <strong>@BotFather</strong></li>
             <li>Send <code>/newbot</code></li>
-            <li>Choose a <strong>name</strong> for your bot (e.g., "My AI Assistant")</li>
-            <li>Choose a <strong>username</strong> ending in "bot" (e.g., "myai_assistant_bot")</li>
-            <li>BotFather will give you a <strong>token</strong> - copy it!</li>
+            <li>Choose a name (e.g., "My AI Assistant")</li>
+            <li>Choose a username ending in "bot"</li>
+            <li>Copy the token BotFather gives you</li>
           </ol>
           
           <div class="info-box warning">
-            <p><strong>Keep your token secret!</strong> Anyone with this token can control your bot.</p>
+            <p><strong>Keep your token secret.</strong> Anyone with it can control your bot.</p>
           </div>
-          
-          <p>The token looks like this: <code>1234567890:ABCdefGHIjklMNOpqrsTUVwxyz</code></p>
         </div>
         
-        <!-- Step 5 -->
         <div class="step" id="step-5">
           <div class="step-header">
             <div class="step-number">5</div>
-            <h2>Configure and Launch</h2>
+            <h2>Configure and launch</h2>
           </div>
           
-          <p>Almost there! Now we'll configure OpenClaw with your bot token and AI provider.</p>
-          
-          <p><strong>Open the config file:</strong></p>
+          <p>Open the config file:</p>
           <div class="code-block">
             <code>nano openclaw.yaml</code>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
           </div>
           
-          <p><strong>Add this configuration</strong> (replace the placeholders):</p>
+          <p>Add this (replace the placeholders):</p>
           <div class="code-block">
-            <code>llm:<br>  provider: anthropic  <span class="comment"># or openai</span><br>  apiKey: YOUR_ANTHROPIC_API_KEY<br>  model: claude-sonnet-4-20250514<br><br>channels:<br>  telegram:<br>    token: YOUR_TELEGRAM_BOT_TOKEN<br>    ownerIds:<br>      - YOUR_TELEGRAM_USER_ID</code>
+            <code>llm:<br>  provider: anthropic<br>  apiKey: YOUR_API_KEY<br>  model: claude-sonnet-4-20250514<br><br>channels:<br>  telegram:<br>    token: YOUR_BOT_TOKEN<br>    ownerIds:<br>      - YOUR_USER_ID</code>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
           </div>
           
           <p>Save with <code>Ctrl+X</code>, then <code>Y</code>, then <code>Enter</code>.</p>
           
           <div class="info-box">
-            <p><strong>Need an API key?</strong> Get one from <a href="https://console.anthropic.com" target="_blank">Anthropic</a> or <a href="https://platform.openai.com" target="_blank">OpenAI</a>.</p>
+            <p><strong>Get your user ID:</strong> Message @userinfobot on Telegram.</p>
           </div>
           
-          <p><strong>Find your Telegram user ID:</strong></p>
-          <ol class="numbered-list">
-            <li>Message <strong>@userinfobot</strong> on Telegram</li>
-            <li>It will reply with your user ID (a number)</li>
-            <li>Add that number to <code>ownerIds</code></li>
-          </ol>
-          
-          <p><strong>Start OpenClaw:</strong></p>
+          <p>Start OpenClaw:</p>
           <div class="code-block">
-            <code><span class="comment"># Start the gateway (runs in background)</span><br>openclaw gateway start</code>
+            <code>openclaw gateway start</code>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
           </div>
           
           <div class="info-box">
-            <p><strong>That's it!</strong> Open Telegram and message your bot. It should respond!</p>
+            <p><strong>Done!</strong> Message your bot on Telegram. It should respond.</p>
           </div>
         </div>
         
         <div class="help-section">
-          <h2>Stuck? I'll help.</h2>
-          <p>If anything doesn't work or you're confused at any step, just email me. I read every email and will help you personally.</p>
-          <a href="mailto:drey@freeclaw.dev?subject=FreeClaw%20Telegram%20Help" class="email">drey@freeclaw.dev</a>
+          <h2>Stuck?</h2>
+          <p>Email me. I'll help you personally.</p>
+          <a href="mailto:drey@freeclaw.co" class="email">drey@freeclaw.co</a>
         </div>
         
       </div>
@@ -517,16 +540,15 @@
   
   <footer>
     <div class="container">
-      <p>Built with love by <a href="https://x.com/andreymarey" target="_blank">Andrey Marey</a></p>
+      <p>Built by <a href="https://x.com/andreymarey" target="_blank">Andrey Marey</a></p>
     </div>
   </footer>
   
   <script>
     function copyCode(btn) {
-      const codeBlock = btn.parentElement;
-      const code = codeBlock.querySelector('code').innerText;
-      navigator.clipboard.writeText(code.replace(/^#.*\n/gm, ''));
-      btn.textContent = 'Copied!';
+      const code = btn.parentElement.querySelector('code').innerText.replace(/^#.*\n/gm, '');
+      navigator.clipboard.writeText(code);
+      btn.textContent = 'Copied';
       setTimeout(() => btn.textContent = 'Copy', 2000);
     }
   </script>
