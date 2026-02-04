@@ -11,10 +11,14 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root {
-      --bg: #000;
-      --text: #fff;
-      --text-muted: #888;
+      --bg: #050508;
+      --text: #ffffff;
+      --text-muted: rgba(255,255,255,0.5);
+      --text-dim: rgba(255,255,255,0.3);
       --accent: #00ff88;
+      --glass: rgba(255,255,255,0.03);
+      --glass-border: rgba(255,255,255,0.06);
+      --glass-hover: rgba(255,255,255,0.06);
     }
     
     html, body {
@@ -29,66 +33,76 @@
       -webkit-font-smoothing: antialiased;
     }
     
-    /* Animated background */
-    .bg-effect {
+    /* Ambient background */
+    .ambient {
       position: fixed;
       inset: 0;
       z-index: 0;
       overflow: hidden;
     }
     
-    .bg-effect::before {
-      content: '';
+    .orb {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 150vmax;
-      height: 150vmax;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(circle at center, rgba(0, 255, 136, 0.03) 0%, transparent 50%);
-      animation: pulse 8s ease-in-out infinite;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      animation: float 20s ease-in-out infinite;
     }
     
-    .bg-effect::after {
-      content: '';
-      position: absolute;
-      top: 20%;
-      right: 10%;
+    .orb-1 {
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(0, 255, 136, 0.02) 0%, transparent 70%);
-      filter: blur(60px);
-      animation: float 12s ease-in-out infinite;
+      background: radial-gradient(circle, rgba(0, 255, 136, 0.15) 0%, transparent 70%);
+      top: -200px;
+      left: -100px;
+      animation-delay: 0s;
     }
     
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.1); }
+    .orb-2 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0, 200, 255, 0.1) 0%, transparent 70%);
+      bottom: -150px;
+      right: -100px;
+      animation-delay: -7s;
+    }
+    
+    .orb-3 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(150, 100, 255, 0.08) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      animation-delay: -14s;
     }
     
     @keyframes float {
-      0%, 100% { transform: translateY(0) translateX(0); }
-      50% { transform: translateY(-30px) translateX(20px); }
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.05); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
     }
     
-    /* Noise overlay */
-    .noise {
+    /* Grid overlay */
+    .grid-overlay {
       position: fixed;
       inset: 0;
       z-index: 1;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
       pointer-events: none;
-      opacity: 0.03;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     }
     
-    /* Main content */
+    /* Main layout */
     .main {
       position: relative;
       z-index: 2;
       height: 100vh;
       display: flex;
       flex-direction: column;
-      padding: 40px;
+      padding: 32px 48px;
     }
     
     /* Header */
@@ -99,83 +113,166 @@
     }
     
     .logo {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 500;
       color: var(--text);
       text-decoration: none;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.01em;
     }
     
-    .github-link {
+    .header-links {
+      display: flex;
+      gap: 32px;
+    }
+    
+    .header-links a {
       font-size: 0.85rem;
       color: var(--text-muted);
       text-decoration: none;
-      transition: color 0.2s;
+      transition: color 0.3s;
     }
     
-    .github-link:hover {
+    .header-links a:hover {
       color: var(--text);
     }
     
-    /* Hero */
-    .hero {
+    /* Content */
+    .content {
       flex: 1;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto;
+      justify-content: center;
+      gap: 80px;
     }
     
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3rem);
+    /* Left side - text */
+    .hero-text {
+      max-width: 440px;
+    }
+    
+    .hero-text h1 {
+      font-size: 3.2rem;
       font-weight: 500;
       letter-spacing: -0.03em;
-      line-height: 1.15;
-      margin-bottom: 20px;
+      line-height: 1.1;
+      margin-bottom: 24px;
     }
     
-    .hero p {
-      font-size: 1rem;
+    .hero-text p {
+      font-size: 1.05rem;
       color: var(--text-muted);
       font-weight: 300;
-      line-height: 1.6;
-      margin-bottom: 48px;
+      line-height: 1.7;
+      margin-bottom: 16px;
     }
     
-    /* Platform buttons */
-    .platforms {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
+    .hero-text .note {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      font-weight: 300;
     }
     
-    .platform-btn {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 24px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      color: var(--text);
+    /* Right side - floating cards */
+    .cards-container {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      perspective: 1000px;
+    }
+    
+    .platform-card {
+      position: absolute;
+      width: 180px;
+      padding: 28px 24px;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
       text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 400;
-      transition: all 0.2s;
+      color: inherit;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
     }
     
-    .platform-btn:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
+    .platform-card:hover {
+      background: var(--glass-hover);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-8px) scale(1.02) !important;
+      box-shadow: 
+        0 30px 60px rgba(0,0,0,0.3),
+        0 0 40px rgba(0, 255, 136, 0.05);
     }
     
-    .platform-btn span {
-      font-size: 1.1rem;
+    /* Card positions - floating effect */
+    .card-telegram {
+      top: 20px;
+      left: 20px;
+      animation: levitate1 6s ease-in-out infinite;
+    }
+    
+    .card-discord {
+      top: 40px;
+      right: 20px;
+      animation: levitate2 6s ease-in-out infinite;
+      animation-delay: -1.5s;
+    }
+    
+    .card-whatsapp {
+      bottom: 60px;
+      left: 40px;
+      animation: levitate3 6s ease-in-out infinite;
+      animation-delay: -3s;
+    }
+    
+    .card-slack {
+      bottom: 20px;
+      right: 40px;
+      animation: levitate4 6s ease-in-out infinite;
+      animation-delay: -4.5s;
+    }
+    
+    @keyframes levitate1 {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-15px) rotate(0deg); }
+    }
+    
+    @keyframes levitate2 {
+      0%, 100% { transform: translateY(0) rotate(2deg); }
+      50% { transform: translateY(-12px) rotate(0deg); }
+    }
+    
+    @keyframes levitate3 {
+      0%, 100% { transform: translateY(0) rotate(1deg); }
+      50% { transform: translateY(-18px) rotate(-1deg); }
+    }
+    
+    @keyframes levitate4 {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(-10px) rotate(1deg); }
+    }
+    
+    .platform-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 16px;
+      opacity: 0.9;
+    }
+    
+    .platform-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .platform-card h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    
+    .platform-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 300;
     }
     
     /* Footer */
@@ -183,13 +280,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: 20px;
     }
     
     .promise {
       font-size: 0.75rem;
-      color: var(--text-muted);
-      max-width: 400px;
+      color: var(--text-dim);
+      max-width: 380px;
       line-height: 1.5;
     }
     
@@ -197,49 +293,123 @@
       font-size: 0.85rem;
       color: var(--accent);
       text-decoration: none;
-      padding: 10px 20px;
-      border: 1px solid rgba(0, 255, 136, 0.2);
-      border-radius: 8px;
-      transition: all 0.2s;
+      padding: 12px 24px;
+      background: rgba(0, 255, 136, 0.08);
+      border: 1px solid rgba(0, 255, 136, 0.15);
+      border-radius: 10px;
+      transition: all 0.3s;
     }
     
     .contact-btn:hover {
-      background: rgba(0, 255, 136, 0.1);
+      background: rgba(0, 255, 136, 0.12);
+      border-color: rgba(0, 255, 136, 0.25);
+    }
+    
+    /* Responsive */
+    @media (max-width: 900px) {
+      .content {
+        flex-direction: column;
+        gap: 48px;
+        text-align: center;
+      }
+      
+      .hero-text {
+        max-width: 500px;
+      }
+      
+      .hero-text h1 {
+        font-size: 2.2rem;
+      }
+      
+      .cards-container {
+        width: 320px;
+        height: 320px;
+      }
+      
+      .platform-card {
+        width: 140px;
+        padding: 20px;
+      }
     }
     
     @media (max-width: 640px) {
       .main { padding: 24px; }
-      .platforms { flex-direction: column; }
-      .platform-btn { justify-content: center; }
+      .header-links { display: none; }
       footer { flex-direction: column; gap: 20px; text-align: center; }
       .promise { max-width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="bg-effect"></div>
-  <div class="noise"></div>
+  <div class="ambient">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="grid-overlay"></div>
   
   <div class="main">
     <header>
       <a href="/" class="logo">FreeClaw</a>
-      <a href="https://github.com/openclaw/openclaw" target="_blank" class="github-link">GitHub</a>
+      <div class="header-links">
+        <a href="https://github.com/openclaw/openclaw" target="_blank">GitHub</a>
+        <a href="https://docs.openclaw.ai" target="_blank">Docs</a>
+      </div>
     </header>
     
-    <section class="hero">
-      <h1>Deploy your own AI assistant for free</h1>
-      <p>Step by step guides to set up OpenClaw on your own server. I will personally help you if you get stuck.</p>
-      <div class="platforms">
-        <a href="/guides/telegram.html" class="platform-btn"><span>✈️</span> Telegram</a>
-        <a href="/guides/discord.html" class="platform-btn"><span>🎮</span> Discord</a>
-        <a href="/guides/whatsapp.html" class="platform-btn"><span>💬</span> WhatsApp</a>
-        <a href="/guides/slack.html" class="platform-btn"><span>💼</span> Slack</a>
+    <section class="content">
+      <div class="hero-text">
+        <h1>Your own AI assistant, running 24/7</h1>
+        <p>Free step by step guides to deploy OpenClaw on your own server. Once set up, use it from any device through Telegram, Discord, WhatsApp, or Slack.</p>
+        <p class="note">I will personally help you if you get stuck.</p>
+      </div>
+      
+      <div class="cards-container">
+        <a href="/guides/telegram.html" class="platform-card card-telegram">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+            </svg>
+          </div>
+          <h3>Telegram</h3>
+          <p>Most popular</p>
+        </a>
+        
+        <a href="/guides/discord.html" class="platform-card card-discord">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
+            </svg>
+          </div>
+          <h3>Discord</h3>
+          <p>For communities</p>
+        </a>
+        
+        <a href="/guides/whatsapp.html" class="platform-card card-whatsapp">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+            </svg>
+          </div>
+          <h3>WhatsApp</h3>
+          <p>Personal use</p>
+        </a>
+        
+        <a href="/guides/slack.html" class="platform-card card-slack">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/>
+            </svg>
+          </div>
+          <h3>Slack</h3>
+          <p>For work</p>
+        </a>
       </div>
     </section>
     
     <footer>
       <p class="promise">I will never create a token. I will never charge for this. If you see me do either, it is fraud.</p>
-      <a href="mailto:andreymarey.work@gmail.com?subject=FreeClaw%20Help" class="contact-btn">Need help?</a>
+      <a href="mailto:andreymarey.work@gmail.com?subject=FreeClaw" class="contact-btn">Need help?</a>
     </footer>
   </div>
 </body>
