@@ -1163,7 +1163,7 @@
               <strong>Not sure which?</strong>
               <span>Telegram is easiest to set up. Start there.</span>
             </div>
-            <div class="trouble-link"><a href="https://x.com/Andrey__HQ" target="_blank">Full guide on X →</a></div>
+            <div class="trouble-link"><a href="#" onclick="getHelp(1, 'platform selection')">DM me for help →</a></div>
           </div>
         </div>
         
@@ -1255,6 +1255,7 @@
               <strong>Key not working?</strong>
               <span>Make sure you copied the full key. Add a payment method if required.</span>
             </div>
+            <div class="trouble-link"><a href="#" onclick="getHelp(2, 'API key setup')">DM me for help →</a></div>
           </div>
         </div>
         
@@ -1468,6 +1469,14 @@
     function genBat(){return`@echo off\necho FreeClaw Setup\nset WS=%USERPROFILE%\\freeclaw\nif exist "%WS%\\node_modules" (cd /d "%WS%" && openclaw gateway start && exit /b)\nwhere node >nul 2>nul || (echo Install Node.js from nodejs.org && start https://nodejs.org && pause && exit /b)\nnpm install -g openclaw\nmkdir "%WS%" 2>nul\ncopy "%~dp0config.yaml" "%WS%\\"\ncd /d "%WS%"\nopenclaw gateway start\npause`;}
     function genRm(){return`FREECLAW\n========\nBot: ${S.botName}\n\n1. Extract zip\n2. Run setup.${S.os==='win'?'bat':'sh'}\n3. Wait for "Bot is running"\n4. Message bot on ${S.platform}\n\nHelp: andreymarey.work@gmail.com`;}
     function donate(){alert('Thanks! Stripe coming soon. DM @Andrey__HQ');}
+    function getHelp(step, topic){
+      const steps = {1:'Platform Selection',2:'API Key Setup',3:'Personality Config',4:'Bot Token Setup',5:'Download',6:'Running the Script'};
+      const plat = S.platform ? S.platform.charAt(0).toUpperCase()+S.platform.slice(1) : 'not selected';
+      const model = S.model ? S.model.charAt(0).toUpperCase()+S.model.slice(1) : 'not selected';
+      const msg = `Hey! I'm stuck on FreeClaw Step ${step} (${steps[step]||topic}).\n\nPlatform: ${plat}\nModel: ${model}\n\nCan you help?`;
+      const url = `https://x.com/messages/compose?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
   </script>
 </body>
 </html>
