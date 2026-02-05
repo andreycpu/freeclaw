@@ -455,9 +455,21 @@
     .card.sel .api-expand { display: block; }
     
     .api-toggle {
-      font-size: 0.7rem;
-      color: var(--accent-solid);
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 14px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #fff;
+      background: var(--accent);
+      border-radius: 6px;
       cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .api-toggle:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
     }
     
     .api-content {
@@ -2154,10 +2166,9 @@ Enjoy your bot! 🤖
       anthropic:{
         title:'Get Anthropic API Key',
         steps:[
-          {num:'1',title:'Go to Anthropic Console',text:'Visit <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> and sign in (or create an account).',img:'images/anthropic/step1-sidebar.jpg'},
-          {num:'2',title:'Click API Keys',text:'In the left sidebar under MANAGE, click <strong>API keys</strong>.',img:null},
-          {num:'3',title:'Create a new key',text:'Click the <strong>+ Create Key</strong> button in the top right.',img:'images/anthropic/step2-create.jpg'},
-          {num:'4',title:'Copy your key',text:'Copy the key immediately and paste it into FreeClaw. <strong>You won\'t be able to see it again!</strong>',img:null}
+          {num:'1',title:'Go to Anthropic Console',text:'Visit <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> and sign in (or create an account). Then click <strong>API keys</strong> in the left sidebar.',img:'images/anthropic/step1-sidebar.jpg'},
+          {num:'2',title:'Create a new key',text:'Click the <strong>+ Create Key</strong> button in the top right corner.',img:'images/anthropic/step2-create.jpg'},
+          {num:'3',title:'Copy your key',text:'Copy the key immediately and paste it into FreeClaw. Write it down somewhere safe - <strong>you won\'t be able to see it again!</strong>',img:null}
         ],
         warning:'API keys are shown only once. Copy it immediately and store it somewhere safe!'
       },
