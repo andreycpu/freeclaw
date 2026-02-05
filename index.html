@@ -308,6 +308,25 @@
     
     .wizard.show { display: block; }
     
+    /* Back Arrow */
+    .back-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: color 0.2s;
+    }
+    
+    .back-arrow:hover { color: var(--text-soft); }
+    
+    .back-arrow svg {
+      width: 16px;
+      height: 16px;
+    }
+    
     .step {
       display: none;
       animation: fadeIn 0.4s ease;
@@ -459,20 +478,30 @@
       color: var(--accent-solid);
     }
     
-    /* Trouble */
-    .trouble {
-      margin-top: 20px;
+    /* FAQ */
+    .faq {
+      margin-top: 24px;
+    }
+    
+    .faq-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      font-weight: 400;
+    }
+    
+    .faq-item {
       background: var(--glass);
       border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      backdrop-filter: blur(20px);
+      border-radius: 10px;
+      margin-bottom: 8px;
       overflow: hidden;
     }
     
-    .trouble-toggle {
-      padding: 14px 18px;
+    .faq-q {
+      padding: 12px 16px;
       font-size: 0.8rem;
-      color: var(--text-muted);
+      color: var(--text-soft);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -480,33 +509,26 @@
       transition: color 0.2s;
     }
     
-    .trouble-toggle:hover { color: var(--text-soft); }
+    .faq-q:hover { color: var(--text); }
     
-    .trouble-content {
+    .faq-q svg {
+      transition: transform 0.2s;
+    }
+    
+    .faq-item.open .faq-q svg {
+      transform: rotate(180deg);
+    }
+    
+    .faq-a {
       display: none;
-      padding: 0 18px 18px;
-      font-size: 0.8rem;
-    }
-    
-    .trouble-content.open { display: block; }
-    
-    .trouble-item {
-      padding: 12px 0;
-      border-bottom: 1px solid var(--glass-border);
-    }
-    
-    .trouble-item:last-child { border-bottom: none; }
-    
-    .trouble-item strong {
-      display: block;
-      color: #fbbf24;
-      margin-bottom: 4px;
-      font-weight: 500;
-    }
-    
-    .trouble-item span {
+      padding: 0 16px 14px;
+      font-size: 0.75rem;
       color: var(--text-muted);
       line-height: 1.5;
+    }
+    
+    .faq-item.open .faq-a {
+      display: block;
     }
     
     /* Form */
@@ -1159,8 +1181,8 @@
       <div class="progress-labels">
         <span data-s="1">Platform</span>
         <span data-s="2">Model</span>
-        <span data-s="3">Personality</span>
-        <span data-s="4">Setup</span>
+        <span data-s="3">Setup</span>
+        <span data-s="4">Personality</span>
         <span data-s="5">Download</span>
         <span data-s="6">Run</span>
         <span data-s="7">Done</span>
@@ -1170,8 +1192,11 @@
     <!-- Wizard -->
     <div class="wizard" id="wizard">
       
-      <!-- Step 1 -->
+      <!-- Step 1: Platform -->
       <div class="step active" data-step="1">
+        <div class="back-arrow" onclick="goLanding()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </div>
         <div class="step-head">
           <h2>Where should your bot live?</h2>
           <p>Pick your platform</p>
@@ -1208,24 +1233,36 @@
           </div>
         </div>
         
-        <div class="trouble">
-          <div class="trouble-toggle" onclick="toggleTrouble(this)">Having trouble? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-          <div class="trouble-content">
-            <div class="trouble-item">
-              <strong>Not sure which?</strong>
-              <span>Telegram is easiest to set up. Start there.</span>
-            </div>
+        <div class="faq">
+          <div class="faq-title">Common questions</div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Which platform is easiest? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Telegram. It takes about 2 minutes to create a bot and get started.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Can I use multiple platforms? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Yes! You can add more platforms later by editing your config file.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">What about iMessage? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">iMessage requires a Mac and additional setup. Check the docs for BlueBubbles integration.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Is WhatsApp really free? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Yes, but it uses your personal WhatsApp number. You'll scan a QR code to link it.</div>
           </div>
         </div>
         
         <div class="nav">
-          <button class="back" onclick="goLanding()">Back</button>
           <button class="next" id="n1" disabled onclick="go(2)">Continue</button>
         </div>
       </div>
       
-      <!-- Step 2 -->
+      <!-- Step 2: Model -->
       <div class="step" data-step="2">
+        <div class="back-arrow" onclick="go(1)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </div>
         <div class="step-head">
           <h2>Pick your AI model</h2>
           <p>Each has different strengths</p>
@@ -1299,63 +1336,36 @@
           </div>
         </div>
         
-        <div class="trouble">
-          <div class="trouble-toggle" onclick="toggleTrouble(this)">Having trouble? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-          <div class="trouble-content">
-            <div class="trouble-item">
-              <strong>Key not working?</strong>
-              <span>Make sure you copied the full key. Add a payment method if required.</span>
-            </div>
+        <div class="faq">
+          <div class="faq-title">Common questions</div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Which model is best? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Claude is best for natural conversation. GPT-4o is most versatile. Groq is fastest but less capable.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">How much does it cost? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Most providers give free credits to start. After that, expect $5-20/month for casual use.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Can I switch models later? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Yes! Just edit your config file and restart. You can even use different models for different tasks.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">What's an API key? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">A secret password that lets your bot talk to the AI. Keep it private - don't share it.</div>
           </div>
         </div>
         
         <div class="nav">
-          <button class="back" onclick="go(1)">Back</button>
           <button class="next" id="n2" disabled onclick="go(3)">Continue</button>
         </div>
       </div>
       
-      <!-- Step 3 -->
+      <!-- Step 3: Setup -->
       <div class="step" data-step="3">
-        <div class="step-head">
-          <h2>Personality</h2>
-          <p>Make it yours</p>
+        <div class="back-arrow" onclick="go(2)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
         </div>
-        
-        <div class="form-row">
-          <label>Your name</label>
-          <input type="text" id="uName" placeholder="What should the bot call you?" oninput="checkP()">
-        </div>
-        
-        <div class="form-row">
-          <label>Bot name</label>
-          <input type="text" id="bName" placeholder="e.g. Jarvis, Friday, Max" oninput="checkP()">
-        </div>
-        
-        <div class="form-row">
-          <label>Style</label>
-          <div class="chips">
-            <span class="chip" onclick="pickChip(this,'chill')">Chill</span>
-            <span class="chip" onclick="pickChip(this,'professional')">Professional</span>
-            <span class="chip" onclick="pickChip(this,'friendly')">Friendly</span>
-            <span class="chip" onclick="pickChip(this,'witty')">Witty</span>
-            <span class="chip" onclick="pickChip(this,'minimal')">Minimal</span>
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <label>Special instructions (optional)</label>
-          <textarea id="inst" placeholder="e.g. Remind me to take breaks..."></textarea>
-        </div>
-        
-        <div class="nav">
-          <button class="back" onclick="go(2)">Back</button>
-          <button class="next" id="n3" disabled onclick="go(4)">Continue</button>
-        </div>
-      </div>
-      
-      <!-- Step 4 -->
-      <div class="step" data-step="4">
         <div class="step-head">
           <h2>Set up <span id="platTitle">Telegram</span></h2>
           <p>Follow the steps</p>
@@ -1389,7 +1399,7 @@
               <div class="guide-num">3</div>
               <div class="guide-content">
                 <h4>Name your bot</h4>
-                <p>BotFather will ask for a name. Enter "<strong><span class="bNamePrev">YourBot</span></strong>" (or whatever you like).</p>
+                <p>BotFather will ask for a display name, then a username (must end in "bot"). Pick whatever you like!</p>
               </div>
             </div>
           </div>
@@ -1408,7 +1418,7 @@
         
         <div id="setupDiscord" class="setup-box" style="display:none">
           <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4><a href="https://discord.com/developers/applications" target="_blank">Discord Dev Portal</a></h4></div></div>
-          <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><h4>New App → "<span class="bNamePrev">YourBot</span>"</h4></div></div>
+          <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><h4>New Application → name it anything</h4></div></div>
           <div class="setup-step"><div class="setup-num">3</div><div class="setup-text"><h4>Bot → Add Bot → Enable Message Content Intent</h4></div></div>
           <div class="setup-step"><div class="setup-num">4</div><div class="setup-text"><h4>Reset Token → Copy</h4></div></div>
           <div class="setup-step"><div class="setup-num">5</div><div class="setup-text"><h4>OAuth2 → URL Gen → bot + commands → Add to server</h4></div></div>
@@ -1420,7 +1430,7 @@
         
         <div id="setupSlack" class="setup-box" style="display:none">
           <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4><a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a></h4></div></div>
-          <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><h4>Create App → "<span class="bNamePrev">YourBot</span>"</h4></div></div>
+          <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><h4>Create App → name it anything</h4></div></div>
           <div class="setup-step"><div class="setup-num">3</div><div class="setup-text"><h4>OAuth → Add scopes: chat:write, im:*</h4></div></div>
           <div class="setup-step"><div class="setup-num">4</div><div class="setup-text"><h4>Install → Copy Bot Token</h4></div></div>
         </div>
@@ -1435,14 +1445,92 @@
           <input type="password" id="apiKey" placeholder="Paste API key" oninput="checkT()">
         </div>
         
+        <div class="faq">
+          <div class="faq-title">Common questions</div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Where do I find BotFather? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Search "@BotFather" in Telegram. It's the official bot with a blue checkmark.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">What's a bot token? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">A unique code that lets your bot send and receive messages. Keep it secret!</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">I lost my token! <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Go back to BotFather, send /mybots, select your bot, then "API Token" to get a new one.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">My API key doesn't work <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Make sure you copied the full key. Some providers require adding a payment method first.</div>
+          </div>
+        </div>
+        
         <div class="nav">
-          <button class="back" onclick="go(3)">Back</button>
+          <button class="next" id="n3" disabled onclick="go(4)">Continue</button>
+        </div>
+      </div>
+      
+      <!-- Step 4: Personality -->
+      <div class="step" data-step="4">
+        <div class="back-arrow" onclick="go(3)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </div>
+        <div class="step-head">
+          <h2>Personality</h2>
+          <p>Make it yours</p>
+        </div>
+        
+        <div class="form-row">
+          <label>Your name</label>
+          <input type="text" id="uName" placeholder="What should the bot call you?" oninput="checkP()">
+        </div>
+        
+        <div class="form-row">
+          <label>Style</label>
+          <div class="chips">
+            <span class="chip" onclick="pickChip(this,'chill')">Chill</span>
+            <span class="chip" onclick="pickChip(this,'professional')">Professional</span>
+            <span class="chip" onclick="pickChip(this,'friendly')">Friendly</span>
+            <span class="chip" onclick="pickChip(this,'witty')">Witty</span>
+            <span class="chip" onclick="pickChip(this,'minimal')">Minimal</span>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <label>Special instructions (optional)</label>
+          <textarea id="inst" placeholder="e.g. Remind me to take breaks, speak casually..."></textarea>
+        </div>
+        
+        <div class="faq">
+          <div class="faq-title">Common questions</div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">What does "style" do? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Sets the tone of your bot's responses. Chill = casual, Professional = formal, etc.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Can I change this later? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Yes! Edit the "soul" section in your config.yaml file anytime.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">What are special instructions? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Custom rules for your bot. Like "always respond in Spanish" or "be extra encouraging".</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Do I need to fill everything? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Just your name and a style. Instructions are optional but help personalize the experience.</div>
+          </div>
+        </div>
+        
+        <div class="nav">
           <button class="next" id="n4" disabled onclick="go(5)">Continue</button>
         </div>
       </div>
       
-      <!-- Step 5 -->
+      <!-- Step 5: Download -->
       <div class="step" data-step="5">
+        <div class="back-arrow" onclick="go(4)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </div>
         <div class="step-head">
           <h2>Download</h2>
           <p>Everything in one zip</p>
@@ -1459,13 +1547,15 @@
         </div>
         
         <div class="nav">
-          <button class="back" onclick="go(4)">Back</button>
-          <button class="next" onclick="go(6)">I downloaded it →</button>
+          <button class="next" onclick="go(6)">I downloaded it</button>
         </div>
       </div>
       
-      <!-- Step 6 -->
+      <!-- Step 6: Run -->
       <div class="step" data-step="6">
+        <div class="back-arrow" onclick="go(5)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </div>
         <div class="step-head">
           <h2>Run it</h2>
           <p>Follow along</p>
@@ -1482,17 +1572,16 @@
         </div>
         
         <div class="nav">
-          <button class="back" onclick="go(5)">Back</button>
-          <button class="next" onclick="go(7)">My bot works! →</button>
+          <button class="next" onclick="go(7)">My bot works!</button>
         </div>
       </div>
       
-      <!-- Step 7 -->
+      <!-- Step 7: Done -->
       <div class="step" data-step="7">
         <div class="success-box">
           <div class="success-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
           <h2>You did it 🎉</h2>
-          <p>Your bot <span id="finalBot">is live</span>. Enjoy!</p>
+          <p><span id="finalBot">Your bot is live</span>. Enjoy!</p>
         </div>
         
         <div class="support-card">
@@ -1535,27 +1624,27 @@
   </div>
   
   <script>
-    const S={step:0,platform:null,model:null,userName:'',botName:'',style:null,inst:'',botToken:'',apiKey:'',os:/Win/.test(navigator.userAgent)?'win':/Mac/.test(navigator.userAgent)?'mac':'linux'};
+    const S={step:0,platform:null,model:null,userName:'',style:null,inst:'',botToken:'',apiKey:'',os:/Win/.test(navigator.userAgent)?'win':/Mac/.test(navigator.userAgent)?'mac':'linux'};
     
     function start(){document.getElementById('landing').style.display='none';document.getElementById('progress').classList.add('show');document.getElementById('wizard').classList.add('show');go(1);}
     function goLanding(){document.getElementById('landing').style.display='flex';document.getElementById('progress').classList.remove('show');document.getElementById('wizard').classList.remove('show');S.step=0;}
-    function go(n){if(S.step)document.querySelector(`[data-step="${S.step}"]`).classList.remove('active');S.step=n;document.querySelector(`[data-step="${n}"]`).classList.add('active');upProg();window.scrollTo(0,0);if(n===4)setup4();if(n===5)setup5();if(n===6)setup6();if(n===7)setup7();}
+    function go(n){if(S.step)document.querySelector(`[data-step="${S.step}"]`).classList.remove('active');S.step=n;document.querySelector(`[data-step="${n}"]`).classList.add('active');upProg();window.scrollTo(0,0);if(n===3)setup3();if(n===5)setup5();if(n===6)setup6();if(n===7)setup7();}
     function upProg(){document.getElementById('pFill').style.width=((S.step-1)/6*100)+'%';document.querySelectorAll('.progress-labels span').forEach(el=>{const s=+el.dataset.s;el.classList.remove('active','done');if(s===S.step)el.classList.add('active');if(s<S.step)el.classList.add('done');});}
     function pick(el,key){el.parentElement.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');S[key]=el.dataset.v;document.getElementById('n'+S.step).disabled=false;}
     function pickChip(el,v){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');S.style=v;checkP();}
-    function toggleTrouble(el){el.nextElementSibling.classList.toggle('open');}
+    function toggleFaq(el){el.classList.toggle('open');}
     function toggleApi(e,el){e.stopPropagation();el.nextElementSibling.classList.toggle('open');}
-    function checkP(){S.userName=document.getElementById('uName').value;S.botName=document.getElementById('bName').value;S.inst=document.getElementById('inst').value;document.getElementById('n3').disabled=!(S.userName&&S.botName&&S.style);document.querySelectorAll('.bNamePrev').forEach(el=>el.textContent=S.botName||'YourBot');}
-    function checkT(){S.botToken=document.getElementById('bToken').value;S.apiKey=document.getElementById('apiKey').value;const need=S.platform!=='whatsapp';document.getElementById('n4').disabled=!((need?S.botToken:true)&&S.apiKey);}
-    function setup4(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};const m={anthropic:'Anthropic',openai:'OpenAI',google:'Google',groq:'Groq'};document.getElementById('platTitle').textContent=n[S.platform];document.getElementById('modelLabel').textContent=m[S.model];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>document.getElementById('setup'+p).style.display='none');document.getElementById('setup'+S.platform.charAt(0).toUpperCase()+S.platform.slice(1)).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';checkT();}
+    function checkP(){S.userName=document.getElementById('uName').value;S.inst=document.getElementById('inst').value;document.getElementById('n4').disabled=!(S.userName&&S.style);}
+    function checkT(){S.botToken=document.getElementById('bToken').value;S.apiKey=document.getElementById('apiKey').value;const need=S.platform!=='whatsapp';document.getElementById('n3').disabled=!((need?S.botToken:true)&&S.apiKey);}
+    function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};const m={anthropic:'Anthropic',openai:'OpenAI',google:'Google',groq:'Groq'};document.getElementById('platTitle').textContent=n[S.platform];document.getElementById('modelLabel').textContent=m[S.model];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>document.getElementById('setup'+p).style.display='none');document.getElementById('setup'+S.platform.charAt(0).toUpperCase()+S.platform.slice(1)).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';checkT();}
     function setup5(){document.getElementById('osTag').textContent={mac:'Mac',win:'Windows',linux:'Linux'}[S.os];}
     function setup6(){document.getElementById('testPlat').textContent={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];document.getElementById('ext').textContent=S.os==='win'?'bat':'sh';}
-    function setup7(){document.getElementById('finalBot').textContent=S.botName+' is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
+    function setup7(){document.getElementById('finalBot').textContent='Your bot is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
     async function download(){const z=new JSZip();z.file('config.yaml',genCfg());z.file(S.os==='win'?'setup.bat':'setup.sh',S.os==='win'?genBat():genSh());z.file('README.txt',genRm());const b=await z.generateAsync({type:'blob'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='FreeClaw.zip';a.click();URL.revokeObjectURL(u);}
-    function genCfg(){const m={anthropic:'anthropic/claude-sonnet-4-20250514',openai:'openai/gpt-4o',google:'google/gemini-2.0-flash',groq:'groq/llama-3.3-70b-versatile'};const st={chill:'Casual and relaxed.',professional:'Professional and efficient.',friendly:'Warm and supportive.',witty:'Clever with humor.',minimal:'Direct, minimal words.'};let c=`model: ${m[S.model]}\n\nproviders:\n  ${S.model}:\n    apiKey: "${S.apiKey}"\n\nchannels:\n`;if(S.platform==='telegram')c+=`  telegram:\n    botToken: "${S.botToken}"\n    allowedUsers: ["*"]\n`;else if(S.platform==='discord')c+=`  discord:\n    botToken: "${S.botToken}"\n`;else if(S.platform==='whatsapp')c+=`  whatsapp:\n    enabled: true\n`;else if(S.platform==='slack')c+=`  slack:\n    botToken: "${S.botToken}"\n`;c+=`\nsoul: |\n  Your name is ${S.botName}. Talking to ${S.userName}. ${st[S.style]}`;if(S.inst)c+=` ${S.inst}`;return c;}
+    function genCfg(){const m={anthropic:'anthropic/claude-sonnet-4-20250514',openai:'openai/gpt-4o',google:'google/gemini-2.0-flash',groq:'groq/llama-3.3-70b-versatile'};const st={chill:'Casual and relaxed.',professional:'Professional and efficient.',friendly:'Warm and supportive.',witty:'Clever with humor.',minimal:'Direct, minimal words.'};let c=`model: ${m[S.model]}\n\nproviders:\n  ${S.model}:\n    apiKey: "${S.apiKey}"\n\nchannels:\n`;if(S.platform==='telegram')c+=`  telegram:\n    botToken: "${S.botToken}"\n    allowedUsers: ["*"]\n`;else if(S.platform==='discord')c+=`  discord:\n    botToken: "${S.botToken}"\n`;else if(S.platform==='whatsapp')c+=`  whatsapp:\n    enabled: true\n`;else if(S.platform==='slack')c+=`  slack:\n    botToken: "${S.botToken}"\n`;c+=`\nsoul: |\n  You are a helpful AI assistant. Talking to ${S.userName}. ${st[S.style]}`;if(S.inst)c+=` ${S.inst}`;return c;}
     function genSh(){return`#!/bin/bash\necho "FreeClaw Setup"\nWS="$HOME/freeclaw"\nif [ -d "$WS/node_modules" ];then cd "$WS";openclaw gateway start;exit 0;fi\nif ! command -v node &>/dev/null;then if [[ "$OSTYPE"=="darwin"* ]];then /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)";brew install node;else curl -fsSL https://deb.nodesource.com/setup_20.x|sudo -E bash -;sudo apt-get install -y nodejs;fi;fi\nnpm install -g openclaw\nmkdir -p "$WS"\ncp "$(dirname "$0")/config.yaml" "$WS/"\ncd "$WS"\nopenclaw gateway start`;}
     function genBat(){return`@echo off\necho FreeClaw Setup\nset WS=%USERPROFILE%\\freeclaw\nif exist "%WS%\\node_modules" (cd /d "%WS%" && openclaw gateway start && exit /b)\nwhere node >nul 2>nul || (echo Install Node.js from nodejs.org && start https://nodejs.org && pause && exit /b)\nnpm install -g openclaw\nmkdir "%WS%" 2>nul\ncopy "%~dp0config.yaml" "%WS%\\"\ncd /d "%WS%"\nopenclaw gateway start\npause`;}
-    function genRm(){return`FREECLAW\n========\nBot: ${S.botName}\n\n1. Extract zip\n2. Run setup.${S.os==='win'?'bat':'sh'}\n3. Wait for "Bot is running"\n4. Message bot on ${S.platform}\n\nHelp: andreymarey.work@gmail.com`;}
+    function genRm(){return`FREECLAW\n========\n\n1. Extract zip\n2. Run setup.${S.os==='win'?'bat':'sh'}\n3. Wait for "Bot is running"\n4. Message bot on ${S.platform}\n\nHelp: andreymarey.work@gmail.com`;}
     function donate(){alert('Thanks! Stripe coming soon. DM @Andrey__HQ');}
   </script>
 </body>
