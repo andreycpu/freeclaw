@@ -653,6 +653,68 @@
       color: var(--accent-solid);
     }
     
+    /* Visual Guide */
+    .visual-guide {
+      padding: 0;
+      overflow: hidden;
+    }
+    
+    .guide-step {
+      padding: 20px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    
+    .guide-step:last-child {
+      border-bottom: none;
+    }
+    
+    .guide-text {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    
+    .guide-num {
+      width: 26px;
+      height: 26px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+    
+    .guide-content h4 {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    
+    .guide-content p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    
+    .guide-content code {
+      background: rgba(0,0,0,0.3);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+    
+    .guide-img {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 12px;
+      margin-left: 40px;
+      border: 1px solid var(--glass-border);
+    }
+    
     /* Nav */
     .nav {
       display: flex;
@@ -1311,11 +1373,49 @@
           <p>Follow the steps</p>
         </div>
         
-        <div id="setupTelegram" class="setup-box">
-          <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4>Open Telegram, search @BotFather</h4></div></div>
-          <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><h4>Send <code>/newbot</code></h4></div></div>
-          <div class="setup-step"><div class="setup-num">3</div><div class="setup-text"><h4>Name it "<span class="bNamePrev">YourBot</span>"</h4></div></div>
-          <div class="setup-step"><div class="setup-num">4</div><div class="setup-text"><h4>Copy the token</h4></div></div>
+        <div id="setupTelegram" class="setup-box visual-guide">
+          <div class="guide-step">
+            <div class="guide-text">
+              <div class="guide-num">1</div>
+              <div class="guide-content">
+                <h4>Search for BotFather</h4>
+                <p>Open Telegram and search for <strong>@BotFather</strong> - it's Telegram's official bot for creating bots.</p>
+              </div>
+            </div>
+            <img src="images/telegram/step1-search.jpg" alt="Search BotFather" class="guide-img">
+          </div>
+          
+          <div class="guide-step">
+            <div class="guide-text">
+              <div class="guide-num">2</div>
+              <div class="guide-content">
+                <h4>Create a new bot</h4>
+                <p>Send the command <code>/newbot</code> to BotFather to start creating your bot.</p>
+              </div>
+            </div>
+            <img src="images/telegram/step3-newbot.png" alt="Send /newbot" class="guide-img">
+          </div>
+          
+          <div class="guide-step">
+            <div class="guide-text">
+              <div class="guide-num">3</div>
+              <div class="guide-content">
+                <h4>Name your bot</h4>
+                <p>BotFather will ask for a name. Enter "<strong><span class="bNamePrev">YourBot</span></strong>" (or whatever you like).</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="guide-step">
+            <div class="guide-text">
+              <div class="guide-num">4</div>
+              <div class="guide-content">
+                <h4>Copy the token</h4>
+                <p>BotFather will give you a token (long string). Copy it and paste below.</p>
+              </div>
+            </div>
+            <img src="images/telegram/step4-token.jpg" alt="Copy token" class="guide-img">
+          </div>
         </div>
         
         <div id="setupDiscord" class="setup-box" style="display:none">
