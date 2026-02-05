@@ -725,6 +725,63 @@
       border-radius: 12px;
       margin-left: 40px;
       border: 1px solid var(--glass-border);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .guide-img:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
+    }
+    
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      cursor: zoom-out;
+    }
+    
+    .lightbox.open {
+      display: flex;
+    }
+    
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90vh;
+      border-radius: 12px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+    }
+    
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .lightbox-hint {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--text-muted);
+      font-size: 0.75rem;
     }
     
     /* Nav */
@@ -1380,7 +1437,7 @@
                 <p>Open Telegram and search for <strong>@BotFather</strong> - it's Telegram's official bot for creating bots.</p>
               </div>
             </div>
-            <img src="images/telegram/step1-search.jpg" alt="Search BotFather" class="guide-img">
+            <img src="images/telegram/step1-search.jpg" alt="Search BotFather" class="guide-img" onclick="openLightbox(this)">
           </div>
           
           <div class="guide-step">
@@ -1391,7 +1448,7 @@
                 <p>Send the command <code>/newbot</code> to BotFather to start creating your bot.</p>
               </div>
             </div>
-            <img src="images/telegram/step3-newbot.png" alt="Send /newbot" class="guide-img">
+            <img src="images/telegram/step3-newbot.png" alt="Send /newbot" class="guide-img" onclick="openLightbox(this)">
           </div>
           
           <div class="guide-step">
@@ -1412,7 +1469,7 @@
                 <p>BotFather will give you a token (long string). Copy it and paste below.</p>
               </div>
             </div>
-            <img src="images/telegram/step4-token.jpg" alt="Copy token" class="guide-img">
+            <img src="images/telegram/step4-token.jpg" alt="Copy token" class="guide-img" onclick="openLightbox(this)">
           </div>
         </div>
         
@@ -1623,6 +1680,13 @@
     </footer>
   </div>
   
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <img id="lightbox-img" src="" alt="Expanded view">
+    <div class="lightbox-hint">Click anywhere to close</div>
+  </div>
+  
   <script>
     const S={step:0,platform:null,model:null,userName:'',style:null,inst:'',botToken:'',apiKey:'',os:/Win/.test(navigator.userAgent)?'win':/Mac/.test(navigator.userAgent)?'mac':'linux'};
     
@@ -1646,6 +1710,10 @@
     function genBat(){return`@echo off\necho FreeClaw Setup\nset WS=%USERPROFILE%\\freeclaw\nif exist "%WS%\\node_modules" (cd /d "%WS%" && openclaw gateway start && exit /b)\nwhere node >nul 2>nul || (echo Install Node.js from nodejs.org && start https://nodejs.org && pause && exit /b)\nnpm install -g openclaw\nmkdir "%WS%" 2>nul\ncopy "%~dp0config.yaml" "%WS%\\"\ncd /d "%WS%"\nopenclaw gateway start\npause`;}
     function genRm(){return`FREECLAW\n========\n\n1. Extract zip\n2. Run setup.${S.os==='win'?'bat':'sh'}\n3. Wait for "Bot is running"\n4. Message bot on ${S.platform}\n\nHelp: andreymarey.work@gmail.com`;}
     function donate(){alert('Thanks! Stripe coming soon. DM @Andrey__HQ');}
+    function openLightbox(img){document.getElementById('lightbox-img').src=img.src;document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden';}
+    function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';}
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
+    document.querySelectorAll('.guide-img').forEach(img=>img.addEventListener('click',()=>openLightbox(img)));
   </script>
 </body>
 </html>
