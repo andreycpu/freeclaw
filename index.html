@@ -1479,12 +1479,60 @@
           </div>
         </div>
         
-        <div id="setupDiscord" class="setup-box" style="display:none">
-          <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4><a href="https://discord.com/developers/applications" target="_blank">Discord Dev Portal</a></h4></div></div>
-          <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><h4>New Application → name it anything</h4></div></div>
-          <div class="setup-step"><div class="setup-num">3</div><div class="setup-text"><h4>Bot → Add Bot → Enable Message Content Intent</h4></div></div>
-          <div class="setup-step"><div class="setup-num">4</div><div class="setup-text"><h4>Reset Token → Copy</h4></div></div>
-          <div class="setup-step"><div class="setup-num">5</div><div class="setup-text"><h4>OAuth2 → URL Gen → bot + commands → Add to server</h4></div></div>
+        <div id="setupDiscord" class="setup-box visual-guide" style="display:none">
+          <div class="guide-step">
+            <div class="guide-text">
+              <div class="guide-num">1</div>
+              <div class="guide-content">
+                <h4>Open Developer Portal</h4>
+                <p>Go to <a href="https://discord.com/developers/applications" target="_blank">discord.com/developers/applications</a> and click <strong>New Application</strong>.</p>
+              </div>
+            </div>
+            <img src="images/discord/step1-portal.jpg" alt="Discord Developer Portal" class="guide-img" onclick="openLightbox(this)">
+          </div>
+          
+          <div class="guide-step">
+            <div class="guide-text">
+              <div class="guide-num">2</div>
+              <div class="guide-content">
+                <h4>Create your app</h4>
+                <p>Enter a name for your bot and click <strong>Create</strong>.</p>
+              </div>
+            </div>
+            <img src="images/discord/step2-create.jpg" alt="Create new app" class="guide-img" onclick="openLightbox(this)">
+          </div>
+          
+          <div class="guide-step">
+            <div class="guide-text">
+              <div class="guide-num">3</div>
+              <div class="guide-content">
+                <h4>Get your bot token</h4>
+                <p>Click <strong>Bot</strong> in the sidebar, then click <strong>Reset Token</strong> to generate your token. Copy it!</p>
+              </div>
+            </div>
+            <img src="images/discord/step3-bot.jpg" alt="Bot token" class="guide-img" onclick="openLightbox(this)">
+          </div>
+          
+          <div class="guide-step">
+            <div class="guide-text">
+              <div class="guide-num">4</div>
+              <div class="guide-content">
+                <h4>Enable Message Content Intent</h4>
+                <p>Scroll down and toggle <strong>Message Content Intent</strong> ON. This lets your bot read messages.</p>
+              </div>
+            </div>
+            <img src="images/discord/step4-intents.jpg" alt="Message Content Intent" class="guide-img" onclick="openLightbox(this)">
+          </div>
+          
+          <div class="guide-step">
+            <div class="guide-text">
+              <div class="guide-num">5</div>
+              <div class="guide-content">
+                <h4>Add bot to your server</h4>
+                <p>Go to <strong>OAuth2 → URL Generator</strong>, select <strong>bot</strong> scope, copy the URL and open it to invite your bot.</p>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div id="setupWhatsapp" class="setup-box" style="display:none">
