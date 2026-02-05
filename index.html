@@ -3,103 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FreeClaw - Your AI Chatbot in 10 Minutes</title>
-  <meta name="description" content="Deploy your own AI chatbot on Telegram, Discord, WhatsApp, or Slack in under 10 minutes. No coding required.">
+  <title>FreeClaw - Set up OpenClaw in 10 Minutes</title>
+  <meta name="description" content="Set up OpenClaw for free on your computer in 10 minutes. No coding required.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root {
-      --bg: #06060a;
-      --bg-card: #0d0d12;
+      --bg: #0a0a0f;
+      --card: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(255, 255, 255, 0.06);
       --text: #ffffff;
-      --text-muted: rgba(255,255,255,0.6);
-      --text-dim: rgba(255,255,255,0.35);
-      --accent: #00ff88;
-      --accent-dim: rgba(0, 255, 136, 0.1);
-      --glass-bg: rgba(255,255,255,0.04);
-      --glass-border: rgba(255,255,255,0.08);
-      --glass-highlight: rgba(255,255,255,0.12);
-      --error: #ff4757;
-      --warning: #f39c12;
+      --text-soft: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.4);
+      --accent: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%);
+      --accent-solid: #a855f7;
+      --glass: rgba(255, 255, 255, 0.04);
+      --glass-border: rgba(255, 255, 255, 0.1);
     }
     
     html { scroll-behavior: smooth; }
     
     body {
-      font-family: 'Inter', -apple-system, sans-serif;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
+      font-weight: 300;
+      letter-spacing: -0.01em;
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     
+    /* Ambient */
     .ambient {
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
+      overflow: hidden;
     }
     
-    .glow {
+    .orb {
       position: absolute;
       border-radius: 50%;
-      filter: blur(150px);
-      opacity: 0.4;
+      filter: blur(120px);
+      opacity: 0.5;
     }
     
-    .glow-1 {
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(0, 255, 136, 0.15) 0%, transparent 70%);
-      top: -400px;
-      left: -200px;
-    }
-    
-    .glow-2 {
+    .orb-1 {
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(100, 100, 255, 0.1) 0%, transparent 70%);
-      bottom: -300px;
-      right: -200px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%);
+      top: -200px;
+      left: -100px;
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    .orb-2 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+      bottom: -150px;
+      right: -100px;
+      animation: float 25s ease-in-out infinite reverse;
+    }
+    
+    .orb-3 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
+      top: 40%;
+      left: 50%;
+      animation: float 18s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, 20px); }
     }
     
     .container {
       position: relative;
       z-index: 1;
-      max-width: 680px;
+      max-width: 640px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 24px;
     }
     
+    /* Header */
     header {
-      padding: 20px 0;
+      padding: 24px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     
     .logo {
-      font-size: 1.05rem;
-      font-weight: 600;
+      font-size: 1rem;
+      font-weight: 500;
       color: var(--text);
       text-decoration: none;
+      letter-spacing: -0.02em;
     }
     
     .header-links a {
       font-size: 0.8rem;
       color: var(--text-muted);
       text-decoration: none;
-      margin-left: 20px;
+      margin-left: 24px;
+      font-weight: 400;
+      transition: color 0.2s;
     }
     
-    .header-links a:hover { color: var(--text); }
+    .header-links a:hover { color: var(--text-soft); }
     
     /* Landing */
     .landing {
-      min-height: 85vh;
+      min-height: 88vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -108,135 +132,182 @@
       padding: 40px 0;
     }
     
-    .landing h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-      margin-bottom: 16px;
-    }
-    
-    .landing h1 span { color: var(--accent); }
-    
-    .landing > p {
-      font-size: 1.05rem;
-      color: var(--text-muted);
-      max-width: 460px;
-      line-height: 1.6;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 100px;
+      font-size: 0.75rem;
+      color: var(--text-soft);
       margin-bottom: 32px;
+      backdrop-filter: blur(10px);
     }
     
-    .cta-btn {
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-solid);
+      border-radius: 50%;
+    }
+    
+    .landing h1 {
+      font-size: 3.2rem;
+      font-weight: 400;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+    
+    .gradient-text {
+      background: var(--accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .landing .sub {
+      font-size: 1.1rem;
+      color: var(--text-soft);
+      font-weight: 300;
+      max-width: 420px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+    
+    .cta {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      padding: 16px 36px;
+      padding: 14px 32px;
       background: var(--accent);
-      color: #000;
-      font-size: 1.05rem;
-      font-weight: 600;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 500;
       border-radius: 12px;
       border: none;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s;
+      box-shadow: 0 4px 24px rgba(168, 85, 247, 0.3);
     }
     
-    .cta-btn:hover {
-      filter: brightness(1.1);
+    .cta:hover {
       transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(168, 85, 247, 0.4);
     }
     
-    .landing-sub {
-      margin-top: 28px;
+    .cta svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .landing-links {
+      margin-top: 32px;
       display: flex;
-      gap: 20px;
-      font-size: 0.85rem;
+      gap: 28px;
+      font-size: 0.8rem;
     }
     
-    .landing-sub a {
+    .landing-links a {
       color: var(--text-muted);
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 6px;
+      transition: color 0.2s;
     }
     
-    .landing-sub a:hover { color: var(--accent); }
+    .landing-links a:hover { color: var(--text-soft); }
     
-    .landing-note {
+    .landing-links svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.7;
+    }
+    
+    .info-card {
       margin-top: 48px;
-      padding: 16px 24px;
-      background: var(--glass-bg);
+      padding: 20px 28px;
+      background: var(--glass);
       border: 1px solid var(--glass-border);
-      border-radius: 10px;
+      border-radius: 16px;
+      backdrop-filter: blur(20px);
       font-size: 0.85rem;
-      color: var(--text-muted);
-      max-width: 500px;
+      color: var(--text-soft);
+      max-width: 480px;
+      line-height: 1.6;
     }
     
-    .landing-note strong { color: var(--text); }
+    .info-card strong {
+      color: var(--text);
+      font-weight: 500;
+    }
     
     /* Progress */
     .progress-wrap {
-      padding: 16px 0 32px;
+      padding: 20px 0 36px;
       display: none;
     }
     
     .progress-wrap.show { display: block; }
     
     .progress-bar {
-      height: 3px;
-      background: var(--glass-bg);
-      border-radius: 3px;
+      height: 2px;
+      background: var(--glass);
+      border-radius: 2px;
+      overflow: hidden;
     }
     
     .progress-fill {
       height: 100%;
       background: var(--accent);
-      border-radius: 3px;
-      transition: width 0.3s;
-      width: 0%;
+      border-radius: 2px;
+      transition: width 0.4s ease;
     }
     
     .progress-labels {
       display: flex;
       justify-content: space-between;
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 0.65rem;
-      color: var(--text-dim);
+      color: var(--text-muted);
+      font-weight: 400;
     }
     
-    .progress-labels span.active { color: var(--accent); }
-    .progress-labels span.done { color: var(--text-muted); }
+    .progress-labels span.active { color: var(--accent-solid); }
+    .progress-labels span.done { color: var(--text-soft); }
     
     /* Wizard */
     .wizard {
       display: none;
-      min-height: 480px;
+      min-height: 500px;
     }
     
     .wizard.show { display: block; }
     
     .step {
       display: none;
-      animation: fadeIn 0.3s ease;
+      animation: fadeIn 0.4s ease;
     }
     
     .step.active { display: block; }
     
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
     
     .step-head {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
     
     .step-head h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
+      font-size: 1.6rem;
+      font-weight: 400;
+      letter-spacing: -0.03em;
       margin-bottom: 8px;
     }
     
@@ -250,47 +321,54 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
-      margin-bottom: 20px;
     }
     
     .card {
-      background: var(--bg-card);
-      border: 2px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 18px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s;
       position: relative;
+      backdrop-filter: blur(20px);
     }
     
-    .card:hover { border-color: rgba(255,255,255,0.15); }
+    .card:hover {
+      background: var(--card-hover);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
     
     .card.sel {
-      border-color: var(--accent);
-      background: rgba(0, 255, 136, 0.04);
+      border-color: var(--accent-solid);
+      background: rgba(168, 85, 247, 0.08);
     }
     
     .card-icon {
-      width: 38px;
-      height: 38px;
-      margin-bottom: 10px;
-      background: var(--glass-bg);
-      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 12px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     
     .card-icon svg {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       fill: currentColor;
+      opacity: 0.8;
     }
     
     .card h3 {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
       margin-bottom: 4px;
+      letter-spacing: -0.01em;
     }
     
     .card p {
@@ -300,20 +378,20 @@
     
     .card-tag {
       position: absolute;
-      top: 8px;
-      right: 8px;
+      top: 12px;
+      right: 12px;
       font-size: 0.6rem;
-      padding: 3px 6px;
-      border-radius: 4px;
-      background: var(--accent-dim);
-      color: var(--accent);
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(168, 85, 247, 0.2);
+      color: #c084fc;
       font-weight: 500;
     }
     
     .card-check {
       position: absolute;
-      top: 8px;
-      right: 8px;
+      top: 12px;
+      right: 12px;
       width: 20px;
       height: 20px;
       background: var(--accent);
@@ -326,10 +404,10 @@
     .card.sel .card-check { display: flex; }
     .card.sel .card-tag { display: none; }
     
-    /* API Guide expandable */
+    /* API expand */
     .api-expand {
-      margin-top: 10px;
-      padding-top: 10px;
+      margin-top: 12px;
+      padding-top: 12px;
       border-top: 1px solid var(--glass-border);
       display: none;
     }
@@ -338,11 +416,8 @@
     
     .api-toggle {
       font-size: 0.7rem;
-      color: var(--accent);
+      color: var(--accent-solid);
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
     }
     
     .api-content {
@@ -350,50 +425,52 @@
       margin-top: 8px;
       font-size: 0.7rem;
       color: var(--text-muted);
-      line-height: 1.5;
+      line-height: 1.6;
     }
     
     .api-content.open { display: block; }
     
     .api-content ol {
-      margin: 6px 0 0 14px;
+      margin: 8px 0 0 16px;
     }
     
     .api-content a {
-      color: var(--accent);
+      color: var(--accent-solid);
     }
     
-    /* Trouble section */
+    /* Trouble */
     .trouble {
-      margin-top: 16px;
-      background: var(--glass-bg);
+      margin-top: 20px;
+      background: var(--glass);
       border: 1px solid var(--glass-border);
-      border-radius: 10px;
+      border-radius: 12px;
+      backdrop-filter: blur(20px);
       overflow: hidden;
     }
     
     .trouble-toggle {
-      padding: 12px 16px;
+      padding: 14px 18px;
       font-size: 0.8rem;
       color: var(--text-muted);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: color 0.2s;
     }
     
-    .trouble-toggle:hover { color: var(--text); }
+    .trouble-toggle:hover { color: var(--text-soft); }
     
     .trouble-content {
       display: none;
-      padding: 0 16px 16px;
+      padding: 0 18px 18px;
       font-size: 0.8rem;
     }
     
     .trouble-content.open { display: block; }
     
     .trouble-item {
-      padding: 10px 0;
+      padding: 12px 0;
       border-bottom: 1px solid var(--glass-border);
     }
     
@@ -401,8 +478,9 @@
     
     .trouble-item strong {
       display: block;
-      color: var(--warning);
+      color: #fbbf24;
       margin-bottom: 4px;
+      font-weight: 500;
     }
     
     .trouble-item span {
@@ -412,54 +490,61 @@
     
     .trouble-link {
       margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--glass-border);
     }
     
     .trouble-link a {
-      color: var(--accent);
+      color: var(--accent-solid);
       text-decoration: none;
       font-size: 0.75rem;
     }
     
     /* Form */
     .form-row {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
     
     .form-row label {
       display: block;
       font-size: 0.8rem;
-      font-weight: 500;
-      margin-bottom: 6px;
+      font-weight: 400;
+      margin-bottom: 8px;
+      color: var(--text-soft);
     }
     
     .form-row input,
     .form-row textarea {
       width: 100%;
-      padding: 12px 14px;
-      background: var(--bg-card);
-      border: 2px solid var(--glass-border);
-      border-radius: 8px;
+      padding: 14px 16px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
       color: var(--text);
       font-size: 0.9rem;
       font-family: inherit;
+      font-weight: 300;
+      backdrop-filter: blur(10px);
+      transition: border-color 0.2s;
     }
     
     .form-row input:focus,
     .form-row textarea:focus {
       outline: none;
-      border-color: var(--accent);
+      border-color: var(--accent-solid);
+    }
+    
+    .form-row input::placeholder,
+    .form-row textarea::placeholder {
+      color: var(--text-muted);
     }
     
     .form-row .hint {
       font-size: 0.7rem;
-      color: var(--text-dim);
-      margin-top: 4px;
+      color: var(--text-muted);
+      margin-top: 6px;
     }
     
     .form-row textarea {
-      min-height: 70px;
+      min-height: 80px;
       resize: vertical;
     }
     
@@ -467,103 +552,110 @@
     .chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 12px;
+      gap: 8px;
     }
     
     .chip {
-      padding: 7px 12px;
-      background: var(--glass-bg);
+      padding: 8px 14px;
+      background: var(--glass);
       border: 1px solid var(--glass-border);
-      border-radius: 16px;
+      border-radius: 20px;
       font-size: 0.75rem;
       cursor: pointer;
+      transition: all 0.2s;
+      backdrop-filter: blur(10px);
     }
     
-    .chip:hover { background: var(--glass-highlight); }
+    .chip:hover {
+      background: var(--card-hover);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
     
     .chip.sel {
-      background: var(--accent-dim);
-      border-color: var(--accent);
-      color: var(--accent);
+      background: rgba(168, 85, 247, 0.15);
+      border-color: var(--accent-solid);
+      color: #c084fc;
     }
     
     /* Setup box */
     .setup-box {
-      background: var(--bg-card);
+      background: var(--glass);
       border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(20px);
+      margin-bottom: 18px;
     }
     
     .setup-step {
       display: flex;
-      gap: 12px;
-      padding: 12px 0;
+      gap: 14px;
+      padding: 14px 0;
       border-bottom: 1px solid var(--glass-border);
     }
     
     .setup-step:last-child { border-bottom: none; }
     
     .setup-num {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       background: var(--accent);
-      color: #000;
+      color: #fff;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
+      font-weight: 500;
       font-size: 0.7rem;
       flex-shrink: 0;
     }
     
     .setup-text h4 {
       font-size: 0.85rem;
-      font-weight: 500;
+      font-weight: 400;
       margin-bottom: 2px;
     }
     
     .setup-text p {
       font-size: 0.75rem;
       color: var(--text-muted);
-      line-height: 1.4;
     }
     
     .setup-text code {
       background: rgba(0,0,0,0.3);
-      padding: 1px 5px;
-      border-radius: 3px;
+      padding: 2px 6px;
+      border-radius: 4px;
       font-size: 0.7rem;
     }
     
     .setup-text a {
-      color: var(--accent);
+      color: var(--accent-solid);
     }
     
     /* Nav */
     .nav {
       display: flex;
       gap: 12px;
-      margin-top: 28px;
-      padding-bottom: 32px;
+      margin-top: 32px;
+      padding-bottom: 40px;
     }
     
     .nav .back {
       padding: 12px 24px;
-      background: var(--glass-bg);
+      background: var(--glass);
       border: 1px solid var(--glass-border);
-      border-radius: 8px;
+      border-radius: 10px;
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 400;
       cursor: pointer;
+      transition: all 0.2s;
+      backdrop-filter: blur(10px);
     }
     
     .nav .back:hover {
-      background: var(--glass-highlight);
-      color: var(--text);
+      background: var(--card-hover);
+      color: var(--text-soft);
     }
     
     .nav .next {
@@ -571,63 +663,79 @@
       padding: 12px 24px;
       background: var(--accent);
       border: none;
-      border-radius: 8px;
-      color: #000;
-      font-size: 0.9rem;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.25);
     }
     
-    .nav .next:hover { filter: brightness(1.1); }
-    .nav .next:disabled { opacity: 0.4; cursor: not-allowed; }
+    .nav .next:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(168, 85, 247, 0.35);
+    }
     
-    /* Download box */
+    .nav .next:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* Download */
     .dl-box {
-      background: var(--bg-card);
+      background: var(--glass);
       border: 1px solid var(--glass-border);
-      border-radius: 14px;
-      padding: 28px;
+      border-radius: 20px;
+      padding: 36px 28px;
       text-align: center;
+      backdrop-filter: blur(20px);
       margin-bottom: 20px;
     }
     
     .dl-box .os-tag {
       display: inline-block;
-      background: var(--accent-dim);
-      color: var(--accent);
-      padding: 5px 12px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      margin-bottom: 16px;
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      margin-bottom: 20px;
     }
     
     .dl-box h3 {
       font-size: 1.1rem;
-      margin-bottom: 6px;
+      font-weight: 400;
+      margin-bottom: 8px;
     }
     
     .dl-box p {
       color: var(--text-muted);
       font-size: 0.85rem;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     
     .dl-btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       padding: 14px 28px;
       background: var(--accent);
-      color: #000;
-      font-size: 0.95rem;
-      font-weight: 600;
-      border-radius: 10px;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: 12px;
       border: none;
       cursor: pointer;
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+      transition: all 0.2s;
     }
     
     .dl-btn:hover {
-      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(168, 85, 247, 0.4);
     }
     
     .dl-btn svg {
@@ -637,37 +745,39 @@
     
     /* Checklist */
     .checklist {
-      background: var(--bg-card);
+      background: var(--glass);
       border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(20px);
     }
     
     .checklist h3 {
       font-size: 0.95rem;
-      margin-bottom: 14px;
+      font-weight: 400;
+      margin-bottom: 18px;
     }
     
     .cl-item {
       display: flex;
-      gap: 10px;
-      padding: 10px 0;
+      gap: 12px;
+      padding: 12px 0;
       border-bottom: 1px solid var(--glass-border);
     }
     
     .cl-item:last-child { border-bottom: none; }
     
     .cl-num {
-      width: 22px;
-      height: 22px;
-      background: var(--glass-bg);
+      width: 24px;
+      height: 24px;
+      background: var(--glass);
       border: 1px solid var(--glass-border);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 0.7rem;
-      font-weight: 600;
+      font-weight: 500;
       flex-shrink: 0;
     }
     
@@ -676,122 +786,128 @@
       line-height: 1.5;
     }
     
-    .cl-text strong { color: var(--text); }
+    .cl-text strong { color: var(--text); font-weight: 400; }
     .cl-text span { color: var(--text-muted); }
     
     .cl-note {
-      margin-top: 14px;
-      padding: 12px;
-      background: var(--glass-bg);
-      border-radius: 8px;
+      margin-top: 18px;
+      padding: 14px;
+      background: rgba(168, 85, 247, 0.08);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-radius: 10px;
       font-size: 0.75rem;
-      color: var(--text-muted);
-      line-height: 1.5;
+      color: var(--text-soft);
+      line-height: 1.6;
     }
     
-    .cl-note strong { color: var(--accent); }
+    .cl-note strong { color: #c084fc; font-weight: 500; }
     
-    /* Success screen */
+    /* Success */
     .success-box {
       text-align: center;
-      padding: 40px 20px;
+      padding: 48px 20px;
     }
     
     .success-icon {
-      width: 72px;
-      height: 72px;
-      background: var(--accent-dim);
+      width: 80px;
+      height: 80px;
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.3);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 20px;
+      margin: 0 auto 24px;
     }
     
     .success-icon svg {
       width: 36px;
       height: 36px;
-      fill: var(--accent);
+      fill: #c084fc;
     }
     
     .success-box h2 {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
+      font-weight: 400;
       margin-bottom: 8px;
     }
     
     .success-box > p {
-      color: var(--text-muted);
+      color: var(--text-soft);
       font-size: 0.95rem;
-      margin-bottom: 32px;
+      margin-bottom: 36px;
     }
     
-    .support-box {
-      background: var(--bg-card);
+    .support-card {
+      background: var(--glass);
       border: 1px solid var(--glass-border);
-      border-radius: 14px;
-      padding: 24px;
+      border-radius: 16px;
+      padding: 28px;
+      backdrop-filter: blur(20px);
       margin-bottom: 16px;
     }
     
-    .support-box h3 {
+    .support-card h3 {
       font-size: 1rem;
+      font-weight: 400;
       margin-bottom: 8px;
     }
     
-    .support-box > p {
+    .support-card > p {
       color: var(--text-muted);
       font-size: 0.85rem;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
     
     .donate-row {
       display: flex;
       gap: 10px;
-      max-width: 280px;
+      max-width: 260px;
       margin: 0 auto;
     }
     
     .donate-input {
       flex: 1;
-      padding: 10px 14px;
+      padding: 12px 16px;
       background: var(--bg);
       border: 1px solid var(--glass-border);
-      border-radius: 8px;
+      border-radius: 10px;
       color: var(--text);
       font-size: 0.9rem;
       text-align: center;
+      font-family: inherit;
     }
     
     .donate-btn {
-      padding: 10px 18px;
+      padding: 12px 20px;
       background: var(--accent);
-      color: #000;
+      color: #fff;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
     }
     
-    .donate-btn:hover { filter: brightness(1.1); }
-    
-    .share-box {
-      background: var(--bg-card);
+    .share-card {
+      background: var(--glass);
       border: 1px solid var(--glass-border);
-      border-radius: 14px;
-      padding: 24px;
+      border-radius: 16px;
+      padding: 28px;
+      backdrop-filter: blur(20px);
       margin-bottom: 16px;
     }
     
-    .share-box h3 {
+    .share-card h3 {
       font-size: 1rem;
+      font-weight: 400;
       margin-bottom: 8px;
     }
     
-    .share-box > p {
+    .share-card > p {
       color: var(--text-muted);
       font-size: 0.85rem;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
     
     .share-btn {
@@ -799,67 +915,49 @@
       align-items: center;
       gap: 8px;
       padding: 12px 24px;
-      background: #000;
+      background: transparent;
       border: 1px solid var(--glass-border);
-      border-radius: 8px;
+      border-radius: 10px;
       color: var(--text);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       text-decoration: none;
       transition: all 0.2s;
     }
     
     .share-btn:hover {
-      background: var(--glass-bg);
+      background: var(--glass);
       border-color: var(--text-muted);
     }
     
     .share-btn svg {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       fill: currentColor;
     }
     
-    .community-link {
+    .help-links {
       margin-top: 20px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
     }
     
-    .community-link a {
-      color: var(--accent);
+    .help-links a {
+      color: var(--accent-solid);
       text-decoration: none;
     }
     
-    /* Info box */
-    .info-box {
-      background: rgba(100, 100, 255, 0.08);
-      border: 1px solid rgba(100, 100, 255, 0.15);
-      border-radius: 10px;
-      padding: 14px;
-      font-size: 0.8rem;
-      margin: 16px 0;
-    }
-    
-    .info-box h4 {
-      font-size: 0.85rem;
-      margin-bottom: 4px;
-    }
-    
-    .info-box p {
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-    
-    /* Comparison */
+    /* Compare */
     .compare {
-      margin-top: 32px;
-      padding-top: 24px;
+      margin-top: 36px;
+      padding-top: 28px;
       border-top: 1px solid var(--glass-border);
     }
     
     .compare h3 {
       font-size: 0.9rem;
+      font-weight: 400;
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
     
     .compare table {
@@ -869,58 +967,59 @@
     }
     
     .compare th, .compare td {
-      padding: 8px;
+      padding: 10px;
       text-align: left;
       border-bottom: 1px solid var(--glass-border);
     }
     
-    .compare th { color: var(--text-muted); font-weight: 500; }
-    .compare .y { color: var(--accent); }
-    .compare .n { color: var(--text-dim); }
+    .compare th { color: var(--text-muted); font-weight: 400; }
+    .compare .y { color: #c084fc; }
+    .compare .n { color: var(--text-muted); }
     
     .compare .tag {
       font-size: 0.6rem;
-      background: var(--accent-dim);
-      color: var(--accent);
-      padding: 2px 5px;
-      border-radius: 3px;
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      padding: 2px 6px;
+      border-radius: 4px;
       margin-left: 4px;
     }
     
     .server-cta {
       text-align: center;
-      margin-top: 12px;
+      margin-top: 14px;
       font-size: 0.8rem;
       color: var(--text-muted);
     }
     
-    .server-cta a { color: var(--accent); text-decoration: none; }
+    .server-cta a { color: var(--accent-solid); text-decoration: none; }
     
     /* Footer */
     footer {
-      padding: 24px 0;
+      padding: 28px 0;
       text-align: center;
       border-top: 1px solid var(--glass-border);
-      margin-top: 40px;
+      margin-top: 48px;
     }
     
     footer p {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      margin-bottom: 10px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
     }
     
     footer a {
       color: var(--text-muted);
       text-decoration: none;
-      margin: 0 10px;
-      font-size: 0.8rem;
+      margin: 0 12px;
+      font-size: 0.75rem;
+      transition: color 0.2s;
     }
     
-    footer a:hover { color: var(--text); }
+    footer a:hover { color: var(--text-soft); }
     
     @media (max-width: 600px) {
-      .landing h1 { font-size: 1.8rem; }
+      .landing h1 { font-size: 2.2rem; }
       .cards { grid-template-columns: 1fr; }
       .nav { flex-direction: column; }
       .nav .back { order: 2; }
@@ -929,8 +1028,9 @@
 </head>
 <body>
   <div class="ambient">
-    <div class="glow glow-1"></div>
-    <div class="glow glow-2"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
   </div>
   
   <div class="container">
@@ -944,24 +1044,28 @@
     
     <!-- Landing -->
     <div class="landing" id="landing">
-      <h1>Deploy your own <span>AI chatbot</span> in 10 minutes</h1>
-      <p>Set up a personal AI assistant on Telegram, Discord, WhatsApp, or Slack. No coding required. Completely free.</p>
-      <button class="cta-btn" onclick="start()">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        100% free, runs locally
+      </div>
+      <h1>Set up <span class="gradient-text">OpenClaw</span> in 10 minutes</h1>
+      <p class="sub">Your own AI assistant on Telegram, Discord, WhatsApp, or Slack. No coding. Seriously free.</p>
+      <button class="cta" onclick="start()">
         Get Started
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
       </button>
-      <div class="landing-sub">
+      <div class="landing-links">
         <a href="https://x.com/Andrey__HQ" target="_blank">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           Read the guide
         </a>
         <a href="https://docs.openclaw.ai" target="_blank">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>
           Documentation
         </a>
       </div>
-      <div class="landing-note">
-        <strong>How it works:</strong> Your bot runs on your computer. You chat with it from anywhere - including your phone. When your computer is off, the bot sleeps. When you turn it on, it wakes up with all memories intact.
+      <div class="info-card">
+        <strong>How it works:</strong> Your bot runs on your computer. Chat with it from anywhere, including your phone. Computer off = bot sleeps. Turn it on = bot wakes up with all memories.
       </div>
     </div>
     
@@ -984,56 +1088,52 @@
     <!-- Wizard -->
     <div class="wizard" id="wizard">
       
-      <!-- Step 1: Platform -->
+      <!-- Step 1 -->
       <div class="step active" data-step="1">
         <div class="step-head">
           <h2>Where should your bot live?</h2>
-          <p>Pick the platform you want to chat on</p>
+          <p>Pick your platform</p>
         </div>
         
         <div class="cards">
           <div class="card" data-v="telegram" onclick="pick(this,'platform')">
             <span class="card-tag">Popular</span>
-            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#000"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
             <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></div>
             <h3>Telegram</h3>
             <p>Fast, works everywhere</p>
           </div>
           
           <div class="card" data-v="discord" onclick="pick(this,'platform')">
-            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#000"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
             <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.373-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127c-.598.35-1.22.645-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></div>
             <h3>Discord</h3>
             <p>Great for communities</p>
           </div>
           
           <div class="card" data-v="whatsapp" onclick="pick(this,'platform')">
-            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#000"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
             <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg></div>
             <h3>WhatsApp</h3>
             <p>Use your number</p>
           </div>
           
           <div class="card" data-v="slack" onclick="pick(this,'platform')">
-            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#000"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
             <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg></div>
             <h3>Slack</h3>
-            <p>Perfect for work</p>
+            <p>For work</p>
           </div>
         </div>
         
         <div class="trouble">
-          <div class="trouble-toggle" onclick="toggleTrouble(this)">
-            Having trouble? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
-          </div>
+          <div class="trouble-toggle" onclick="toggleTrouble(this)">Having trouble? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
           <div class="trouble-content">
             <div class="trouble-item">
-              <strong>Not sure which platform?</strong>
-              <span>Telegram is the easiest to set up and works on all devices. Start there if unsure.</span>
+              <strong>Not sure which?</strong>
+              <span>Telegram is easiest to set up. Start there.</span>
             </div>
-            <div class="trouble-link">
-              <a href="https://x.com/Andrey__HQ" target="_blank">Read the full guide on X →</a>
-            </div>
+            <div class="trouble-link"><a href="https://x.com/Andrey__HQ" target="_blank">Full guide on X →</a></div>
           </div>
         </div>
         
@@ -1043,64 +1143,58 @@
         </div>
       </div>
       
-      <!-- Step 2: Model -->
+      <!-- Step 2 -->
       <div class="step" data-step="2">
         <div class="step-head">
-          <h2>Pick your AI brain</h2>
-          <p>Each model has different strengths</p>
+          <h2>Pick your AI model</h2>
+          <p>Each has different strengths</p>
         </div>
         
         <div class="cards">
           <div class="card" data-v="anthropic" onclick="pick(this,'model')">
             <span class="card-tag">Recommended</span>
-            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#000"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
             <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M17.604 3.332 12.46 20.668h-2.464l5.144-17.336h2.464ZM5.5 20.668l5.228-9.672L9.04 7.836 3.5 17.52V3.332H1v17.336h4.5Zm13 0h4.5V3.332h-2.5v14.188l-5.54-9.684-1.688 3.16 5.228 9.672Z"/></svg></div>
             <h3>Claude</h3>
             <p>Best for conversation</p>
             <div class="api-expand">
-              <div class="api-toggle" onclick="toggleApi(event,this)">How to get API key →</div>
+              <div class="api-toggle" onclick="toggleApi(event,this)">Get API key →</div>
               <div class="api-content">
                 <ol>
-                  <li>Go to <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></li>
-                  <li>Sign up / log in</li>
-                  <li>Click "API Keys" → "Create Key"</li>
-                  <li>Copy the key</li>
+                  <li><a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></li>
+                  <li>Sign up → API Keys → Create</li>
                 </ol>
               </div>
             </div>
           </div>
           
           <div class="card" data-v="openai" onclick="pick(this,'model')">
-            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#000"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08-4.778 2.758a.795.795 0 0 0-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/></svg></div>
+            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073z"/></svg></div>
             <h3>GPT-4o</h3>
-            <p>Versatile all-rounder</p>
+            <p>Versatile</p>
             <div class="api-expand">
-              <div class="api-toggle" onclick="toggleApi(event,this)">How to get API key →</div>
+              <div class="api-toggle" onclick="toggleApi(event,this)">Get API key →</div>
               <div class="api-content">
                 <ol>
-                  <li>Go to <a href="https://platform.openai.com" target="_blank">platform.openai.com</a></li>
-                  <li>Sign up / log in</li>
-                  <li>Go to API Keys section</li>
-                  <li>Create new secret key</li>
+                  <li><a href="https://platform.openai.com" target="_blank">platform.openai.com</a></li>
+                  <li>API Keys → Create secret key</li>
                 </ol>
               </div>
             </div>
           </div>
           
           <div class="card" data-v="google" onclick="pick(this,'model')">
-            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#000"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
             <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 11h8.533c.044.385.067.78.067 1.184 0 2.734-.98 5.036-2.678 6.6-1.485 1.371-3.518 2.175-5.942 2.175A8.976 8.976 0 0 1 3 12.001a8.976 8.976 0 0 1 8.98-8.96c2.424 0 4.455.89 6.008 2.339L16.526 6.79C15.368 5.681 13.803 5 12 5a7 7 0 1 0 0 14c3.526 0 6.144-2.608 6.577-6H12v-2z"/></svg></div>
             <h3>Gemini</h3>
-            <p>Good for research</p>
+            <p>Research</p>
             <div class="api-expand">
-              <div class="api-toggle" onclick="toggleApi(event,this)">How to get API key →</div>
+              <div class="api-toggle" onclick="toggleApi(event,this)">Get API key →</div>
               <div class="api-content">
                 <ol>
-                  <li>Go to <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></li>
-                  <li>Sign in with Google</li>
-                  <li>Click "Get API key"</li>
-                  <li>Create in new project</li>
+                  <li><a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></li>
+                  <li>Get API key</li>
                 </ol>
               </div>
             </div>
@@ -1108,18 +1202,16 @@
           
           <div class="card" data-v="groq" onclick="pick(this,'model')">
             <span class="card-tag">Fast</span>
-            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#000"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
             <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
             <h3>Groq</h3>
-            <p>Lightning speed</p>
+            <p>Speed</p>
             <div class="api-expand">
-              <div class="api-toggle" onclick="toggleApi(event,this)">How to get API key →</div>
+              <div class="api-toggle" onclick="toggleApi(event,this)">Get API key →</div>
               <div class="api-content">
                 <ol>
-                  <li>Go to <a href="https://console.groq.com" target="_blank">console.groq.com</a></li>
-                  <li>Sign up / log in</li>
-                  <li>Go to API Keys</li>
-                  <li>Create new key</li>
+                  <li><a href="https://console.groq.com" target="_blank">console.groq.com</a></li>
+                  <li>API Keys → Create</li>
                 </ol>
               </div>
             </div>
@@ -1127,20 +1219,11 @@
         </div>
         
         <div class="trouble">
-          <div class="trouble-toggle" onclick="toggleTrouble(this)">
-            Having trouble? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
-          </div>
+          <div class="trouble-toggle" onclick="toggleTrouble(this)">Having trouble? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
           <div class="trouble-content">
             <div class="trouble-item">
-              <strong>API key not working?</strong>
-              <span>Make sure you copied the entire key. It usually starts with "sk-" for OpenAI/Anthropic.</span>
-            </div>
-            <div class="trouble-item">
-              <strong>Need to add payment?</strong>
-              <span>Most providers require adding a payment method before the API works. Check your account billing.</span>
-            </div>
-            <div class="trouble-link">
-              <a href="https://x.com/Andrey__HQ" target="_blank">Read the full guide on X →</a>
+              <strong>Key not working?</strong>
+              <span>Make sure you copied the full key. Add a payment method if required.</span>
             </div>
           </div>
         </div>
@@ -1151,25 +1234,25 @@
         </div>
       </div>
       
-      <!-- Step 3: Personality -->
+      <!-- Step 3 -->
       <div class="step" data-step="3">
         <div class="step-head">
-          <h2>Give your bot personality</h2>
+          <h2>Personality</h2>
           <p>Make it yours</p>
         </div>
         
         <div class="form-row">
-          <label>What should I call you?</label>
-          <input type="text" id="uName" placeholder="Your name" oninput="checkP()">
+          <label>Your name</label>
+          <input type="text" id="uName" placeholder="What should the bot call you?" oninput="checkP()">
         </div>
         
         <div class="form-row">
-          <label>What do you want to call your bot?</label>
+          <label>Bot name</label>
           <input type="text" id="bName" placeholder="e.g. Jarvis, Friday, Max" oninput="checkP()">
         </div>
         
         <div class="form-row">
-          <label>Personality style</label>
+          <label>Style</label>
           <div class="chips">
             <span class="chip" onclick="pickChip(this,'chill')">Chill</span>
             <span class="chip" onclick="pickChip(this,'professional')">Professional</span>
@@ -1181,22 +1264,7 @@
         
         <div class="form-row">
           <label>Special instructions (optional)</label>
-          <textarea id="inst" placeholder="e.g. Remind me to take breaks, help me learn Spanish..."></textarea>
-        </div>
-        
-        <div class="trouble">
-          <div class="trouble-toggle" onclick="toggleTrouble(this)">
-            Having trouble? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
-          </div>
-          <div class="trouble-content">
-            <div class="trouble-item">
-              <strong>What personality should I pick?</strong>
-              <span>"Chill" works for most people. Pick "Professional" for work, "Witty" if you want some humor.</span>
-            </div>
-            <div class="trouble-link">
-              <a href="https://x.com/Andrey__HQ" target="_blank">See personality examples on X →</a>
-            </div>
-          </div>
+          <textarea id="inst" placeholder="e.g. Remind me to take breaks..."></textarea>
         </div>
         
         <div class="nav">
@@ -1205,154 +1273,47 @@
         </div>
       </div>
       
-      <!-- Step 4: Setup -->
+      <!-- Step 4 -->
       <div class="step" data-step="4">
         <div class="step-head">
           <h2>Set up <span id="platTitle">Telegram</span></h2>
-          <p>Follow these steps exactly</p>
+          <p>Follow the steps</p>
         </div>
         
         <div id="setupTelegram" class="setup-box">
-          <div class="setup-step">
-            <div class="setup-num">1</div>
-            <div class="setup-text">
-              <h4>Open Telegram, search @BotFather</h4>
-              <p>It's the official bot with a blue checkmark</p>
-            </div>
-          </div>
-          <div class="setup-step">
-            <div class="setup-num">2</div>
-            <div class="setup-text">
-              <h4>Send <code>/newbot</code></h4>
-              <p>BotFather will ask for a name</p>
-            </div>
-          </div>
-          <div class="setup-step">
-            <div class="setup-num">3</div>
-            <div class="setup-text">
-              <h4>Name it "<span class="bNamePrev">YourBot</span>"</h4>
-              <p>Then pick a username ending in "bot"</p>
-            </div>
-          </div>
-          <div class="setup-step">
-            <div class="setup-num">4</div>
-            <div class="setup-text">
-              <h4>Copy the token</h4>
-              <p>Looks like <code>123456789:ABCdef...</code></p>
-            </div>
-          </div>
+          <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4>Open Telegram, search @BotFather</h4></div></div>
+          <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><h4>Send <code>/newbot</code></h4></div></div>
+          <div class="setup-step"><div class="setup-num">3</div><div class="setup-text"><h4>Name it "<span class="bNamePrev">YourBot</span>"</h4></div></div>
+          <div class="setup-step"><div class="setup-num">4</div><div class="setup-text"><h4>Copy the token</h4></div></div>
         </div>
         
         <div id="setupDiscord" class="setup-box" style="display:none">
-          <div class="setup-step">
-            <div class="setup-num">1</div>
-            <div class="setup-text">
-              <h4>Go to <a href="https://discord.com/developers/applications" target="_blank">Discord Developer Portal</a></h4>
-            </div>
-          </div>
-          <div class="setup-step">
-            <div class="setup-num">2</div>
-            <div class="setup-text">
-              <h4>New Application → name it "<span class="bNamePrev">YourBot</span>"</h4>
-            </div>
-          </div>
-          <div class="setup-step">
-            <div class="setup-num">3</div>
-            <div class="setup-text">
-              <h4>Bot tab → Add Bot → Enable Message Content Intent</h4>
-            </div>
-          </div>
-          <div class="setup-step">
-            <div class="setup-num">4</div>
-            <div class="setup-text">
-              <h4>Reset Token and copy it</h4>
-            </div>
-          </div>
-          <div class="setup-step">
-            <div class="setup-num">5</div>
-            <div class="setup-text">
-              <h4>OAuth2 → URL Generator → check "bot" + "applications.commands"</h4>
-              <p>Copy URL, open it, add to your server</p>
-            </div>
-          </div>
+          <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4><a href="https://discord.com/developers/applications" target="_blank">Discord Dev Portal</a></h4></div></div>
+          <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><h4>New App → "<span class="bNamePrev">YourBot</span>"</h4></div></div>
+          <div class="setup-step"><div class="setup-num">3</div><div class="setup-text"><h4>Bot → Add Bot → Enable Message Content Intent</h4></div></div>
+          <div class="setup-step"><div class="setup-num">4</div><div class="setup-text"><h4>Reset Token → Copy</h4></div></div>
+          <div class="setup-step"><div class="setup-num">5</div><div class="setup-text"><h4>OAuth2 → URL Gen → bot + commands → Add to server</h4></div></div>
         </div>
         
         <div id="setupWhatsapp" class="setup-box" style="display:none">
-          <div class="setup-step">
-            <div class="setup-num">1</div>
-            <div class="setup-text">
-              <h4>No token needed for WhatsApp</h4>
-              <p>You'll scan a QR code after running the bot</p>
-            </div>
-          </div>
-          <div class="setup-step">
-            <div class="setup-num">2</div>
-            <div class="setup-text">
-              <h4>When you run the setup...</h4>
-              <p>Open WhatsApp → Settings → Linked Devices → scan the QR</p>
-            </div>
-          </div>
+          <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4>No token needed</h4><p>You'll scan a QR code later</p></div></div>
         </div>
         
         <div id="setupSlack" class="setup-box" style="display:none">
-          <div class="setup-step">
-            <div class="setup-num">1</div>
-            <div class="setup-text">
-              <h4>Go to <a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a></h4>
-            </div>
-          </div>
-          <div class="setup-step">
-            <div class="setup-num">2</div>
-            <div class="setup-text">
-              <h4>Create New App → From scratch</h4>
-              <p>Name: "<span class="bNamePrev">YourBot</span>", pick workspace</p>
-            </div>
-          </div>
-          <div class="setup-step">
-            <div class="setup-num">3</div>
-            <div class="setup-text">
-              <h4>OAuth → Bot Token Scopes</h4>
-              <p>Add: chat:write, im:history, im:read, im:write, users:read</p>
-            </div>
-          </div>
-          <div class="setup-step">
-            <div class="setup-num">4</div>
-            <div class="setup-text">
-              <h4>Install to Workspace → Copy Bot Token</h4>
-              <p>Starts with xoxb-</p>
-            </div>
-          </div>
+          <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4><a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a></h4></div></div>
+          <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><h4>Create App → "<span class="bNamePrev">YourBot</span>"</h4></div></div>
+          <div class="setup-step"><div class="setup-num">3</div><div class="setup-text"><h4>OAuth → Add scopes: chat:write, im:*</h4></div></div>
+          <div class="setup-step"><div class="setup-num">4</div><div class="setup-text"><h4>Install → Copy Bot Token</h4></div></div>
         </div>
         
         <div class="form-row" id="tokenRow">
-          <label>Paste your bot token</label>
-          <input type="password" id="bToken" placeholder="Bot token" oninput="checkT()">
-          <p class="hint">This stays on your computer. Never sent to us.</p>
+          <label>Bot token</label>
+          <input type="password" id="bToken" placeholder="Paste token" oninput="checkT()">
         </div>
         
         <div class="form-row">
-          <label>Paste your <span id="modelLabel">Anthropic</span> API key</label>
-          <input type="password" id="apiKey" placeholder="API key" oninput="checkT()">
-          <p class="hint">Get this from your AI provider's dashboard</p>
-        </div>
-        
-        <div class="trouble">
-          <div class="trouble-toggle" onclick="toggleTrouble(this)">
-            Having trouble? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
-          </div>
-          <div class="trouble-content">
-            <div class="trouble-item">
-              <strong>BotFather not responding?</strong>
-              <span>Make sure you're messaging @BotFather (with the blue checkmark), not a fake.</span>
-            </div>
-            <div class="trouble-item">
-              <strong>Token looks wrong?</strong>
-              <span>Telegram tokens have a colon in the middle. Discord tokens are one long string.</span>
-            </div>
-            <div class="trouble-link">
-              <a href="https://x.com/Andrey__HQ" target="_blank">Watch the video walkthrough on X →</a>
-            </div>
-          </div>
+          <label><span id="modelLabel">Anthropic</span> API key</label>
+          <input type="password" id="apiKey" placeholder="Paste API key" oninput="checkT()">
         </div>
         
         <div class="nav">
@@ -1361,492 +1322,123 @@
         </div>
       </div>
       
-      <!-- Step 5: Download -->
+      <!-- Step 5 -->
       <div class="step" data-step="5">
         <div class="step-head">
-          <h2>Download your bot</h2>
-          <p>One zip with everything you need</p>
+          <h2>Download</h2>
+          <p>Everything in one zip</p>
         </div>
         
         <div class="dl-box">
-          <div class="os-tag" id="osTag">Detected: Mac</div>
-          <h3>Your personalized bot is ready</h3>
-          <p>Config, setup script, and instructions included</p>
+          <div class="os-tag" id="osTag">Mac</div>
+          <h3>Your bot is ready</h3>
+          <p>Config, script, and instructions included</p>
           <button class="dl-btn" onclick="download()">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
             Download FreeClaw.zip
           </button>
         </div>
         
-        <div class="info-box">
-          <h4>What's inside?</h4>
-          <p><strong>config.yaml</strong> - all your settings baked in<br>
-          <strong>setup.sh / setup.bat</strong> - one-click installer<br>
-          <strong>README.txt</strong> - step-by-step guide</p>
-        </div>
-        
-        <div class="trouble">
-          <div class="trouble-toggle" onclick="toggleTrouble(this)">
-            Having trouble? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
-          </div>
-          <div class="trouble-content">
-            <div class="trouble-item">
-              <strong>Download not starting?</strong>
-              <span>Try right-clicking the button and selecting "Save link as..."</span>
-            </div>
-            <div class="trouble-item">
-              <strong>Browser blocking the download?</strong>
-              <span>Check your downloads folder or allow the download in browser settings.</span>
-            </div>
-          </div>
-        </div>
-        
         <div class="nav">
           <button class="back" onclick="go(4)">Back</button>
-          <button class="next" onclick="go(6)">I've downloaded it →</button>
+          <button class="next" onclick="go(6)">I downloaded it →</button>
         </div>
       </div>
       
-      <!-- Step 6: Run -->
+      <!-- Step 6 -->
       <div class="step" data-step="6">
         <div class="step-head">
-          <h2>Run your bot</h2>
-          <p>Follow along - each step matches what you'll see</p>
+          <h2>Run it</h2>
+          <p>Follow along</p>
         </div>
         
         <div class="checklist">
-          <h3>Installation Checklist</h3>
-          
-          <div class="cl-item">
-            <div class="cl-num">1</div>
-            <div class="cl-text">
-              <strong>Extract the zip</strong><br>
-              <span>Double-click FreeClaw.zip to extract</span>
-            </div>
-          </div>
-          
-          <div class="cl-item">
-            <div class="cl-num">2</div>
-            <div class="cl-text">
-              <strong>Open the folder</strong><br>
-              <span>You'll see setup.<span id="ext">sh</span>, config.yaml, README.txt</span>
-            </div>
-          </div>
-          
-          <div class="cl-item">
-            <div class="cl-num">3</div>
-            <div class="cl-text" id="runStep">
-              <strong>Run the setup</strong><br>
-              <span><strong>Mac:</strong> Open Terminal, drag setup.sh into it, press Enter<br>
-              <strong>Windows:</strong> Double-click setup.bat</span>
-            </div>
-          </div>
-          
-          <div class="cl-item">
-            <div class="cl-num">4</div>
-            <div class="cl-text">
-              <strong>Wait for "Bot is running"</strong><br>
-              <span>Takes 2-3 minutes. You'll see progress in the terminal.</span>
-            </div>
-          </div>
-          
-          <div class="cl-item">
-            <div class="cl-num">5</div>
-            <div class="cl-text">
-              <strong>Test it!</strong><br>
-              <span>Open <span id="testPlat">Telegram</span> and message your bot</span>
-            </div>
-          </div>
-          
-          <div class="cl-note">
-            <strong>Remember:</strong> Your bot runs on your computer. You chat with it from anywhere (including your phone). When your computer is off, the bot sleeps. Turn it on and run the script again to wake it up.
-          </div>
-        </div>
-        
-        <div class="trouble">
-          <div class="trouble-toggle" onclick="toggleTrouble(this)">
-            Having trouble? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
-          </div>
-          <div class="trouble-content">
-            <div class="trouble-item">
-              <strong>"Permission denied" on Mac?</strong>
-              <span>Run: <code>chmod +x setup.sh</code> then try again</span>
-            </div>
-            <div class="trouble-item">
-              <strong>Script closes immediately on Windows?</strong>
-              <span>Open Command Prompt first, then drag the .bat file into it</span>
-            </div>
-            <div class="trouble-item">
-              <strong>Stuck on "Installing..."?</strong>
-              <span>This is normal for first run. Wait up to 5 minutes.</span>
-            </div>
-            <div class="trouble-link">
-              <a href="https://x.com/Andrey__HQ" target="_blank">Get help on X →</a>
-            </div>
-          </div>
+          <h3>Checklist</h3>
+          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Extract the zip</strong></div></div>
+          <div class="cl-item"><div class="cl-num">2</div><div class="cl-text"><strong>Open the folder</strong></div></div>
+          <div class="cl-item"><div class="cl-num">3</div><div class="cl-text"><strong>Run setup.<span id="ext">sh</span></strong><br><span>Mac: drag to Terminal. Windows: double-click .bat</span></div></div>
+          <div class="cl-item"><div class="cl-num">4</div><div class="cl-text"><strong>Wait for "Bot is running"</strong></div></div>
+          <div class="cl-item"><div class="cl-num">5</div><div class="cl-text"><strong>Message your bot on <span id="testPlat">Telegram</span></strong></div></div>
+          <div class="cl-note"><strong>Remember:</strong> Bot runs on your computer. Chat from anywhere including phone. Computer off = bot sleeps.</div>
         </div>
         
         <div class="nav">
           <button class="back" onclick="go(5)">Back</button>
-          <button class="next" onclick="go(7)">My bot is responding! →</button>
+          <button class="next" onclick="go(7)">My bot works! →</button>
         </div>
       </div>
       
-      <!-- Step 7: Success -->
+      <!-- Step 7 -->
       <div class="step" data-step="7">
         <div class="success-box">
-          <div class="success-icon">
-            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-          </div>
-          <h2>You did it! 🎉</h2>
-          <p>Your AI chatbot is live. Enjoy chatting with <span id="finalBot">your bot</span>!</p>
+          <div class="success-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          <h2>You did it 🎉</h2>
+          <p>Your bot <span id="finalBot">is live</span>. Enjoy!</p>
         </div>
         
-        <div class="support-box">
+        <div class="support-card">
           <h3>FreeClaw is free forever</h3>
-          <p>If it saved you time, consider buying me a coffee</p>
+          <p>If it helped, consider buying me a coffee</p>
           <div class="donate-row">
-            <input type="text" class="donate-input" id="donateAmt" placeholder="$5" value="$5">
+            <input type="text" class="donate-input" id="donateAmt" value="$5">
             <button class="donate-btn" onclick="donate()">Donate</button>
           </div>
         </div>
         
-        <div class="share-box">
-          <h3>Help others discover FreeClaw</h3>
-          <p>Share your setup on X</p>
+        <div class="share-card">
+          <h3>Share on X</h3>
+          <p>Help others discover FreeClaw</p>
           <a class="share-btn" id="shareBtn" href="#" target="_blank">
             <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            Share on X
+            Post on X
           </a>
-          <p class="community-link">
-            Questions? <a href="mailto:andreymarey.work@gmail.com">Email me</a> or <a href="https://x.com/Andrey__HQ" target="_blank">DM on X</a>
-          </p>
+          <p class="help-links">Questions? <a href="mailto:andreymarey.work@gmail.com">Email</a> or <a href="https://x.com/Andrey__HQ" target="_blank">DM</a></p>
         </div>
         
         <div class="compare">
-          <h3>Want 24/7 availability?</h3>
+          <h3>Want 24/7?</h3>
           <table>
-            <tr>
-              <th></th>
-              <th>Local <span class="tag">Your setup</span></th>
-              <th>Server</th>
-            </tr>
-            <tr>
-              <td>Always on</td>
-              <td class="n">When computer on</td>
-              <td class="y">Yes</td>
-            </tr>
-            <tr>
-              <td>Privacy</td>
-              <td class="y">100% local</td>
-              <td class="n">On server</td>
-            </tr>
-            <tr>
-              <td>Cost</td>
-              <td class="y">Free</td>
-              <td class="n">$5-20/mo</td>
-            </tr>
+            <tr><th></th><th>Local <span class="tag">You</span></th><th>Server</th></tr>
+            <tr><td>Always on</td><td class="n">When on</td><td class="y">Yes</td></tr>
+            <tr><td>Privacy</td><td class="y">Local</td><td class="n">Server</td></tr>
+            <tr><td>Cost</td><td class="y">Free</td><td class="n">$5-20/mo</td></tr>
           </table>
-          <p class="server-cta">
-            Need always-on? <a href="mailto:andreymarey.work@gmail.com?subject=FreeClaw%20Server%20Setup">Email me to inquire</a>
-          </p>
+          <p class="server-cta"><a href="mailto:andreymarey.work@gmail.com?subject=FreeClaw%20Server">Email me for server setup</a></p>
         </div>
       </div>
       
     </div>
     
     <footer>
-      <p>I will never create a token. I will never charge for this. If you see me do either, it is fraud.</p>
-      <a href="https://x.com/Andrey__HQ" target="_blank">Built by Andrey Marey</a>
-      <a href="mailto:andreymarey.work@gmail.com">Need help?</a>
+      <p>I will never create a token. I will never charge. If you see me do either, it's fraud.</p>
+      <a href="https://x.com/Andrey__HQ" target="_blank">@Andrey__HQ</a>
+      <a href="mailto:andreymarey.work@gmail.com">Contact</a>
     </footer>
   </div>
   
   <script>
-    const S = {
-      step: 0,
-      platform: null,
-      model: null,
-      userName: '',
-      botName: '',
-      style: null,
-      inst: '',
-      botToken: '',
-      apiKey: '',
-      os: /Win/.test(navigator.userAgent) ? 'win' : /Mac/.test(navigator.userAgent) ? 'mac' : 'linux'
-    };
+    const S={step:0,platform:null,model:null,userName:'',botName:'',style:null,inst:'',botToken:'',apiKey:'',os:/Win/.test(navigator.userAgent)?'win':/Mac/.test(navigator.userAgent)?'mac':'linux'};
     
-    function start() {
-      document.getElementById('landing').style.display = 'none';
-      document.getElementById('progress').classList.add('show');
-      document.getElementById('wizard').classList.add('show');
-      go(1);
-    }
-    
-    function goLanding() {
-      document.getElementById('landing').style.display = 'flex';
-      document.getElementById('progress').classList.remove('show');
-      document.getElementById('wizard').classList.remove('show');
-      S.step = 0;
-    }
-    
-    function go(n) {
-      if (S.step) document.querySelector(`[data-step="${S.step}"]`).classList.remove('active');
-      S.step = n;
-      document.querySelector(`[data-step="${n}"]`).classList.add('active');
-      updateProgress();
-      window.scrollTo(0,0);
-      
-      if (n === 4) setupStep4();
-      if (n === 5) setupStep5();
-      if (n === 6) setupStep6();
-      if (n === 7) setupStep7();
-    }
-    
-    function updateProgress() {
-      document.getElementById('pFill').style.width = ((S.step - 1) / 6 * 100) + '%';
-      document.querySelectorAll('.progress-labels span').forEach(el => {
-        const s = +el.dataset.s;
-        el.classList.remove('active', 'done');
-        if (s === S.step) el.classList.add('active');
-        if (s < S.step) el.classList.add('done');
-      });
-    }
-    
-    function pick(el, key) {
-      el.parentElement.querySelectorAll('.card').forEach(c => c.classList.remove('sel'));
-      el.classList.add('sel');
-      S[key] = el.dataset.v;
-      document.getElementById('n' + S.step).disabled = false;
-    }
-    
-    function pickChip(el, val) {
-      document.querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
-      el.classList.add('sel');
-      S.style = val;
-      checkP();
-    }
-    
-    function toggleTrouble(el) {
-      el.nextElementSibling.classList.toggle('open');
-    }
-    
-    function toggleApi(e, el) {
-      e.stopPropagation();
-      el.nextElementSibling.classList.toggle('open');
-    }
-    
-    function checkP() {
-      S.userName = document.getElementById('uName').value;
-      S.botName = document.getElementById('bName').value;
-      S.inst = document.getElementById('inst').value;
-      document.getElementById('n3').disabled = !(S.userName && S.botName && S.style);
-      document.querySelectorAll('.bNamePrev').forEach(el => el.textContent = S.botName || 'YourBot');
-    }
-    
-    function checkT() {
-      S.botToken = document.getElementById('bToken').value;
-      S.apiKey = document.getElementById('apiKey').value;
-      const needsToken = S.platform !== 'whatsapp';
-      document.getElementById('n4').disabled = !((needsToken ? S.botToken : true) && S.apiKey);
-    }
-    
-    function setupStep4() {
-      const names = { telegram: 'Telegram', discord: 'Discord', whatsapp: 'WhatsApp', slack: 'Slack' };
-      const models = { anthropic: 'Anthropic', openai: 'OpenAI', google: 'Google', groq: 'Groq' };
-      document.getElementById('platTitle').textContent = names[S.platform];
-      document.getElementById('modelLabel').textContent = models[S.model];
-      
-      ['Telegram','Discord','Whatsapp','Slack'].forEach(p => {
-        document.getElementById('setup'+p).style.display = 'none';
-      });
-      document.getElementById('setup' + S.platform.charAt(0).toUpperCase() + S.platform.slice(1)).style.display = 'block';
-      document.getElementById('tokenRow').style.display = S.platform === 'whatsapp' ? 'none' : 'block';
-      checkT();
-    }
-    
-    function setupStep5() {
-      const os = { mac: 'Mac', win: 'Windows', linux: 'Linux' };
-      document.getElementById('osTag').textContent = 'Detected: ' + os[S.os];
-    }
-    
-    function setupStep6() {
-      const plats = { telegram: 'Telegram', discord: 'Discord', whatsapp: 'WhatsApp', slack: 'Slack' };
-      document.getElementById('testPlat').textContent = plats[S.platform];
-      document.getElementById('ext').textContent = S.os === 'win' ? 'bat' : 'sh';
-    }
-    
-    function setupStep7() {
-      document.getElementById('finalBot').textContent = S.botName;
-      const shareText = encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it yourself:`);
-      const shareUrl = encodeURIComponent('https://freeclaw-site.vercel.app');
-      document.getElementById('shareBtn').href = `https://x.com/intent/tweet?text=${shareText}&url=${shareUrl}`;
-    }
-    
-    async function download() {
-      const zip = new JSZip();
-      zip.file('config.yaml', genConfig());
-      zip.file(S.os === 'win' ? 'setup.bat' : 'setup.sh', S.os === 'win' ? genBat() : genSh());
-      zip.file('README.txt', genReadme());
-      
-      const blob = await zip.generateAsync({ type: 'blob' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'FreeClaw.zip';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-    
-    function genConfig() {
-      const models = {
-        anthropic: 'anthropic/claude-sonnet-4-20250514',
-        openai: 'openai/gpt-4o',
-        google: 'google/gemini-2.0-flash',
-        groq: 'groq/llama-3.3-70b-versatile'
-      };
-      const styles = {
-        chill: 'Be casual and relaxed. Use informal language.',
-        professional: 'Be professional and efficient. Clear and concise.',
-        friendly: 'Be warm and supportive. Encouraging tone.',
-        witty: 'Be clever with humor. Keep it fun.',
-        minimal: 'Be extremely direct. Minimal words.'
-      };
-      
-      let c = `# FreeClaw Config for ${S.userName}\nmodel: ${models[S.model]}\n\nproviders:\n`;
-      c += `  ${S.model}:\n    apiKey: "${S.apiKey}"\n\nchannels:\n`;
-      
-      if (S.platform === 'telegram') c += `  telegram:\n    botToken: "${S.botToken}"\n    allowedUsers: ["*"]\n`;
-      else if (S.platform === 'discord') c += `  discord:\n    botToken: "${S.botToken}"\n`;
-      else if (S.platform === 'whatsapp') c += `  whatsapp:\n    enabled: true\n`;
-      else if (S.platform === 'slack') c += `  slack:\n    botToken: "${S.botToken}"\n`;
-      
-      c += `\nsoul: |\n  Your name is ${S.botName}.\n  You are talking to ${S.userName}.\n  ${styles[S.style]}\n`;
-      if (S.inst) c += `  ${S.inst}\n`;
-      return c;
-    }
-    
-    function genSh() {
-      return `#!/bin/bash
-echo "======================================"
-echo "  FreeClaw Setup"
-echo "======================================"
-
-WORKSPACE="$HOME/freeclaw"
-
-# Check if already installed
-if [ -d "$WORKSPACE/node_modules" ]; then
-    echo "FreeClaw already installed. Starting bot..."
-    cd "$WORKSPACE"
-    openclaw gateway start
-    exit 0
-fi
-
-# Check Node.js
-if ! command -v node &> /dev/null; then
-    echo "Installing Node.js..."
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        brew install node
-    else
-        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-        sudo apt-get install -y nodejs
-    fi
-fi
-
-echo "Node: $(node -v)"
-
-# Install OpenClaw
-echo "Installing OpenClaw..."
-npm install -g openclaw
-
-# Setup workspace
-mkdir -p "$WORKSPACE"
-cp "$(dirname "$0")/config.yaml" "$WORKSPACE/"
-cd "$WORKSPACE"
-
-echo ""
-echo "======================================"
-echo "  Starting your bot..."
-echo "======================================"
-openclaw gateway start
-`;
-    }
-    
-    function genBat() {
-      return `@echo off
-echo ======================================
-echo   FreeClaw Setup
-echo ======================================
-
-set WORKSPACE=%USERPROFILE%\\freeclaw
-
-if exist "%WORKSPACE%\\node_modules" (
-    echo FreeClaw already installed. Starting bot...
-    cd /d "%WORKSPACE%"
-    openclaw gateway start
-    exit /b
-)
-
-where node >nul 2>nul
-if %ERRORLEVEL% neq 0 (
-    echo Node.js not found. Please install from https://nodejs.org
-    start https://nodejs.org
-    pause
-    exit /b
-)
-
-echo Node.js found
-echo Installing OpenClaw...
-npm install -g openclaw
-
-mkdir "%WORKSPACE%" 2>nul
-copy "%~dp0config.yaml" "%WORKSPACE%\\"
-cd /d "%WORKSPACE%"
-
-echo.
-echo ======================================
-echo   Starting your bot...
-echo ======================================
-openclaw gateway start
-pause
-`;
-    }
-    
-    function genReadme() {
-      const plat = { telegram: 'Telegram', discord: 'Discord', whatsapp: 'WhatsApp', slack: 'Slack' };
-      return `FREECLAW SETUP
-==============
-
-Bot: ${S.botName}
-Platform: ${plat[S.platform]}
-Model: ${S.model}
-
-STEPS
------
-1. Extract this zip
-2. Run setup.${S.os === 'win' ? 'bat' : 'sh'}
-   - Mac: Open Terminal, drag file in, press Enter
-   - Windows: Double-click setup.bat
-3. Wait for "Bot is running"
-4. Open ${plat[S.platform]} and message your bot!
-
-NOTES
------
-- Bot runs on your computer
-- Chat from anywhere (including phone)
-- Computer off = bot sleeps
-- Run the script again to restart
-
-HELP: andreymarey.work@gmail.com
-`;
-    }
-    
-    function donate() {
-      const amt = document.getElementById('donateAmt').value.replace(/[^0-9.]/g, '');
-      // For now, link to a tip jar or payment page
-      alert('Thanks for wanting to support! Stripe integration coming soon. For now, DM @Andrey__HQ on X.');
-    }
+    function start(){document.getElementById('landing').style.display='none';document.getElementById('progress').classList.add('show');document.getElementById('wizard').classList.add('show');go(1);}
+    function goLanding(){document.getElementById('landing').style.display='flex';document.getElementById('progress').classList.remove('show');document.getElementById('wizard').classList.remove('show');S.step=0;}
+    function go(n){if(S.step)document.querySelector(`[data-step="${S.step}"]`).classList.remove('active');S.step=n;document.querySelector(`[data-step="${n}"]`).classList.add('active');upProg();window.scrollTo(0,0);if(n===4)setup4();if(n===5)setup5();if(n===6)setup6();if(n===7)setup7();}
+    function upProg(){document.getElementById('pFill').style.width=((S.step-1)/6*100)+'%';document.querySelectorAll('.progress-labels span').forEach(el=>{const s=+el.dataset.s;el.classList.remove('active','done');if(s===S.step)el.classList.add('active');if(s<S.step)el.classList.add('done');});}
+    function pick(el,key){el.parentElement.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');S[key]=el.dataset.v;document.getElementById('n'+S.step).disabled=false;}
+    function pickChip(el,v){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');S.style=v;checkP();}
+    function toggleTrouble(el){el.nextElementSibling.classList.toggle('open');}
+    function toggleApi(e,el){e.stopPropagation();el.nextElementSibling.classList.toggle('open');}
+    function checkP(){S.userName=document.getElementById('uName').value;S.botName=document.getElementById('bName').value;S.inst=document.getElementById('inst').value;document.getElementById('n3').disabled=!(S.userName&&S.botName&&S.style);document.querySelectorAll('.bNamePrev').forEach(el=>el.textContent=S.botName||'YourBot');}
+    function checkT(){S.botToken=document.getElementById('bToken').value;S.apiKey=document.getElementById('apiKey').value;const need=S.platform!=='whatsapp';document.getElementById('n4').disabled=!((need?S.botToken:true)&&S.apiKey);}
+    function setup4(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};const m={anthropic:'Anthropic',openai:'OpenAI',google:'Google',groq:'Groq'};document.getElementById('platTitle').textContent=n[S.platform];document.getElementById('modelLabel').textContent=m[S.model];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>document.getElementById('setup'+p).style.display='none');document.getElementById('setup'+S.platform.charAt(0).toUpperCase()+S.platform.slice(1)).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';checkT();}
+    function setup5(){document.getElementById('osTag').textContent={mac:'Mac',win:'Windows',linux:'Linux'}[S.os];}
+    function setup6(){document.getElementById('testPlat').textContent={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];document.getElementById('ext').textContent=S.os==='win'?'bat':'sh';}
+    function setup7(){document.getElementById('finalBot').textContent=S.botName+' is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
+    async function download(){const z=new JSZip();z.file('config.yaml',genCfg());z.file(S.os==='win'?'setup.bat':'setup.sh',S.os==='win'?genBat():genSh());z.file('README.txt',genRm());const b=await z.generateAsync({type:'blob'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='FreeClaw.zip';a.click();URL.revokeObjectURL(u);}
+    function genCfg(){const m={anthropic:'anthropic/claude-sonnet-4-20250514',openai:'openai/gpt-4o',google:'google/gemini-2.0-flash',groq:'groq/llama-3.3-70b-versatile'};const st={chill:'Casual and relaxed.',professional:'Professional and efficient.',friendly:'Warm and supportive.',witty:'Clever with humor.',minimal:'Direct, minimal words.'};let c=`model: ${m[S.model]}\n\nproviders:\n  ${S.model}:\n    apiKey: "${S.apiKey}"\n\nchannels:\n`;if(S.platform==='telegram')c+=`  telegram:\n    botToken: "${S.botToken}"\n    allowedUsers: ["*"]\n`;else if(S.platform==='discord')c+=`  discord:\n    botToken: "${S.botToken}"\n`;else if(S.platform==='whatsapp')c+=`  whatsapp:\n    enabled: true\n`;else if(S.platform==='slack')c+=`  slack:\n    botToken: "${S.botToken}"\n`;c+=`\nsoul: |\n  Your name is ${S.botName}. Talking to ${S.userName}. ${st[S.style]}`;if(S.inst)c+=` ${S.inst}`;return c;}
+    function genSh(){return`#!/bin/bash\necho "FreeClaw Setup"\nWS="$HOME/freeclaw"\nif [ -d "$WS/node_modules" ];then cd "$WS";openclaw gateway start;exit 0;fi\nif ! command -v node &>/dev/null;then if [[ "$OSTYPE"=="darwin"* ]];then /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)";brew install node;else curl -fsSL https://deb.nodesource.com/setup_20.x|sudo -E bash -;sudo apt-get install -y nodejs;fi;fi\nnpm install -g openclaw\nmkdir -p "$WS"\ncp "$(dirname "$0")/config.yaml" "$WS/"\ncd "$WS"\nopenclaw gateway start`;}
+    function genBat(){return`@echo off\necho FreeClaw Setup\nset WS=%USERPROFILE%\\freeclaw\nif exist "%WS%\\node_modules" (cd /d "%WS%" && openclaw gateway start && exit /b)\nwhere node >nul 2>nul || (echo Install Node.js from nodejs.org && start https://nodejs.org && pause && exit /b)\nnpm install -g openclaw\nmkdir "%WS%" 2>nul\ncopy "%~dp0config.yaml" "%WS%\\"\ncd /d "%WS%"\nopenclaw gateway start\npause`;}
+    function genRm(){return`FREECLAW\n========\nBot: ${S.botName}\n\n1. Extract zip\n2. Run setup.${S.os==='win'?'bat':'sh'}\n3. Wait for "Bot is running"\n4. Message bot on ${S.platform}\n\nHelp: andreymarey.work@gmail.com`;}
+    function donate(){alert('Thanks! Stripe coming soon. DM @Andrey__HQ');}
   </script>
 </body>
 </html>
