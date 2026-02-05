@@ -1413,6 +1413,12 @@
           </div>
         </div>
         
+        <div class="form-row" id="apiKeyRow" style="margin-top: 24px;">
+          <label><span id="modelLabel2">Model</span> API key</label>
+          <input type="password" id="apiKey" placeholder="Paste your API key" oninput="checkApiKey()">
+          <p class="form-hint" style="font-size: 0.7rem; color: var(--text-muted); margin-top: 6px;">Click "Get API key" on your selected model above</p>
+        </div>
+        
         <div class="nav">
           <button class="next" id="n2" disabled onclick="go(3)">Continue</button>
         </div>
@@ -1497,12 +1503,8 @@
           <input type="password" id="bToken" placeholder="Paste token" oninput="checkT()">
         </div>
         
-        <div class="form-row">
-          <label><span id="modelLabel">Anthropic</span> API key</label>
-          <input type="password" id="apiKey" placeholder="Paste API key" oninput="checkT()">
-        </div>
-        
-        <div class="faq">
+        <!-- Telegram FAQ -->
+        <div class="faq" id="faqTelegram">
           <div class="faq-title">Common questions</div>
           <div class="faq-item" onclick="toggleFaq(this)">
             <div class="faq-q">Where do I find BotFather? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
@@ -1517,8 +1519,71 @@
             <div class="faq-a">Go back to BotFather, send /mybots, select your bot, then "API Token" to get a new one.</div>
           </div>
           <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">My API key doesn't work <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Make sure you copied the full key. Some providers require adding a payment method first.</div>
+            <div class="faq-q">Can I change the bot name later? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Yes! Message BotFather, send /mybots, select your bot, then "Edit Bot" to change the name.</div>
+          </div>
+        </div>
+        
+        <!-- Discord FAQ -->
+        <div class="faq" id="faqDiscord" style="display:none">
+          <div class="faq-title">Common questions</div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">What's the Developer Portal? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Discord's website where you create and manage bot applications. You need a Discord account to access it.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">What's Message Content Intent? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">A permission that lets your bot read message contents. It must be enabled or your bot won't see messages.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">How do I add the bot to my server? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Go to OAuth2 → URL Generator, select "bot" scope, copy the URL, and open it to invite your bot.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">I can't find my token! <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Go to your app → Bot section → click "Reset Token" to generate a new one. Copy it immediately!</div>
+          </div>
+        </div>
+        
+        <!-- WhatsApp FAQ -->
+        <div class="faq" id="faqWhatsapp" style="display:none">
+          <div class="faq-title">Common questions</div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Why no token? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">WhatsApp uses your personal number. You'll scan a QR code when you run the bot, just like WhatsApp Web.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Will people know it's a bot? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Messages come from your number. People will see it as you chatting, not a separate bot account.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Can I still use WhatsApp normally? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Yes! The bot only responds when configured. You can use WhatsApp on your phone as usual.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Is this safe? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Yes, but use a secondary number if you're concerned. The bot runs locally on your computer.</div>
+          </div>
+        </div>
+        
+        <!-- Slack FAQ -->
+        <div class="faq" id="faqSlack" style="display:none">
+          <div class="faq-title">Common questions</div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Do I need admin access? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">You need permission to install apps in your workspace. Ask your Slack admin if you're not sure.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">What scopes do I need? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">At minimum: chat:write to send messages, and im:history + im:read to receive DMs.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Bot vs User token? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">Use the Bot Token (starts with xoxb-). User tokens are for different purposes.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">How do I DM the bot? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+            <div class="faq-a">After installing, find your bot in the Apps section of Slack and send it a direct message.</div>
           </div>
         </div>
         
@@ -1694,13 +1759,14 @@
     function goLanding(){document.getElementById('landing').style.display='flex';document.getElementById('progress').classList.remove('show');document.getElementById('wizard').classList.remove('show');S.step=0;}
     function go(n){if(S.step)document.querySelector(`[data-step="${S.step}"]`).classList.remove('active');S.step=n;document.querySelector(`[data-step="${n}"]`).classList.add('active');upProg();window.scrollTo(0,0);if(n===3)setup3();if(n===5)setup5();if(n===6)setup6();if(n===7)setup7();}
     function upProg(){document.getElementById('pFill').style.width=((S.step-1)/6*100)+'%';document.querySelectorAll('.progress-labels span').forEach(el=>{const s=+el.dataset.s;el.classList.remove('active','done');if(s===S.step)el.classList.add('active');if(s<S.step)el.classList.add('done');});}
-    function pick(el,key){el.parentElement.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');S[key]=el.dataset.v;document.getElementById('n'+S.step).disabled=false;}
+    function pick(el,key){el.parentElement.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');S[key]=el.dataset.v;if(key==='model'){const m={anthropic:'Anthropic',openai:'OpenAI',google:'Google',groq:'Groq'};document.getElementById('modelLabel2').textContent=m[S.model];checkApiKey();}else{document.getElementById('n'+S.step).disabled=false;}}
     function pickChip(el,v){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');S.style=v;checkP();}
     function toggleFaq(el){el.classList.toggle('open');}
     function toggleApi(e,el){e.stopPropagation();el.nextElementSibling.classList.toggle('open');}
     function checkP(){S.userName=document.getElementById('uName').value;S.inst=document.getElementById('inst').value;document.getElementById('n4').disabled=!(S.userName&&S.style);}
-    function checkT(){S.botToken=document.getElementById('bToken').value;S.apiKey=document.getElementById('apiKey').value;const need=S.platform!=='whatsapp';document.getElementById('n3').disabled=!((need?S.botToken:true)&&S.apiKey);}
-    function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};const m={anthropic:'Anthropic',openai:'OpenAI',google:'Google',groq:'Groq'};document.getElementById('platTitle').textContent=n[S.platform];document.getElementById('modelLabel').textContent=m[S.model];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>document.getElementById('setup'+p).style.display='none');document.getElementById('setup'+S.platform.charAt(0).toUpperCase()+S.platform.slice(1)).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';checkT();}
+    function checkApiKey(){S.apiKey=document.getElementById('apiKey').value;document.getElementById('n2').disabled=!(S.model&&S.apiKey);}
+    function checkT(){S.botToken=document.getElementById('bToken').value;const need=S.platform!=='whatsapp';document.getElementById('n3').disabled=!(need?S.botToken:true);}
+    function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};document.getElementById('platTitle').textContent=n[S.platform];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>{document.getElementById('setup'+p).style.display='none';document.getElementById('faq'+p).style.display='none';});const pCap=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);document.getElementById('setup'+pCap).style.display='block';document.getElementById('faq'+pCap).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';checkT();}
     function setup5(){document.getElementById('osTag').textContent={mac:'Mac',win:'Windows',linux:'Linux'}[S.os];}
     function setup6(){document.getElementById('testPlat').textContent={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];document.getElementById('ext').textContent=S.os==='win'?'bat':'sh';}
     function setup7(){document.getElementById('finalBot').textContent='Your bot is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
