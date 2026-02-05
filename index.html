@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FreeClaw - Set up OpenClaw in 10 Minutes</title>
   <meta name="description" content="Set up OpenClaw for free on your computer in 10 minutes. No coding required.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23a855f7'/><stop offset='100%' stop-color='%236366f1'/></linearGradient></defs><path d='M8 24C8 24 4 20 4 14C4 8 8 4 14 4C16 4 18 5 19 6L22 3C22 3 26 6 26 12C26 18 22 22 22 22' stroke='url(%23g)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M14 28C14 28 10 24 10 18C10 14 12 12 14 12' stroke='url(%23g)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M20 26C20 26 24 22 24 16C24 12 22 10 20 10' stroke='url(%23g)' stroke-width='3' fill='none' stroke-linecap='round'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -108,6 +109,26 @@
       color: var(--text);
       text-decoration: none;
       letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .logo-icon {
+      flex-shrink: 0;
+    }
+    
+    .made-by {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: var(--accent-solid) !important;
+    }
+    
+    .made-by:hover {
+      background: rgba(168, 85, 247, 0.1);
+      border-color: var(--accent-solid);
     }
     
     .header-links a {
@@ -1035,8 +1056,17 @@
   
   <div class="container">
     <header>
-      <a href="/" class="logo">FreeClaw</a>
+      <a href="/" class="logo">
+        <svg class="logo-icon" width="20" height="20" viewBox="0 0 32 32" fill="none">
+          <path d="M8 24C8 24 4 20 4 14C4 8 8 4 14 4C16 4 18 5 19 6L22 3C22 3 26 6 26 12C26 18 22 22 22 22" stroke="url(#claw-grad)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M14 28C14 28 10 24 10 18C10 14 12 12 14 12" stroke="url(#claw-grad)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M20 26C20 26 24 22 24 16C24 12 22 10 20 10" stroke="url(#claw-grad)" stroke-width="3" stroke-linecap="round"/>
+          <defs><linearGradient id="claw-grad" x1="4" y1="4" x2="26" y2="28"><stop stop-color="#a855f7"/><stop offset="1" stop-color="#6366f1"/></linearGradient></defs>
+        </svg>
+        FreeClaw
+      </a>
       <div class="header-links">
+        <a href="https://x.com/Andrey__HQ" target="_blank" class="made-by">by @Andrey__HQ</a>
         <a href="https://docs.openclaw.ai" target="_blank">Docs</a>
         <a href="https://github.com/openclaw/openclaw" target="_blank">GitHub</a>
       </div>
@@ -1410,7 +1440,6 @@
     </div>
     
     <footer>
-      <p>I will never create a token. I will never charge. If you see me do either, it's fraud.</p>
       <a href="https://x.com/Andrey__HQ" target="_blank">@Andrey__HQ</a>
       <a href="mailto:andreymarey.work@gmail.com">Contact</a>
     </footer>
