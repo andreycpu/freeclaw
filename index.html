@@ -784,6 +784,117 @@
       font-size: 0.75rem;
     }
     
+    /* API Key Guide Modal */
+    .api-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .api-modal.open {
+      display: flex;
+    }
+    
+    .api-modal-content {
+      background: var(--bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .api-modal-header {
+      padding: 20px 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .api-modal-header h3 {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    
+    .api-modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+    
+    .api-modal-body {
+      padding: 20px;
+    }
+    
+    .api-modal-step {
+      margin-bottom: 20px;
+    }
+    
+    .api-modal-step:last-child {
+      margin-bottom: 0;
+    }
+    
+    .api-modal-step h4 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .api-modal-step h4 span {
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+    
+    .api-modal-step p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    
+    .api-modal-step img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--glass-border);
+      cursor: pointer;
+    }
+    
+    .api-modal-step a {
+      color: var(--accent-solid);
+    }
+    
+    .api-modal-warning {
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.75rem;
+      color: #fbbf24;
+      margin-top: 16px;
+    }
+    
     /* Nav */
     .nav {
       display: flex;
@@ -1332,15 +1443,7 @@
             <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M17.604 3.332 12.46 20.668h-2.464l5.144-17.336h2.464ZM5.5 20.668l5.228-9.672L9.04 7.836 3.5 17.52V3.332H1v17.336h4.5Zm13 0h4.5V3.332h-2.5v14.188l-5.54-9.684-1.688 3.16 5.228 9.672Z"/></svg></div>
             <h3>Claude</h3>
             <p>Best for conversation</p>
-            <div class="api-expand">
-              <div class="api-toggle" onclick="toggleApi(event,this)">Get API key →</div>
-              <div class="api-content">
-                <ol>
-                  <li><a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></li>
-                  <li>Sign up → API Keys → Create</li>
-                </ol>
-              </div>
-            </div>
+            <div class="api-toggle" onclick="event.stopPropagation();openApiGuide('anthropic')">Get API key →</div>
           </div>
           
           <div class="card" data-v="openai" onclick="pick(this,'model')">
@@ -1348,15 +1451,7 @@
             <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073z"/></svg></div>
             <h3>GPT-4o</h3>
             <p>Versatile</p>
-            <div class="api-expand">
-              <div class="api-toggle" onclick="toggleApi(event,this)">Get API key →</div>
-              <div class="api-content">
-                <ol>
-                  <li><a href="https://platform.openai.com" target="_blank">platform.openai.com</a></li>
-                  <li>API Keys → Create secret key</li>
-                </ol>
-              </div>
-            </div>
+            <div class="api-toggle" onclick="event.stopPropagation();openApiGuide('openai')">Get API key →</div>
           </div>
           
           <div class="card" data-v="google" onclick="pick(this,'model')">
@@ -1364,15 +1459,7 @@
             <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 11h8.533c.044.385.067.78.067 1.184 0 2.734-.98 5.036-2.678 6.6-1.485 1.371-3.518 2.175-5.942 2.175A8.976 8.976 0 0 1 3 12.001a8.976 8.976 0 0 1 8.98-8.96c2.424 0 4.455.89 6.008 2.339L16.526 6.79C15.368 5.681 13.803 5 12 5a7 7 0 1 0 0 14c3.526 0 6.144-2.608 6.577-6H12v-2z"/></svg></div>
             <h3>Gemini</h3>
             <p>Research</p>
-            <div class="api-expand">
-              <div class="api-toggle" onclick="toggleApi(event,this)">Get API key →</div>
-              <div class="api-content">
-                <ol>
-                  <li><a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></li>
-                  <li>Get API key</li>
-                </ol>
-              </div>
-            </div>
+            <div class="api-toggle" onclick="event.stopPropagation();openApiGuide('google')">Get API key →</div>
           </div>
           
           <div class="card" data-v="groq" onclick="pick(this,'model')">
@@ -1381,15 +1468,7 @@
             <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
             <h3>Groq</h3>
             <p>Speed</p>
-            <div class="api-expand">
-              <div class="api-toggle" onclick="toggleApi(event,this)">Get API key →</div>
-              <div class="api-content">
-                <ol>
-                  <li><a href="https://console.groq.com" target="_blank">console.groq.com</a></li>
-                  <li>API Keys → Create</li>
-                </ol>
-              </div>
-            </div>
+            <div class="api-toggle" onclick="event.stopPropagation();openApiGuide('groq')">Get API key →</div>
           </div>
         </div>
         
@@ -1800,6 +1879,17 @@
     <div class="lightbox-hint">Click anywhere to close</div>
   </div>
   
+  <!-- API Key Guide Modal -->
+  <div class="api-modal" id="apiModal">
+    <div class="api-modal-content" onclick="event.stopPropagation()">
+      <div class="api-modal-header">
+        <h3 id="apiModalTitle">Get API Key</h3>
+        <button class="api-modal-close" onclick="closeApiModal()">&times;</button>
+      </div>
+      <div class="api-modal-body" id="apiModalBody"></div>
+    </div>
+  </div>
+  
   <script>
     const S={step:0,platform:null,model:null,userName:'',style:null,inst:'',botToken:'',apiKey:'',os:/Win/.test(navigator.userAgent)?'win':/Mac/.test(navigator.userAgent)?'mac':'linux'};
     
@@ -2059,8 +2149,67 @@ Enjoy your bot! 🤖
     function donate(){alert('Thanks! Stripe coming soon. DM @Andrey__HQ');}
     function openLightbox(img){document.getElementById('lightbox-img').src=img.src;document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden';}
     function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';}
-    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
-    document.querySelectorAll('.guide-img').forEach(img=>img.addEventListener('click',()=>openLightbox(img)));
+    
+    const apiGuides={
+      anthropic:{
+        title:'Get Anthropic API Key',
+        steps:[
+          {num:'1',title:'Go to Anthropic Console',text:'Visit <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> and sign in (or create an account).',img:'images/anthropic/step1-sidebar.jpg'},
+          {num:'2',title:'Click API Keys',text:'In the left sidebar under MANAGE, click <strong>API keys</strong>.',img:null},
+          {num:'3',title:'Create a new key',text:'Click the <strong>+ Create Key</strong> button in the top right.',img:'images/anthropic/step2-create.jpg'},
+          {num:'4',title:'Copy your key',text:'Copy the key immediately and paste it into FreeClaw. <strong>You won\'t be able to see it again!</strong>',img:null}
+        ],
+        warning:'API keys are shown only once. Copy it immediately and store it somewhere safe!'
+      },
+      openai:{
+        title:'Get OpenAI API Key',
+        steps:[
+          {num:'1',title:'Go to OpenAI Platform',text:'Visit <a href="https://platform.openai.com" target="_blank">platform.openai.com</a> and sign in.',img:null},
+          {num:'2',title:'Open API Keys',text:'Click your profile icon → <strong>API keys</strong>, or go to the API keys section in the left sidebar.',img:null},
+          {num:'3',title:'Create new key',text:'Click <strong>Create new secret key</strong>, give it a name, and click Create.',img:null},
+          {num:'4',title:'Copy your key',text:'Copy the key immediately. <strong>You won\'t be able to see it again!</strong>',img:null}
+        ],
+        warning:'OpenAI keys are shown only once. Copy it immediately!'
+      },
+      google:{
+        title:'Get Google Gemini API Key',
+        steps:[
+          {num:'1',title:'Go to AI Studio',text:'Visit <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a> and sign in with Google.',img:null},
+          {num:'2',title:'Get API Key',text:'Click <strong>Get API key</strong> in the left sidebar or top navigation.',img:null},
+          {num:'3',title:'Create key',text:'Click <strong>Create API key</strong> and select a project (or create one).',img:null},
+          {num:'4',title:'Copy your key',text:'Copy the generated API key and paste it into FreeClaw.',img:null}
+        ],
+        warning:'Keep your API key private. Don\'t share it or commit it to public repositories.'
+      },
+      groq:{
+        title:'Get Groq API Key',
+        steps:[
+          {num:'1',title:'Go to Groq Console',text:'Visit <a href="https://console.groq.com" target="_blank">console.groq.com</a> and sign in.',img:null},
+          {num:'2',title:'Open API Keys',text:'Click <strong>API Keys</strong> in the left sidebar.',img:null},
+          {num:'3',title:'Create key',text:'Click <strong>Create API Key</strong>, give it a name.',img:null},
+          {num:'4',title:'Copy your key',text:'Copy the key and paste it into FreeClaw.',img:null}
+        ],
+        warning:'Groq offers generous free tier. Great for testing!'
+      }
+    };
+    
+    function openApiGuide(provider){
+      const guide=apiGuides[provider];
+      if(!guide)return;
+      document.getElementById('apiModalTitle').textContent=guide.title;
+      let html='';
+      guide.steps.forEach(s=>{
+        html+=`<div class="api-modal-step"><h4><span>${s.num}</span>${s.title}</h4><p>${s.text}</p>${s.img?`<img src="${s.img}" onclick="openLightbox(this)">`:''}</div>`;
+      });
+      if(guide.warning)html+=`<div class="api-modal-warning">⚠️ ${guide.warning}</div>`;
+      document.getElementById('apiModalBody').innerHTML=html;
+      document.getElementById('apiModal').classList.add('open');
+      document.body.style.overflow='hidden';
+    }
+    
+    function closeApiModal(){document.getElementById('apiModal').classList.remove('open');document.body.style.overflow='';}
+    document.getElementById('apiModal').addEventListener('click',e=>{if(e.target.id==='apiModal')closeApiModal();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLightbox();closeApiModal();}});
   </script>
 </body>
 </html>
