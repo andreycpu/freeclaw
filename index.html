@@ -1706,9 +1706,242 @@
     function setup7(){document.getElementById('finalBot').textContent='Your bot is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
     async function download(){const z=new JSZip();z.file('config.yaml',genCfg());z.file(S.os==='win'?'setup.bat':'setup.sh',S.os==='win'?genBat():genSh());z.file('README.txt',genRm());const b=await z.generateAsync({type:'blob'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='FreeClaw.zip';a.click();URL.revokeObjectURL(u);}
     function genCfg(){const m={anthropic:'anthropic/claude-sonnet-4-20250514',openai:'openai/gpt-4o',google:'google/gemini-2.0-flash',groq:'groq/llama-3.3-70b-versatile'};const st={chill:'Casual and relaxed.',professional:'Professional and efficient.',friendly:'Warm and supportive.',witty:'Clever with humor.',minimal:'Direct, minimal words.'};let c=`model: ${m[S.model]}\n\nproviders:\n  ${S.model}:\n    apiKey: "${S.apiKey}"\n\nchannels:\n`;if(S.platform==='telegram')c+=`  telegram:\n    botToken: "${S.botToken}"\n    allowedUsers: ["*"]\n`;else if(S.platform==='discord')c+=`  discord:\n    botToken: "${S.botToken}"\n`;else if(S.platform==='whatsapp')c+=`  whatsapp:\n    enabled: true\n`;else if(S.platform==='slack')c+=`  slack:\n    botToken: "${S.botToken}"\n`;c+=`\nsoul: |\n  You are a helpful AI assistant. Talking to ${S.userName}. ${st[S.style]}`;if(S.inst)c+=` ${S.inst}`;return c;}
-    function genSh(){return`#!/bin/bash\necho "FreeClaw Setup"\nWS="$HOME/freeclaw"\nif [ -d "$WS/node_modules" ];then cd "$WS";openclaw gateway start;exit 0;fi\nif ! command -v node &>/dev/null;then if [[ "$OSTYPE"=="darwin"* ]];then /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)";brew install node;else curl -fsSL https://deb.nodesource.com/setup_20.x|sudo -E bash -;sudo apt-get install -y nodejs;fi;fi\nnpm install -g openclaw\nmkdir -p "$WS"\ncp "$(dirname "$0")/config.yaml" "$WS/"\ncd "$WS"\nopenclaw gateway start`;}
-    function genBat(){return`@echo off\necho FreeClaw Setup\nset WS=%USERPROFILE%\\freeclaw\nif exist "%WS%\\node_modules" (cd /d "%WS%" && openclaw gateway start && exit /b)\nwhere node >nul 2>nul || (echo Install Node.js from nodejs.org && start https://nodejs.org && pause && exit /b)\nnpm install -g openclaw\nmkdir "%WS%" 2>nul\ncopy "%~dp0config.yaml" "%WS%\\"\ncd /d "%WS%"\nopenclaw gateway start\npause`;}
-    function genRm(){return`FREECLAW\n========\n\n1. Extract zip\n2. Run setup.${S.os==='win'?'bat':'sh'}\n3. Wait for "Bot is running"\n4. Message bot on ${S.platform}\n\nHelp: andreymarey.work@gmail.com`;}
+    function genSh(){return`#!/bin/bash
+# FreeClaw Setup Script
+# This script sets up your AI chatbot
+
+set -e  # Exit on any error
+
+# Colors for pretty output
+RED='\\033[0;31m'
+GREEN='\\033[0;32m'
+YELLOW='\\033[1;33m'
+BLUE='\\033[0;34m'
+NC='\\033[0m' # No Color
+
+clear
+echo ""
+echo -e "\${BLUE}╔════════════════════════════════════════╗\${NC}"
+echo -e "\${BLUE}║\${NC}     🤖 \${GREEN}FreeClaw Setup\${NC}                  \${BLUE}║\${NC}"
+echo -e "\${BLUE}║\${NC}     Your AI chatbot in minutes        \${BLUE}║\${NC}"
+echo -e "\${BLUE}╚════════════════════════════════════════╝\${NC}"
+echo ""
+
+WS="$HOME/freeclaw"
+SCRIPT_DIR="$(cd "$(dirname "\$0")" && pwd)"
+
+# Check if already set up - just start the bot
+if [ -f "$WS/config.yaml" ] && command -v openclaw &>/dev/null; then
+    echo -e "\${GREEN}✓\${NC} FreeClaw already installed!"
+    echo -e "\${BLUE}→\${NC} Starting your bot..."
+    echo ""
+    cd "$WS"
+    openclaw gateway start
+    exit 0
+fi
+
+# Step 1: Check Node.js
+echo -e "\${BLUE}[1/4]\${NC} Checking Node.js..."
+if ! command -v node &>/dev/null; then
+    echo ""
+    echo -e "\${YELLOW}⚠ Node.js not found\${NC}"
+    echo ""
+    echo "Please install Node.js first:"
+    echo ""
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo -e "  \${GREEN}Option 1:\${NC} Download from https://nodejs.org"
+        echo -e "  \${GREEN}Option 2:\${NC} Run: brew install node"
+    else
+        echo -e "  Download from: https://nodejs.org"
+    fi
+    echo ""
+    echo "After installing, run this script again."
+    echo ""
+    # Try to open the download page
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        open "https://nodejs.org" 2>/dev/null || true
+    else
+        xdg-open "https://nodejs.org" 2>/dev/null || true
+    fi
+    read -p "Press Enter after installing Node.js..."
+    exit 1
+fi
+
+NODE_VER=$(node -v)
+echo -e "\${GREEN}✓\${NC} Node.js \$NODE_VER found"
+
+# Step 2: Install OpenClaw
+echo -e "\${BLUE}[2/4]\${NC} Installing OpenClaw..."
+if ! command -v openclaw &>/dev/null; then
+    npm install -g openclaw --silent 2>/dev/null || npm install -g openclaw
+fi
+echo -e "\${GREEN}✓\${NC} OpenClaw installed"
+
+# Step 3: Set up workspace
+echo -e "\${BLUE}[3/4]\${NC} Setting up your bot..."
+mkdir -p "$WS"
+
+# Copy config
+if [ -f "$SCRIPT_DIR/config.yaml" ]; then
+    cp "$SCRIPT_DIR/config.yaml" "$WS/config.yaml"
+    echo -e "\${GREEN}✓\${NC} Configuration saved"
+else
+    echo -e "\${RED}✗\${NC} Error: config.yaml not found"
+    echo "  Make sure you extracted the full zip file."
+    exit 1
+fi
+
+# Step 4: Start the bot
+echo -e "\${BLUE}[4/4]\${NC} Starting your bot..."
+echo ""
+cd "$WS"
+
+echo -e "\${GREEN}════════════════════════════════════════\${NC}"
+echo -e "\${GREEN}✓ Setup complete!\${NC}"
+echo ""
+echo -e "Your bot is starting. Once you see \${YELLOW}'Bot is running'\${NC},"
+echo -e "open \${BLUE}${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)}\${NC} and message your bot!"
+echo ""
+echo -e "\${YELLOW}Keep this window open\${NC} - closing it stops the bot."
+echo -e "\${GREEN}════════════════════════════════════════\${NC}"
+echo ""
+
+# Open Telegram (best effort, won't fail if it doesn't work)
+sleep 2
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    open "https://t.me/" 2>/dev/null || true
+fi
+
+# Start the gateway
+openclaw gateway start
+`;}
+    function genBat(){return`@echo off
+setlocal enabledelayedexpansion
+title FreeClaw Setup
+color 0A
+cls
+
+echo.
+echo  ========================================
+echo       FreeClaw Setup
+echo       Your AI chatbot in minutes
+echo  ========================================
+echo.
+
+set "WS=%USERPROFILE%\\freeclaw"
+set "SCRIPT_DIR=%~dp0"
+
+:: Check if already set up
+if exist "%WS%\\config.yaml" (
+    where openclaw >nul 2>nul
+    if !errorlevel! equ 0 (
+        echo [OK] FreeClaw already installed!
+        echo [..] Starting your bot...
+        cd /d "%WS%"
+        goto :startbot
+    )
+)
+
+:: Step 1: Check Node.js
+echo [1/4] Checking Node.js...
+where node >nul 2>nul
+if !errorlevel! neq 0 (
+    echo.
+    echo [!!] Node.js not found
+    echo.
+    echo Please install Node.js first:
+    echo   1. Click OK when the download page opens
+    echo   2. Download and install Node.js
+    echo   3. Run this script again
+    echo.
+    start https://nodejs.org
+    echo Press any key after installing Node.js...
+    pause >nul
+    exit /b 1
+)
+
+for /f "tokens=*" %%i in ('node -v') do set NODE_VER=%%i
+echo [OK] Node.js %NODE_VER% found
+
+:: Step 2: Install OpenClaw
+echo [2/4] Installing OpenClaw...
+where openclaw >nul 2>nul
+if !errorlevel! neq 0 (
+    call npm install -g openclaw
+)
+echo [OK] OpenClaw installed
+
+:: Step 3: Set up workspace
+echo [3/4] Setting up your bot...
+if not exist "%WS%" mkdir "%WS%"
+
+if exist "%SCRIPT_DIR%config.yaml" (
+    copy /Y "%SCRIPT_DIR%config.yaml" "%WS%\\config.yaml" >nul
+    echo [OK] Configuration saved
+) else (
+    echo [ERROR] config.yaml not found
+    echo Make sure you extracted the full zip file.
+    pause
+    exit /b 1
+)
+
+:: Step 4: Start the bot
+echo [4/4] Starting your bot...
+echo.
+cd /d "%WS%"
+
+echo ========================================
+echo [OK] Setup complete!
+echo.
+echo Your bot is starting. Once you see 'Bot is running',
+echo open ${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)} and message your bot!
+echo.
+echo Keep this window open - closing it stops the bot.
+echo ========================================
+echo.
+
+:: Open Telegram
+timeout /t 2 >nul
+start https://t.me/
+
+:startbot
+openclaw gateway start
+pause
+`;}
+    function genRm(){const ext=S.os==='win'?'bat':'sh';const plat=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);return`FREECLAW - Your AI Chatbot
+==========================
+
+QUICK START
+-----------
+1. Extract this zip file to a folder
+2. Double-click setup.${ext} (or right-click → Open on Mac)
+3. Wait for "Bot is running" message
+4. Open ${plat} and message your bot!
+
+IMPORTANT
+---------
+• Keep the terminal window open - closing it stops your bot
+• Your bot runs on YOUR computer, not a server
+• To restart: just run setup.${ext} again
+
+TROUBLESHOOTING
+---------------
+"Node.js not found"
+  → Download from https://nodejs.org and install it first
+
+"Permission denied" (Mac)
+  → Right-click setup.sh → Open → Click "Open" in the popup
+
+"Windows protected your PC"
+  → Click "More info" → "Run anyway"
+
+NEED HELP?
+----------
+Email: andreymarey.work@gmail.com
+Twitter: @Andrey__HQ
+
+Enjoy your bot! 🤖
+`;}
     function donate(){alert('Thanks! Stripe coming soon. DM @Andrey__HQ');}
     function openLightbox(img){document.getElementById('lightbox-img').src=img.src;document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden';}
     function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';}
