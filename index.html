@@ -689,6 +689,111 @@
       gap: 24px;
     }
     
+    /* Comparison Table */
+    .comparison-section {
+      margin: 60px 0;
+      padding-top: 40px;
+      border-top: 1px solid var(--glass-border);
+    }
+    
+    .comparison-section h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    
+    .comparison-section > p {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      font-size: 0.95rem;
+    }
+    
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-card);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+    }
+    
+    .comparison-table th,
+    .comparison-table td {
+      padding: 16px 20px;
+      text-align: left;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    
+    .comparison-table th {
+      background: var(--glass-bg);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .comparison-table th:first-child {
+      width: 40%;
+    }
+    
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .comparison-table td {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    
+    .comparison-table td:first-child {
+      color: var(--text);
+      font-weight: 500;
+    }
+    
+    .check-yes {
+      color: var(--accent);
+    }
+    
+    .check-no {
+      color: var(--text-dim);
+    }
+    
+    .current-badge {
+      display: inline-block;
+      background: var(--accent-dim);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    
+    .server-cta {
+      text-align: center;
+      margin-top: 24px;
+      padding: 20px;
+      background: var(--glass-bg);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+    }
+    
+    .server-cta p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    
+    .server-cta a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .server-cta a:hover {
+      text-decoration: underline;
+    }
+    
     /* Responsive */
     @media (max-width: 600px) {
       .cards-grid { grid-template-columns: 1fr; }
@@ -1142,6 +1247,59 @@
       </div>
       
     </div>
+    
+    <!-- Comparison Section -->
+    <section class="comparison-section">
+      <h2>Local vs Server</h2>
+      <p>This setup runs entirely on your computer. Here's what that means:</p>
+      
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Local <span class="current-badge">This Setup</span></th>
+            <th>Server</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Available 24/7</td>
+            <td><span class="check-no">Only when computer is on</span></td>
+            <td><span class="check-yes">Yes, always online</span></td>
+          </tr>
+          <tr>
+            <td>Message from phone</td>
+            <td><span class="check-no">Only when computer is on</span></td>
+            <td><span class="check-yes">Yes, anytime</span></td>
+          </tr>
+          <tr>
+            <td>Your data stays private</td>
+            <td><span class="check-yes">100% on your machine</span></td>
+            <td><span class="check-no">Lives on a server</span></td>
+          </tr>
+          <tr>
+            <td>No ongoing costs</td>
+            <td><span class="check-yes">Just your API key</span></td>
+            <td><span class="check-no">Server costs ~$5-20/mo</span></td>
+          </tr>
+          <tr>
+            <td>Setup difficulty</td>
+            <td><span class="check-yes">5 minutes, no coding</span></td>
+            <td><span class="check-no">Requires technical setup</span></td>
+          </tr>
+          <tr>
+            <td>Memory persists</td>
+            <td><span class="check-yes">Yes, stored locally</span></td>
+            <td><span class="check-yes">Yes, stored on server</span></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="server-cta">
+        <p>Want 24/7 availability with a server or Docker setup?</p>
+        <a href="mailto:andreymarey.work@gmail.com?subject=FreeClaw%20Server%20Setup%20Inquiry">Email us to inquire</a>
+      </div>
+    </section>
     
     <footer>
       <p>I will never create a token. I will never charge for this. If you see me do either, it is fraud.</p>
