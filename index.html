@@ -907,6 +907,53 @@
       margin-top: 16px;
     }
     
+    .api-modal-input {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--glass-border);
+    }
+    
+    .api-modal-input label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    
+    .api-modal-input input {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: monospace;
+      margin-bottom: 12px;
+    }
+    
+    .api-modal-input input:focus {
+      outline: none;
+      border-color: var(--accent-solid);
+    }
+    
+    .api-modal-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .api-modal-btn:hover {
+      transform: translateY(-1px);
+    }
+    
     /* Nav */
     .nav {
       display: flex;
@@ -2213,10 +2260,14 @@ Enjoy your bot! 🤖
         html+=`<div class="api-modal-step"><h4><span>${s.num}</span>${s.title}</h4><p>${s.text}</p>${s.img?`<img src="${s.img}" onclick="openLightbox(this)">`:''}</div>`;
       });
       if(guide.warning)html+=`<div class="api-modal-warning">⚠️ ${guide.warning}</div>`;
+      html+=`<div class="api-modal-input"><label>Paste your API key here:</label><input type="password" id="modalApiKey" placeholder="sk-..." oninput="updateApiKeyFromModal()"><button class="api-modal-btn" onclick="saveApiKeyAndClose()">Save & Continue</button></div>`;
       document.getElementById('apiModalBody').innerHTML=html;
       document.getElementById('apiModal').classList.add('open');
       document.body.style.overflow='hidden';
     }
+    
+    function updateApiKeyFromModal(){document.getElementById('apiKey').value=document.getElementById('modalApiKey').value;checkApiKey();}
+    function saveApiKeyAndClose(){updateApiKeyFromModal();if(S.apiKey)closeApiModal();}
     
     function closeApiModal(){document.getElementById('apiModal').classList.remove('open');document.body.style.overflow='';}
     document.getElementById('apiModal').addEventListener('click',e=>{if(e.target.id==='apiModal')closeApiModal();});
