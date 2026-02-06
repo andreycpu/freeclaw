@@ -1497,29 +1497,31 @@
           </div>
         </div>
         
-        <div class="faq">
-          <div class="faq-title">Common questions</div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Which platform is easiest? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Telegram. It takes about 2 minutes to create a bot and get started.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Can I use multiple platforms? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Yes! You can add more platforms later by editing your config file.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">What about iMessage? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">iMessage requires a Mac and additional setup. Check the docs for BlueBubbles integration.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Is WhatsApp really free? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Yes, but it uses your personal WhatsApp number. You'll scan a QR code to link it.</div>
-          </div>
-        </div>
-        
         <div class="nav">
           <button class="next" id="n1" disabled onclick="go(2)">Continue</button>
         </div>
+        
+        <details class="faq-dropdown">
+          <summary>Common questions</summary>
+          <div class="faq-content">
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">Which platform is easiest? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+              <div class="faq-a">Telegram. It takes about 2 minutes to create a bot and get started.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">Can I use multiple platforms? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+              <div class="faq-a">Yes! You can add more platforms later by editing your config file.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">What about iMessage? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+              <div class="faq-a">iMessage requires a Mac and additional setup. Check the docs for BlueBubbles integration.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">Is WhatsApp really free? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+              <div class="faq-a">Yes, but it uses your personal WhatsApp number. You'll scan a QR code to link it.</div>
+            </div>
+          </div>
+        </details>
       </div>
       
       <!-- Step 2: Model -->
