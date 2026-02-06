@@ -2043,16 +2043,16 @@
         </div>
         <div class="step-head">
           <h2>Download</h2>
-          <p>Everything in one zip</p>
+          <p>One file, everything included</p>
         </div>
         
         <div class="dl-box">
           <div class="os-tag" id="osTag">Mac</div>
           <h3>Your bot is ready</h3>
-          <p>Config, script, and instructions included</p>
+          <p>Just download and double-click to run</p>
           <button class="dl-btn" onclick="download()">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Download FreeClaw.zip
+            <span id="dlBtnText">Download FreeClaw-Setup</span>
           </button>
         </div>
         
@@ -2072,10 +2072,9 @@
         </div>
         
         <div class="checklist">
-          <h3>Just 3 steps</h3>
-          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Extract the zip</strong><br><span>Double-click FreeClaw.zip to unzip it</span></div></div>
-          <div class="cl-item"><div class="cl-num">2</div><div class="cl-text"><strong>Run setup.<span id="ext">sh</span></strong><br><span>Mac: double-click (or right-click → Open). Windows: double-click .bat</span></div></div>
-          <div class="cl-item"><div class="cl-num">3</div><div class="cl-text"><strong>Start chatting!</strong><br><span><span id="testPlat">Telegram</span> will open automatically with your bot ready</span></div></div>
+          <h3>Just 2 steps</h3>
+          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Run the downloaded file</strong><br><span>Mac: double-click FreeClaw-Setup.command (click "Open" if prompted). Windows: double-click .bat</span></div></div>
+          <div class="cl-item"><div class="cl-num">2</div><div class="cl-text"><strong>Start chatting!</strong><br><span><span id="testPlat">Telegram</span> will open automatically when your bot is ready</span></div></div>
           <div class="cl-note"><strong>Tip:</strong> Keep the terminal window open. Your bot runs on your computer - closing it stops the bot.</div>
         </div>
         
@@ -2165,10 +2164,10 @@
     function checkApiKey(){S.apiKey=document.getElementById('apiKey').value;document.getElementById('n2').disabled=!(S.model&&S.apiKey);}
     function checkT(){S.botToken=document.getElementById('bToken').value;S.botUsername=document.getElementById('bUsername').value.replace(/^@/,'');const needToken=S.platform!=='whatsapp';const needUsername=S.platform==='telegram';let valid=true;if(needToken&&!S.botToken)valid=false;if(needUsername&&!S.botUsername)valid=false;document.getElementById('n3').disabled=!valid;}
     function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};document.getElementById('platTitle').textContent=n[S.platform];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>{document.getElementById('setup'+p).style.display='none';document.getElementById('faq'+p).style.display='none';});const pCap=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);document.getElementById('setup'+pCap).style.display='block';document.getElementById('faq'+pCap).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';document.getElementById('usernameRow').style.display=S.platform==='telegram'?'block':'none';checkT();}
-    function setup5(){document.getElementById('osTag').textContent={mac:'Mac',win:'Windows',linux:'Linux'}[S.os];}
-    function setup6(){document.getElementById('testPlat').textContent={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];document.getElementById('ext').textContent=S.os==='win'?'bat':'sh';}
+    function setup5(){document.getElementById('osTag').textContent={mac:'Mac',win:'Windows',linux:'Linux'}[S.os];document.getElementById('dlBtnText').textContent='Download FreeClaw-Setup.'+(S.os==='win'?'bat':'command');}
+    function setup6(){document.getElementById('testPlat').textContent={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];}
     function setup7(){document.getElementById('finalBot').textContent='Your bot is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
-    async function download(){const z=new JSZip();z.file('config.yaml',genCfg());z.file('SOUL.md',genSoul());z.file('USER.md',genUser());z.file('AGENTS.md',genAgents());z.file(S.os==='win'?'setup.bat':'setup.sh',S.os==='win'?genBat():genSh());z.file('README.txt',genRm());const b=await z.generateAsync({type:'blob'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='FreeClaw.zip';a.click();URL.revokeObjectURL(u);}
+    async function download(){const script=S.os==='win'?genBatSingle():genShSingle();const b=new Blob([script],{type:'text/plain'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=S.os==='win'?'FreeClaw-Setup.bat':'FreeClaw-Setup.command';a.click();URL.revokeObjectURL(u);}
     function genCfg(){const m={anthropic:'anthropic/claude-sonnet-4-20250514',openai:'openai/gpt-4o',google:'google/gemini-2.0-flash',groq:'groq/llama-3.3-70b-versatile'};let c=`model: ${m[S.model]}\n\nproviders:\n  ${S.model}:\n    apiKey: "${S.apiKey}"\n\nchannels:\n`;if(S.platform==='telegram')c+=`  telegram:\n    botToken: "${S.botToken}"\n    allowedUsers: ["*"]\n`;else if(S.platform==='discord')c+=`  discord:\n    botToken: "${S.botToken}"\n`;else if(S.platform==='whatsapp')c+=`  whatsapp:\n    enabled: true\n`;else if(S.platform==='slack')c+=`  slack:\n    botToken: "${S.botToken}"\n`;return c;}
     function genSoul(){const st={chill:{name:'Chill',desc:'Relaxed and easygoing. Keep things casual and low-pressure.'},professional:{name:'Professional',desc:'Efficient and focused. Get to the point without unnecessary fluff.'},friendly:{name:'Friendly',desc:'Warm and supportive. Be encouraging and positive.'},witty:{name:'Witty',desc:'Clever with a touch of humor. Keep things interesting.'},minimal:{name:'Minimal',desc:'Direct and concise. Use as few words as possible.'}};const style=st[S.style];return`# SOUL.md - Who You Are
 
@@ -2248,6 +2247,306 @@ Keep responses appropriate for ${S.platform.charAt(0).toUpperCase()+S.platform.s
 ---
 
 *Generated by FreeClaw*
+`;}
+    function genShSingle(){const cfg=genCfg().replace(/`/g,"'").replace(/\$/g,'\\$');const soul=genSoul().replace(/`/g,"'").replace(/\$/g,'\\$');const user=genUser().replace(/`/g,"'").replace(/\$/g,'\\$');const agents=genAgents().replace(/`/g,"'").replace(/\$/g,'\\$');return`#!/bin/bash
+# FreeClaw One-Click Setup
+# Just double-click this file to set up your AI chatbot
+
+set -e
+
+# Colors
+RED='\\033[0;31m'
+GREEN='\\033[0;32m'
+YELLOW='\\033[1;33m'
+BLUE='\\033[0;34m'
+NC='\\033[0m'
+
+clear
+echo ""
+echo -e "\${BLUE}╔════════════════════════════════════════╗\${NC}"
+echo -e "\${BLUE}║\${NC}     🤖 \${GREEN}FreeClaw One-Click Setup\${NC}        \${BLUE}║\${NC}"
+echo -e "\${BLUE}║\${NC}     Your AI chatbot in seconds        \${BLUE}║\${NC}"
+echo -e "\${BLUE}╚════════════════════════════════════════╝\${NC}"
+echo ""
+
+WS="$HOME/freeclaw"
+
+# Check if already running
+if [ -f "$WS/config.yaml" ] && command -v openclaw &>/dev/null; then
+    echo -e "\${GREEN}✓\${NC} FreeClaw already set up!"
+    echo -e "\${BLUE}→\${NC} Starting your bot..."
+    cd "$WS"
+    
+    # Open messaging app
+    DEEPLINK="${S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':S.platform==='slack'?'slack://open':'https://web.whatsapp.com'}"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        open "$DEEPLINK" 2>/dev/null || true
+    fi
+    
+    openclaw gateway start
+    exit 0
+fi
+
+# Step 1: Check Node.js
+echo -e "\${BLUE}[1/3]\${NC} Checking Node.js..."
+if ! command -v node &>/dev/null; then
+    echo ""
+    echo -e "\${YELLOW}⚠ Node.js required\${NC}"
+    echo ""
+    echo "Installing Node.js..."
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # Try to install via brew or direct download
+        if command -v brew &>/dev/null; then
+            brew install node
+        else
+            echo "Please install Node.js from https://nodejs.org"
+            open "https://nodejs.org" 2>/dev/null || true
+            read -p "Press Enter after installing Node.js..."
+            exit 1
+        fi
+    else
+        echo "Please install Node.js from https://nodejs.org"
+        xdg-open "https://nodejs.org" 2>/dev/null || true
+        read -p "Press Enter after installing Node.js..."
+        exit 1
+    fi
+fi
+echo -e "\${GREEN}✓\${NC} Node.js ready"
+
+# Step 2: Install OpenClaw
+echo -e "\${BLUE}[2/3]\${NC} Installing OpenClaw..."
+if ! command -v openclaw &>/dev/null; then
+    npm install -g openclaw --silent 2>/dev/null || npm install -g openclaw
+fi
+echo -e "\${GREEN}✓\${NC} OpenClaw installed"
+
+# Step 3: Create workspace with embedded config
+echo -e "\${BLUE}[3/3]\${NC} Setting up your bot..."
+mkdir -p "$WS"
+
+# Write config files (embedded in this script)
+cat > "$WS/config.yaml" << 'FREECLAW_CONFIG'
+${cfg}
+FREECLAW_CONFIG
+
+cat > "$WS/SOUL.md" << 'FREECLAW_SOUL'
+${soul}
+FREECLAW_SOUL
+
+cat > "$WS/USER.md" << 'FREECLAW_USER'
+${user}
+FREECLAW_USER
+
+cat > "$WS/AGENTS.md" << 'FREECLAW_AGENTS'
+${agents}
+FREECLAW_AGENTS
+
+echo -e "\${GREEN}✓\${NC} Configuration saved"
+
+# Start the bot
+echo ""
+echo -e "\${GREEN}════════════════════════════════════════\${NC}"
+echo -e "\${GREEN}✓ Setup complete!\${NC}"
+echo ""
+echo -e "\${YELLOW}Starting your bot...\${NC}"
+echo ""
+
+cd "$WS"
+
+# Progress bar
+show_progress() {
+    local current=\\$1
+    local total=\\$2
+    local width=40
+    local percent=\\$((current * 100 / total))
+    local filled=\\$((current * width / total))
+    local empty=\\$((width - filled))
+    printf "\\r\${BLUE}[\${NC}"
+    for ((j=0; j<filled; j++)); do printf "█"; done
+    for ((j=0; j<empty; j++)); do printf "░"; done
+    printf "\${BLUE}]\${NC} \${GREEN}%3d%%\${NC} " "\\$percent"
+}
+
+# Start gateway in background
+LOGFILE="$WS/.openclaw.log"
+openclaw gateway start > "\\$LOGFILE" 2>&1 &
+BOT_PID=\\$!
+
+# Wait for ready with progress bar
+READY=0
+for i in {1..20}; do
+    show_progress \\$i 20
+    if grep -qi "listening\\|running\\|started\\|ready" "\\$LOGFILE" 2>/dev/null; then
+        show_progress 20 20
+        READY=1
+        break
+    fi
+    if ! kill -0 \\$BOT_PID 2>/dev/null; then
+        echo ""
+        echo -e "\${RED}✗\${NC} Bot failed to start"
+        cat "\\$LOGFILE"
+        exit 1
+    fi
+    sleep 1
+done
+echo ""
+
+if [ \\$READY -eq 1 ]; then
+    echo -e "\${GREEN}✓ Bot is running!\${NC}"
+    echo ""
+    
+    # Open messaging app
+    DEEPLINK="${S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':S.platform==='slack'?'slack://open':'https://web.whatsapp.com'}"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        open "\\$DEEPLINK" 2>/dev/null || open "${S.platform==='telegram'?`https://t.me/${S.botUsername}?start=start`:'#'}" 2>/dev/null || true
+    else
+        xdg-open "\\$DEEPLINK" 2>/dev/null || true
+    fi
+    
+    echo -e "\${BLUE}${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)} should open automatically!\${NC}"
+else
+    echo -e "\${YELLOW}Bot is taking longer than expected...\${NC}"
+fi
+
+echo ""
+echo -e "\${YELLOW}Keep this window open\${NC} - closing it stops the bot."
+echo -e "\${GREEN}════════════════════════════════════════\${NC}"
+echo ""
+echo "Bot output:"
+echo "─────────────────────────────────────────"
+tail -f "\\$LOGFILE"
+`;}
+    function genBatSingle(){const cfg=genCfg().replace(/%/g,'%%');const soul=genSoul().replace(/%/g,'%%');const user=genUser().replace(/%/g,'%%');const agents=genAgents().replace(/%/g,'%%');return`@echo off
+setlocal enabledelayedexpansion
+title FreeClaw One-Click Setup
+color 0A
+cls
+
+echo.
+echo  ========================================
+echo       FreeClaw One-Click Setup
+echo       Your AI chatbot in seconds
+echo  ========================================
+echo.
+
+set "WS=%USERPROFILE%\\freeclaw"
+
+:: Check if already set up
+if exist "%WS%\\config.yaml" (
+    where openclaw >nul 2>nul
+    if !errorlevel! equ 0 (
+        echo [OK] FreeClaw already set up!
+        echo Starting your bot...
+        cd /d "%WS%"
+        start "" "${S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}^&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com'}"
+        openclaw gateway start
+        pause
+        exit /b 0
+    )
+)
+
+:: Step 1: Check Node.js
+echo [1/3] Checking Node.js...
+where node >nul 2>nul
+if !errorlevel! neq 0 (
+    echo.
+    echo [!!] Node.js required
+    echo.
+    echo Please install Node.js first:
+    start https://nodejs.org
+    echo Press any key after installing...
+    pause >nul
+    exit /b 1
+)
+echo [OK] Node.js ready
+
+:: Step 2: Install OpenClaw
+echo [2/3] Installing OpenClaw...
+where openclaw >nul 2>nul
+if !errorlevel! neq 0 (
+    call npm install -g openclaw
+)
+echo [OK] OpenClaw installed
+
+:: Step 3: Create workspace
+echo [3/3] Setting up your bot...
+if not exist "%WS%" mkdir "%WS%"
+
+:: Write config (embedded)
+(
+echo ${cfg.split('\n').join('\necho ')}
+) > "%WS%\\config.yaml"
+
+:: Write SOUL.md
+(
+echo ${soul.split('\n').join('\necho ')}
+) > "%WS%\\SOUL.md"
+
+:: Write USER.md
+(
+echo ${user.split('\n').join('\necho ')}
+) > "%WS%\\USER.md"
+
+:: Write AGENTS.md
+(
+echo ${agents.split('\n').join('\necho ')}
+) > "%WS%\\AGENTS.md"
+
+echo [OK] Configuration saved
+
+:: Start the bot
+echo.
+echo ========================================
+echo [OK] Setup complete!
+echo.
+echo Starting your bot...
+echo.
+
+cd /d "%WS%"
+
+:: Start gateway in background
+set "LOGFILE=%WS%\\.openclaw.log"
+start /b cmd /c "openclaw gateway start > "%LOGFILE%" 2>&1"
+
+:: Progress bar
+set READY=0
+for /L %%i in (1,1,20) do (
+    set /a "PCT=%%i * 5"
+    echo [!PCT!%%] Initializing...
+    
+    findstr /i /c:"listening" /c:"running" /c:"started" /c:"ready" "%LOGFILE%" >nul 2>&1
+    if !errorlevel! equ 0 (
+        set READY=1
+        goto :botready
+    )
+    timeout /t 1 >nul
+)
+
+:botready
+if !READY! equ 1 (
+    echo.
+    echo [OK] Bot is running!
+    echo.
+    start "" "${S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}^&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com'}"
+    echo ${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)} should open automatically!
+) else (
+    echo [..] Bot is taking longer than expected...
+)
+
+echo.
+echo Keep this window open - closing it stops the bot.
+echo ========================================
+echo.
+
+:: Show output
+type "%LOGFILE%"
+echo.
+echo Monitoring...
+
+:monitor
+timeout /t 2 >nul
+type "%LOGFILE%"
+goto :monitor
 `;}
     function genSh(){return`#!/bin/bash
 # FreeClaw Setup Script
