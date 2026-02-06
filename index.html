@@ -1139,7 +1139,7 @@ function buildConfigJSON() {
       config.channels.discord = { enabled: true, token: sanitize(state.discord.token) };
       break;
     case 'whatsapp':
-      config.channels.whatsapp = { enabled: true, dmPolicy: 'open', allowFrom: ['*'] };
+      config.channels.whatsapp = { dmPolicy: 'open', allowFrom: ['*'] };
       break;
     case 'slack':
       config.channels.slack = { enabled: true, botToken: sanitize(state.slack.botToken), appToken: sanitize(state.slack.appToken) };
