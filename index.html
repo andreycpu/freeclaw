@@ -112,10 +112,17 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex: 1;
     }
     
     .logo-icon {
       flex-shrink: 0;
+    }
+    
+    .header-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
     }
     
     .made-by {
@@ -124,11 +131,19 @@
       padding: 4px 10px;
       border-radius: 6px;
       color: var(--accent-solid) !important;
+      font-size: 0.8rem;
+      text-decoration: none;
     }
     
     .made-by:hover {
       background: rgba(168, 85, 247, 0.1);
       border-color: var(--accent-solid);
+    }
+    
+    .header-links {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
     }
     
     .header-links a {
@@ -312,6 +327,7 @@
       align-items: flex-start;
       gap: 12px;
       margin-top: 24px;
+      margin-bottom: 32px;
       max-width: 480px;
       cursor: pointer;
       user-select: none;
@@ -1523,8 +1539,10 @@
         </svg>
         FreeClaw
       </a>
-      <div class="header-links">
+      <div class="header-center">
         <a href="https://x.com/Andrey__HQ" target="_blank" class="made-by">by @Andrey__HQ</a>
+      </div>
+      <div class="header-links">
         <a href="https://docs.openclaw.ai" target="_blank">Docs</a>
         <a href="https://github.com/openclaw/openclaw" target="_blank">GitHub</a>
       </div>
