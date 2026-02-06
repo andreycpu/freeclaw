@@ -266,6 +266,100 @@
       font-weight: 500;
     }
     
+    .warning-card {
+      margin-top: 32px;
+      padding: 20px 24px;
+      background: rgba(234, 179, 8, 0.08);
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      border-radius: 16px;
+      max-width: 480px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    
+    .warning-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      color: #eab308;
+    }
+    
+    .warning-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .warning-content {
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    
+    .warning-content strong {
+      color: #eab308;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 6px;
+    }
+    
+    .warning-content p {
+      color: var(--text-soft);
+      margin: 0;
+    }
+    
+    .disclaimer-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 24px;
+      max-width: 480px;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    .disclaimer-check input {
+      display: none;
+    }
+    
+    .disclaimer-check .checkmark {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--glass-border);
+      border-radius: 4px;
+      background: var(--glass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .disclaimer-check input:checked + .checkmark {
+      background: var(--accent-solid);
+      border-color: var(--accent-solid);
+    }
+    
+    .disclaimer-check input:checked + .checkmark::after {
+      content: '';
+      width: 6px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      margin-bottom: 2px;
+    }
+    
+    .disclaimer-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    
+    .cta:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
     /* Progress */
     .progress-wrap {
       padding: 20px 0 36px;
@@ -1444,7 +1538,24 @@
       </div>
       <h1>Set up <span class="gradient-text">OpenClaw</span> in 10 minutes</h1>
       <p class="sub">Your own AI assistant on Telegram, Discord, WhatsApp, or Slack. No coding. Seriously free.</p>
-      <button class="cta" onclick="start()">
+      
+      <div class="warning-card">
+        <div class="warning-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+        </div>
+        <div class="warning-content">
+          <strong>Security Notice</strong>
+          <p>This software runs code on your computer and has access to your messaging accounts. While I've done my best to eliminate security vulnerabilities, no software is 100% secure. Only proceed if you understand and accept these risks.</p>
+        </div>
+      </div>
+      
+      <label class="disclaimer-check">
+        <input type="checkbox" id="acceptRisk" onchange="checkDisclaimer()">
+        <span class="checkmark"></span>
+        <span class="disclaimer-text">I understand this software could potentially access my files and messaging accounts, and I accept the risks</span>
+      </label>
+      
+      <button class="cta" id="startBtn" onclick="start()" disabled>
         Get Started
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
       </button>
@@ -2023,6 +2134,7 @@
   <script>
     const S={step:0,platform:null,model:null,userName:'',style:null,inst:'',botToken:'',botUsername:'',apiKey:'',os:/Win/.test(navigator.userAgent)?'win':/Mac/.test(navigator.userAgent)?'mac':'linux'};
     
+    function checkDisclaimer(){document.getElementById('startBtn').disabled=!document.getElementById('acceptRisk').checked;}
     function start(){document.getElementById('landing').style.display='none';document.getElementById('progress').classList.add('show');document.getElementById('wizard').classList.add('show');go(1);}
     function goLanding(){document.getElementById('landing').style.display='flex';document.getElementById('progress').classList.remove('show');document.getElementById('wizard').classList.remove('show');S.step=0;}
     function go(n){if(S.step)document.querySelector(`[data-step="${S.step}"]`).classList.remove('active');S.step=n;document.querySelector(`[data-step="${n}"]`).classList.add('active');upProg();window.scrollTo(0,0);if(n===3)setup3();if(n===5)setup5();if(n===6)setup6();if(n===7)setup7();}
