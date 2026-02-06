@@ -2253,23 +2253,43 @@ LOGFILE="$WS/.openclaw.log"
 openclaw gateway start > "$LOGFILE" 2>&1 &
 BOT_PID=$!
 
-# Wait for bot to be ready (check for "running" or "listening" in log, max 30 seconds)
-echo -n "Starting"
+# Progress bar function
+show_progress() {
+    local current=$1
+    local total=$2
+    local width=40
+    local percent=$((current * 100 / total))
+    local filled=$((current * width / total))
+    local empty=$((width - filled))
+    
+    printf "\\r\${BLUE}[\${NC}"
+    printf "%0.s█" \$(seq 1 \$filled) 2>/dev/null || true
+    printf "%0.s░" \$(seq 1 \$empty) 2>/dev/null || true
+    printf "\${BLUE}]\${NC} \${GREEN}%3d%%\${NC} " "\$percent"
+}
+
+# Wait for bot to be ready with progress bar
 READY=0
-for i in {1..30}; do
-    sleep 1
-    echo -n "."
+TOTAL=20
+for i in \$(seq 1 \$TOTAL); do
+    show_progress \$i \$TOTAL
+    
     if grep -qi "listening\\|running\\|started\\|ready" "$LOGFILE" 2>/dev/null; then
+        # Complete the progress bar
+        show_progress \$TOTAL \$TOTAL
         READY=1
         break
     fi
-    # Also check if process died
+    
+    # Check if process died
     if ! kill -0 $BOT_PID 2>/dev/null; then
         echo ""
         echo -e "\${RED}✗\${NC} Bot failed to start. Check the log:"
         cat "$LOGFILE"
         exit 1
     fi
+    
+    sleep 1
 done
 echo ""
 
@@ -2387,16 +2407,42 @@ echo.
 set "LOGFILE=%WS%\\.openclaw.log"
 start /b cmd /c "openclaw gateway start > "%LOGFILE%" 2>&1"
 
-:: Wait for bot to be ready (check log for indicators, max 30 seconds)
-echo Starting...
+:: Wait for bot to be ready with progress bar
 set READY=0
-for /L %%i in (1,1,30) do (
-    timeout /t 1 >nul
+set TOTAL=20
+
+for /L %%i in (1,1,%TOTAL%) do (
+    :: Calculate progress
+    set /a "PCT=%%i * 100 / %TOTAL%"
+    set /a "FILLED=%%i * 2"
+    
+    :: Draw progress bar
+    <nul set /p "=[" 
+    for /L %%j in (1,1,%%i) do <nul set /p "=##"
+    set /a "EMPTY=%TOTAL% - %%i"
+    for /L %%k in (1,1,!EMPTY!) do <nul set /p "=--"
+    <nul set /p "=] !PCT!%%  "
+    echo.
+    
+    :: Check if ready
     findstr /i /c:"listening" /c:"running" /c:"started" /c:"ready" "%LOGFILE%" >nul 2>&1
     if !errorlevel! equ 0 (
         set READY=1
+        :: Show 100%
+        <nul set /p "=[########################################] 100%%  "
+        echo.
         goto :botready
     )
+    
+    timeout /t 1 >nul
+    
+    :: Move cursor up (cls partial workaround)
+    cls
+    echo.
+    echo  ========================================
+    echo       FreeClaw - Starting Bot
+    echo  ========================================
+    echo.
 )
 
 :botready
