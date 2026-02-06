@@ -2680,50 +2680,51 @@ if !errorlevel! neq 0 (
     echo [..] Node.js not found - installing automatically...
     echo.
     
+    set "INSTALLED_NODE=0"
+    
     :: Try winget first (Windows 10/11)
     where winget >nul 2>nul
     if !errorlevel! equ 0 (
         echo [..] Installing Node.js via winget...
-        winget install OpenJS.NodeJS.LTS --silent --accept-package-agreements --accept-source-agreements
+        winget install OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements
         if !errorlevel! equ 0 (
             echo [OK] Node.js installed via winget
-            goto :refreshpath
+            set "INSTALLED_NODE=1"
         )
     )
     
     :: Fallback: Download and install MSI directly
-    echo [..] Downloading Node.js installer...
-    set "NODE_MSI=%TEMP%\\node-setup.msi"
-    powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://nodejs.org/dist/v20.11.0/node-v20.11.0-x64.msi' -OutFile '%NODE_MSI%'}"
+    if !INSTALLED_NODE! equ 0 (
+        echo [..] Downloading Node.js installer...
+        set "NODE_MSI=%TEMP%\\node-setup.msi"
+        powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://nodejs.org/dist/v20.11.0/node-v20.11.0-x64.msi' -OutFile '!NODE_MSI!'}"
+        
+        if exist "!NODE_MSI!" (
+            echo [..] Installing Node.js...
+            msiexec /i "!NODE_MSI!" /qn /norestart
+            del "!NODE_MSI!" >nul 2>nul
+            echo [OK] Node.js installed
+            set "INSTALLED_NODE=1"
+        )
+    )
     
-    if exist "%NODE_MSI%" (
-        echo [..] Installing Node.js...
-        msiexec /i "%NODE_MSI%" /qn /norestart
-        del "%NODE_MSI%" >nul 2>nul
-        echo [OK] Node.js installed
-        goto :refreshpath
+    :: If we installed Node, restart this script in a new terminal to pick up PATH
+    if !INSTALLED_NODE! equ 1 (
+        echo.
+        echo [OK] Node.js installed successfully!
+        echo [..] Restarting setup to continue...
+        echo.
+        timeout /t 2 >nul
+        start "" cmd /c "%~f0"
+        exit /b 0
     )
     
     :: Last resort: manual install
     echo [!!] Auto-install failed. Please install Node.js manually:
     start https://nodejs.org
-    echo Press any key after installing Node.js...
+    echo Press any key after installing Node.js, then run this script again...
     pause >nul
-    
-    :refreshpath
-    :: Refresh PATH to find newly installed node
-    echo [..] Refreshing environment...
-    for /f "tokens=2*" %%a in ('reg query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /v Path 2^>nul') do set "SYSPATH=%%b"
-    for /f "tokens=2*" %%a in ('reg query "HKCU\\Environment" /v Path 2^>nul') do set "USERPATH=%%b"
-    set "PATH=%SYSPATH%;%USERPATH%;%ProgramFiles%\\nodejs;%APPDATA%\\npm"
-    
-    :: Verify node works now
-    where node >nul 2>nul
-    if !errorlevel! neq 0 (
-        echo [!!] Node.js still not found. Please restart this script after installing Node.js.
-        pause
-        exit /b 1
-    )
+    exit /b 1
 )
 echo [OK] Node.js ready
 
