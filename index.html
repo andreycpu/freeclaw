@@ -2715,9 +2715,10 @@ echo ${user.split('\n').join('\necho ')}
 echo ${agents.split('\n').join('\necho ')}
 ) > AGENTS.md
 
-:: Create start script
+:: Create start script with PATH
 echo @echo off > Start.bat
 echo cd /d "%%USERPROFILE%%\\freeclaw" >> Start.bat
+echo set "PATH=%%CD%%\\node;%%CD%%\\git\\cmd;%%PATH%%" >> Start.bat
 echo call node_modules\\.bin\\openclaw.cmd gateway start >> Start.bat
 
 :: Copy to startup
@@ -2730,7 +2731,7 @@ echo   Starting bot...
 echo   ========================================
 echo.
 
-start /b cmd /c "call node_modules\\.bin\\openclaw.cmd gateway start"
+start /b cmd /c "set PATH=%CD%\\node;%CD%\\git\\cmd;%PATH% && call node_modules\\.bin\\openclaw.cmd gateway start"
 
 :: Wait a bit then open Telegram
 ping -n 5 127.0.0.1 >nul
