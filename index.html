@@ -3,3188 +3,1472 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FreeClaw - Set up OpenClaw in 10 Minutes</title>
-  <meta name="description" content="Set up OpenClaw for free on your computer in 10 minutes. No coding required.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23a855f7'/><stop offset='100%' stop-color='%236366f1'/></linearGradient></defs><path d='M8 24C8 24 4 20 4 14C4 8 8 4 14 4C16 4 18 5 19 6L22 3C22 3 26 6 26 12C26 18 22 22 22 22' stroke='url(%23g)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M14 28C14 28 10 24 10 18C10 14 12 12 14 12' stroke='url(%23g)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M20 26C20 26 24 22 24 16C24 12 22 10 20 10' stroke='url(%23g)' stroke-width='3' fill='none' stroke-linecap='round'/></svg>">
+  <title>FreeClaw - Your AI Chatbot in 2 Minutes</title>
+  <meta name="description" content="Set up your own AI chatbot on your computer in 2 minutes. No coding required. Powered by OpenClaw.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    
-    :root {
-      --bg: #0a0a0f;
-      --card: rgba(255, 255, 255, 0.03);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-hover: rgba(255, 255, 255, 0.06);
-      --text: #ffffff;
-      --text-soft: rgba(255, 255, 255, 0.7);
-      --text-muted: rgba(255, 255, 255, 0.4);
-      --accent: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%);
-      --accent-solid: #a855f7;
-      --glass: rgba(255, 255, 255, 0.04);
-      --glass-border: rgba(255, 255, 255, 0.1);
-    }
-    
-    html { scroll-behavior: smooth; }
-    
-    body {
-      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-weight: 300;
-      letter-spacing: -0.01em;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    
-    /* Ambient */
-    .ambient {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(120px);
-      opacity: 0.5;
-    }
-    
-    .orb-1 {
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%);
-      top: -200px;
-      left: -100px;
-      animation: float 20s ease-in-out infinite;
-    }
-    
-    .orb-2 {
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-      bottom: -150px;
-      right: -100px;
-      animation: float 25s ease-in-out infinite reverse;
-    }
-    
-    .orb-3 {
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
-      top: 40%;
-      left: 50%;
-      animation: float 18s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0); }
-      50% { transform: translate(30px, 20px); }
-    }
-    
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-    
-    /* Header */
-    header {
-      padding: 24px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--text);
-      text-decoration: none;
-      letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 1;
-    }
-    
-    .logo-icon {
-      flex-shrink: 0;
-    }
-    
-    .header-center {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-    }
-    
-    .made-by {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      padding: 4px 10px;
-      border-radius: 6px;
-      color: var(--accent-solid) !important;
-      font-size: 0.8rem;
-      text-decoration: none;
-    }
-    
-    .made-by:hover {
-      background: rgba(168, 85, 247, 0.1);
-      border-color: var(--accent-solid);
-    }
-    
-    .header-links {
-      flex: 1;
-      display: flex;
-      justify-content: flex-end;
-    }
-    
-    .header-links a {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-decoration: none;
-      margin-left: 24px;
-      font-weight: 400;
-      transition: color 0.2s;
-    }
-    
-    .header-links a:hover { color: var(--text-soft); }
-    
-    /* Landing */
-    .landing {
-      min-height: 88vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 40px 0;
-    }
-    
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 100px;
-      font-size: 0.75rem;
-      color: var(--text-soft);
-      margin-bottom: 32px;
-      backdrop-filter: blur(10px);
-    }
-    
-    .badge-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--accent-solid);
-      border-radius: 50%;
-    }
-    
-    .landing h1 {
-      font-size: 3.2rem;
-      font-weight: 400;
-      letter-spacing: -0.04em;
-      line-height: 1.1;
-      margin-bottom: 24px;
-    }
-    
-    .gradient-text {
-      background: var(--accent);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .landing .sub {
-      font-size: 1.1rem;
-      color: var(--text-soft);
-      font-weight: 300;
-      max-width: 420px;
-      line-height: 1.6;
-      margin-bottom: 40px;
-    }
-    
-    .cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 32px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.95rem;
-      font-weight: 500;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 24px rgba(168, 85, 247, 0.3);
-    }
-    
-    .cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(168, 85, 247, 0.4);
-    }
-    
-    .cta svg {
-      width: 16px;
-      height: 16px;
-    }
-    
-    .landing-links {
-      margin-top: 32px;
-      display: flex;
-      gap: 28px;
-      font-size: 0.8rem;
-    }
-    
-    .landing-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: color 0.2s;
-    }
-    
-    .landing-links a:hover { color: var(--text-soft); }
-    
-    .landing-links svg {
-      width: 14px;
-      height: 14px;
-      opacity: 0.7;
-    }
-    
-    .info-card {
-      margin-top: 48px;
-      padding: 20px 28px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      backdrop-filter: blur(20px);
-      font-size: 0.85rem;
-      color: var(--text-soft);
-      max-width: 480px;
-      line-height: 1.6;
-    }
-    
-    .info-card strong {
-      color: var(--text);
-      font-weight: 500;
-    }
-    
-    .warning-card {
-      margin-top: 32px;
-      padding: 20px 24px;
-      background: rgba(234, 179, 8, 0.08);
-      border: 1px solid rgba(234, 179, 8, 0.3);
-      border-radius: 16px;
-      max-width: 480px;
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-    
-    .warning-icon {
-      flex-shrink: 0;
-      width: 24px;
-      height: 24px;
-      color: #eab308;
-    }
-    
-    .warning-icon svg {
-      width: 100%;
-      height: 100%;
-    }
-    
-    .warning-content {
-      font-size: 0.85rem;
-      line-height: 1.6;
-    }
-    
-    .warning-content strong {
-      color: #eab308;
-      font-weight: 500;
-      display: block;
-      margin-bottom: 6px;
-    }
-    
-    .warning-content p {
-      color: var(--text-soft);
-      margin: 0;
-    }
-    
-    .disclaimer-check {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin-top: 24px;
-      margin-bottom: 32px;
-      max-width: 480px;
-      cursor: pointer;
-      user-select: none;
-    }
-    
-    .disclaimer-check input {
-      display: none;
-    }
-    
-    .disclaimer-check .checkmark {
-      flex-shrink: 0;
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--glass-border);
-      border-radius: 4px;
-      background: var(--glass);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-    
-    .disclaimer-check input:checked + .checkmark {
-      background: var(--accent-solid);
-      border-color: var(--accent-solid);
-    }
-    
-    .disclaimer-check input:checked + .checkmark::after {
-      content: '';
-      width: 6px;
-      height: 10px;
-      border: solid white;
-      border-width: 0 2px 2px 0;
-      transform: rotate(45deg);
-      margin-bottom: 2px;
-    }
-    
-    .disclaimer-text {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-    
-    .cta:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    
-    .mac-warning {
-      margin-top: 24px;
-      padding: 20px;
-      background: rgba(234, 179, 8, 0.08);
-      border: 1px solid rgba(234, 179, 8, 0.25);
-      border-radius: 12px;
-    }
-    
-    .mac-warning-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 500;
-      color: #eab308;
-      margin-bottom: 16px;
-    }
-    
-    .mac-steps {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    
-    .mac-step {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .mac-step-num {
-      width: 24px;
-      height: 24px;
-      background: rgba(234, 179, 8, 0.2);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #eab308;
-      flex-shrink: 0;
-    }
-    
-    .mac-step-text {
-      font-size: 0.85rem;
-      color: var(--text-soft);
-    }
-    
-    .mac-warning-note {
-      margin-top: 16px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-    
-    .terminal-cmd {
-      background: #1a1a2e;
-      border: 1px solid var(--glass-border);
-      border-radius: 8px;
-      padding: 16px;
-      margin: 16px 0;
-      position: relative;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-    
-    .terminal-cmd code {
-      flex: 1;
-      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-      font-size: 0.7rem;
-      color: #4ade80;
-      word-break: break-all;
-      line-height: 1.5;
-      white-space: pre-wrap;
-    }
-    
-    .copy-btn {
-      background: var(--accent-solid);
-      border: none;
-      border-radius: 6px;
-      padding: 8px 12px;
-      color: white;
-      font-size: 0.75rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-      transition: opacity 0.2s;
-    }
-    
-    .copy-btn:hover {
-      opacity: 0.9;
-    }
-    
-    .terminal-hint {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 8px;
-    }
-    
-    .simple-copy-box {
-      margin: 20px 0;
-    }
-    
-    .big-copy-btn {
-      width: 100%;
-      padding: 20px;
-      background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
-      border: none;
-      border-radius: 12px;
-      color: white;
-      font-size: 1.1rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .big-copy-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(168, 85, 247, 0.3);
-    }
-    
-    .big-copy-btn:active {
-      transform: translateY(0);
-    }
-    
-    .terminal-steps {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 16px;
-    }
-    
-    .terminal-step {
-      font-size: 0.85rem;
-      color: var(--text-soft);
-    }
-    
-    .terminal-step kbd {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-family: inherit;
-      font-size: 0.8rem;
-    }
-    
-    /* Progress */
-    .progress-wrap {
-      padding: 20px 0 36px;
-      display: none;
-    }
-    
-    .progress-wrap.show { display: block; }
-    
-    .progress-bar {
-      height: 2px;
-      background: var(--glass);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    
-    .progress-fill {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 2px;
-      transition: width 0.4s ease;
-    }
-    
-    .progress-labels {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 12px;
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      font-weight: 400;
-    }
-    
-    .progress-labels span.active { color: var(--accent-solid); }
-    .progress-labels span.done { color: var(--text-soft); }
-    
-    /* Wizard */
-    .wizard {
-      display: none;
-      min-height: 500px;
-    }
-    
-    .wizard.show { display: block; }
-    
-    /* Back Arrow */
-    .back-arrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      cursor: pointer;
-      margin-bottom: 20px;
-      transition: color 0.2s;
-    }
-    
-    .back-arrow:hover { color: var(--text-soft); }
-    
-    .back-arrow svg {
-      width: 16px;
-      height: 16px;
-    }
-    
-    .step {
-      display: none;
-      animation: fadeIn 0.4s ease;
-    }
-    
-    .step.active { display: block; }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .step-head {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    
-    .step-head h2 {
-      font-size: 1.6rem;
-      font-weight: 400;
-      letter-spacing: -0.03em;
-      margin-bottom: 8px;
-    }
-    
-    .step-head p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-    
-    /* Cards */
-    .cards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-    }
-    
-    .cards .card {
-      flex: 0 1 280px;
-      max-width: 320px;
-    }
-    
-    .card {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 20px;
-      cursor: pointer;
-      transition: all 0.3s;
-      position: relative;
-      backdrop-filter: blur(20px);
-    }
-    
-    .card:hover {
-      background: var(--card-hover);
-      border-color: rgba(255, 255, 255, 0.15);
-      transform: translateY(-2px);
-    }
-    
-    .card.sel {
-      border-color: var(--accent-solid);
-      background: rgba(168, 85, 247, 0.08);
-    }
-    
-    .card-icon {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 12px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .card-icon svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
-      opacity: 0.8;
-    }
-    
-    .card h3 {
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 4px;
-      letter-spacing: -0.01em;
-    }
-    
-    .card p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-    
-    .card-tag {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      font-size: 0.6rem;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: rgba(168, 85, 247, 0.2);
-      color: #c084fc;
-      font-weight: 500;
-    }
-    
-    .card-check {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 20px;
-      height: 20px;
-      background: var(--accent);
-      border-radius: 50%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .card.sel .card-check { display: flex; }
-    .card.sel .card-tag { display: none; }
-    
-    /* API expand */
-    .api-expand {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--glass-border);
-      display: none;
-    }
-    
-    .card.sel .api-expand { display: block; }
-    
-    .api-toggle {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 8px 14px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #fff;
-      background: var(--accent);
-      border-radius: 6px;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .api-toggle:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
-    }
-    
-    .api-content {
-      display: none;
-      margin-top: 8px;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    
-    .api-content.open { display: block; }
-    
-    .api-content ol {
-      margin: 8px 0 0 16px;
-    }
-    
-    .api-content a {
-      color: var(--accent-solid);
-    }
-    
-    /* FAQ */
-    .faq {
-      margin-top: 24px;
-    }
-    
-    .faq-title {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-      font-weight: 400;
-    }
-    
-    .faq-item {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      margin-bottom: 8px;
-      overflow: hidden;
-    }
-    
-    .faq-q {
-      padding: 12px 16px;
-      font-size: 0.8rem;
-      color: var(--text-soft);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: color 0.2s;
-    }
-    
-    .faq-q:hover { color: var(--text); }
-    
-    .faq-q svg {
-      transition: transform 0.2s;
-    }
-    
-    .faq-item.open .faq-q svg {
-      transform: rotate(180deg);
-    }
-    
-    .faq-a {
-      display: none;
-      padding: 0 16px 14px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-    
-    .faq-item.open .faq-a {
-      display: block;
-    }
-    
-    /* FAQ Dropdown */
-    .faq-dropdown {
-      margin-top: 24px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-    }
-    
-    .faq-dropdown summary {
-      padding: 14px 18px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      list-style: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .faq-dropdown summary::-webkit-details-marker {
-      display: none;
-    }
-    
-    .faq-dropdown summary::after {
-      content: '▼';
-      font-size: 0.6rem;
-      transition: transform 0.2s;
-    }
-    
-    .faq-dropdown[open] summary::after {
-      transform: rotate(180deg);
-    }
-    
-    .faq-dropdown .faq-content {
-      padding: 0 18px 18px;
-    }
-    
-    /* Form */
-    .form-row {
-      margin-bottom: 18px;
-    }
-    
-    .form-row label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 400;
-      margin-bottom: 8px;
-      color: var(--text-soft);
-    }
-    
-    .form-row input,
-    .form-row textarea {
-      width: 100%;
-      padding: 14px 16px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      color: var(--text);
-      font-size: 0.9rem;
-      font-family: inherit;
-      font-weight: 300;
-      backdrop-filter: blur(10px);
-      transition: border-color 0.2s;
-    }
-    
-    .form-row input:focus,
-    .form-row textarea:focus {
-      outline: none;
-      border-color: var(--accent-solid);
-    }
-    
-    .input-hint {
-      display: block;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-    
-    .form-row input::placeholder,
-    .form-row textarea::placeholder {
-      color: var(--text-muted);
-    }
-    
-    .form-row .hint {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-    
-    .form-row textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-    
-    /* Chips */
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    
-    .chip {
-      padding: 8px 14px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      backdrop-filter: blur(10px);
-    }
-    
-    .chip:hover {
-      background: var(--card-hover);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-    
-    .chip.sel {
-      background: rgba(168, 85, 247, 0.15);
-      border-color: var(--accent-solid);
-      color: #c084fc;
-    }
-    
-    /* Setup box */
-    .setup-box {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 20px;
-      backdrop-filter: blur(20px);
-      margin-bottom: 18px;
-    }
-    
-    .setup-step {
-      display: flex;
-      gap: 14px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--glass-border);
-    }
-    
-    .setup-step:last-child { border-bottom: none; }
-    
-    .setup-num {
-      width: 26px;
-      height: 26px;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 500;
-      font-size: 0.7rem;
-      flex-shrink: 0;
-    }
-    
-    .setup-text h4 {
-      font-size: 0.85rem;
-      font-weight: 400;
-      margin-bottom: 2px;
-    }
-    
-    .setup-text p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-    
-    .setup-text code {
-      background: rgba(0,0,0,0.3);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-    }
-    
-    .setup-text a {
-      color: var(--accent-solid);
-    }
-    
-    /* Visual Guide */
-    .visual-guide {
-      padding: 0;
-      overflow: hidden;
-    }
-    
-    .guide-step {
-      padding: 20px;
-      border-bottom: 1px solid var(--glass-border);
-    }
-    
-    .guide-step:last-child {
-      border-bottom: none;
-    }
-    
-    .guide-text {
-      display: flex;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-    
-    .guide-num {
-      width: 26px;
-      height: 26px;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 500;
-      font-size: 0.7rem;
-      flex-shrink: 0;
-    }
-    
-    .guide-content h4 {
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-    
-    .guide-content p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-    
-    .guide-content code {
-      background: rgba(0,0,0,0.3);
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-    }
-    
-    .guide-img {
-      width: 100%;
-      max-width: 280px;
-      border-radius: 12px;
-      margin-left: 40px;
-      border: 1px solid var(--glass-border);
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .guide-img:hover {
-      transform: scale(1.02);
-      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
-    }
-    
-    .open-app-btn {
-      display: block;
-      text-align: center;
-      padding: 14px 20px;
-      margin-bottom: 16px;
-      background: var(--accent);
-      border-radius: 10px;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .open-app-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
-    }
-    
-    /* Lightbox */
-    .lightbox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      cursor: zoom-out;
-    }
-    
-    .lightbox.open {
-      display: flex;
-    }
-    
-    .lightbox img {
-      max-width: 90%;
-      max-height: 90vh;
-      border-radius: 12px;
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
-    }
-    
-    .lightbox-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      border-radius: 50%;
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .lightbox-hint {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: var(--text-muted);
-      font-size: 0.75rem;
-    }
-    
-    /* API Key Guide Modal */
-    .api-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      overflow-y: auto;
-    }
-    
-    .api-modal.open {
-      display: flex;
-    }
-    
-    .api-modal-content {
-      background: var(--bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      max-width: 500px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      position: relative;
-    }
-    
-    .api-modal-header {
-      padding: 20px 20px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .api-modal-header h3 {
-      font-size: 1.1rem;
-      font-weight: 500;
-    }
-    
-    .api-modal-close {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 24px;
-      cursor: pointer;
-      padding: 0;
-      line-height: 1;
-    }
-    
-    .api-modal-body {
-      padding: 20px;
-    }
-    
-    .api-modal-step {
-      margin-bottom: 20px;
-    }
-    
-    .api-modal-step:last-child {
-      margin-bottom: 0;
-    }
-    
-    .api-modal-step h4 {
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .api-modal-step h4 span {
-      width: 20px;
-      height: 20px;
-      background: var(--accent);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      flex-shrink: 0;
-    }
-    
-    .api-modal-step p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-    
-    .api-modal-step img {
-      width: 100%;
-      border-radius: 8px;
-      border: 1px solid var(--glass-border);
-      cursor: pointer;
-    }
-    
-    .api-modal-step a {
-      color: var(--accent-solid);
-    }
-    
-    .api-modal-warning {
-      background: rgba(251, 191, 36, 0.1);
-      border: 1px solid rgba(251, 191, 36, 0.3);
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 0.75rem;
-      color: #fbbf24;
-      margin-top: 16px;
-    }
-    
-    .api-modal-input {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid var(--glass-border);
-    }
-    
-    .api-modal-input label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-    
-    .api-modal-input input {
-      width: 100%;
-      padding: 12px 14px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 0.85rem;
-      font-family: monospace;
-      margin-bottom: 12px;
-    }
-    
-    .api-modal-input input:focus {
-      outline: none;
-      border-color: var(--accent-solid);
-    }
-    
-    .api-modal-btn {
-      width: 100%;
-      padding: 12px;
-      background: var(--accent);
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    
-    .api-modal-btn:hover {
-      transform: translateY(-1px);
-    }
-    
-    /* Nav */
-    .nav {
-      display: flex;
-      gap: 12px;
-      margin-top: 32px;
-      padding-bottom: 40px;
-    }
-    
-    .nav .back {
-      padding: 12px 24px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      font-weight: 400;
-      cursor: pointer;
-      transition: all 0.2s;
-      backdrop-filter: blur(10px);
-    }
-    
-    .nav .back:hover {
-      background: var(--card-hover);
-      color: var(--text-soft);
-    }
-    
-    .nav .next {
-      flex: 1;
-      padding: 12px 24px;
-      background: var(--accent);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.25);
-    }
-    
-    .nav .next:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 24px rgba(168, 85, 247, 0.35);
-    }
-    
-    .nav .next:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    
-    /* Download */
-    .dl-box {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 36px 28px;
-      text-align: center;
-      backdrop-filter: blur(20px);
-      margin-bottom: 20px;
-    }
-    
-    .dl-box .os-tag {
-      display: inline-block;
-      background: rgba(168, 85, 247, 0.15);
-      color: #c084fc;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      margin-bottom: 20px;
-    }
-    
-    .dl-box h3 {
-      font-size: 1.1rem;
-      font-weight: 400;
-      margin-bottom: 8px;
-    }
-    
-    .dl-box p {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-bottom: 24px;
-    }
-    
-    .dl-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 28px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.9rem;
-      font-weight: 500;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
-      transition: all 0.2s;
-    }
-    
-    .dl-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(168, 85, 247, 0.4);
-    }
-    
-    .dl-btn svg {
-      width: 18px;
-      height: 18px;
-    }
-    
-    /* Checklist */
-    .checklist {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 24px;
-      backdrop-filter: blur(20px);
-    }
-    
-    .checklist h3 {
-      font-size: 0.95rem;
-      font-weight: 400;
-      margin-bottom: 18px;
-    }
-    
-    .cl-item {
-      display: flex;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--glass-border);
-    }
-    
-    .cl-item:last-child { border-bottom: none; }
-    
-    .cl-num {
-      width: 24px;
-      height: 24px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 500;
-      flex-shrink: 0;
-    }
-    
-    .cl-text {
-      font-size: 0.85rem;
-      line-height: 1.5;
-    }
-    
-    .cl-text strong { color: var(--text); font-weight: 400; }
-    .cl-text span { color: var(--text-muted); }
-    
-    .cl-note {
-      margin-top: 18px;
-      padding: 14px;
-      background: rgba(168, 85, 247, 0.08);
-      border: 1px solid rgba(168, 85, 247, 0.2);
-      border-radius: 10px;
-      font-size: 0.75rem;
-      color: var(--text-soft);
-      line-height: 1.6;
-    }
-    
-    .cl-note strong { color: #c084fc; font-weight: 500; }
-    
-    /* Success */
-    .success-box {
-      text-align: center;
-      padding: 48px 20px;
-    }
-    
-    .success-icon {
-      width: 80px;
-      height: 80px;
-      background: rgba(168, 85, 247, 0.15);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 24px;
-    }
-    
-    .success-icon svg {
-      width: 36px;
-      height: 36px;
-      fill: #c084fc;
-    }
-    
-    .success-box h2 {
-      font-size: 1.6rem;
-      font-weight: 400;
-      margin-bottom: 8px;
-    }
-    
-    .success-box > p {
-      color: var(--text-soft);
-      font-size: 0.95rem;
-      margin-bottom: 36px;
-    }
-    
-    .support-card {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 28px;
-      backdrop-filter: blur(20px);
-      margin-bottom: 16px;
-    }
-    
-    .support-card h3 {
-      font-size: 1rem;
-      font-weight: 400;
-      margin-bottom: 8px;
-    }
-    
-    .support-card > p {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-bottom: 20px;
-    }
-    
-    .donate-row {
-      display: flex;
-      gap: 10px;
-      max-width: 260px;
-      margin: 0 auto;
-    }
-    
-    .donate-input {
-      flex: 1;
-      padding: 12px 16px;
-      background: var(--bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      color: var(--text);
-      font-size: 0.9rem;
-      text-align: center;
-      font-family: inherit;
-    }
-    
-    .donate-btn {
-      padding: 12px 20px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-    }
-    
-    .share-card {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 28px;
-      backdrop-filter: blur(20px);
-      margin-bottom: 16px;
-    }
-    
-    .share-card h3 {
-      font-size: 1rem;
-      font-weight: 400;
-      margin-bottom: 8px;
-    }
-    
-    .share-card > p {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-bottom: 20px;
-    }
-    
-    .share-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      background: transparent;
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      color: var(--text);
-      font-size: 0.85rem;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    
-    .share-btn:hover {
-      background: var(--glass);
-      border-color: var(--text-muted);
-    }
-    
-    .share-btn svg {
-      width: 16px;
-      height: 16px;
-      fill: currentColor;
-    }
-    
-    .help-links {
-      margin-top: 20px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-    
-    .help-links a {
-      color: var(--accent-solid);
-      text-decoration: none;
-    }
-    
-    /* Compare */
-    .compare {
-      margin-top: 36px;
-      padding-top: 28px;
-      border-top: 1px solid var(--glass-border);
-    }
-    
-    .compare h3 {
-      font-size: 0.9rem;
-      font-weight: 400;
-      text-align: center;
-      margin-bottom: 16px;
-    }
-    
-    .compare table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.75rem;
-    }
-    
-    .compare th, .compare td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid var(--glass-border);
-    }
-    
-    .compare th { color: var(--text-muted); font-weight: 400; }
-    .compare .y { color: #c084fc; }
-    .compare .n { color: var(--text-muted); }
-    
-    .compare .tag {
-      font-size: 0.6rem;
-      background: rgba(168, 85, 247, 0.15);
-      color: #c084fc;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-left: 4px;
-    }
-    
-    .server-cta {
-      text-align: center;
-      margin-top: 14px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-    
-    .server-cta a { color: var(--accent-solid); text-decoration: none; }
-    
-    /* Footer */
-    footer {
-      padding: 28px 0;
-      text-align: center;
-      border-top: 1px solid var(--glass-border);
-      margin-top: 48px;
-    }
-    
-    footer p {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-    
-    footer a {
-      color: var(--text-muted);
-      text-decoration: none;
-      margin: 0 12px;
-      font-size: 0.75rem;
-      transition: color 0.2s;
-    }
-    
-    footer a:hover { color: var(--text-soft); }
-    
-    @media (max-width: 600px) {
-      .landing h1 { font-size: 2.2rem; }
-      .cards { grid-template-columns: 1fr; }
-      .nav { flex-direction: column; }
-      .nav .back { order: 2; }
-    }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #07080a;
+  --bg-card: #0e0f13;
+  --bg-card-hover: #141519;
+  --bg-input: #0b0c10;
+  --text: #ededed;
+  --text-secondary: #9f9fa9;
+  --text-muted: #5a5b65;
+  --accent: #7c3aed;
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-amber: #f59e0b;
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.16);
+  --ring: rgba(255,255,255,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --transition: 0.15s cubic-bezier(.4,0,.2,1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Ambient background */
+.ambient {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+}
+.ambient::before {
+  content: '';
+  position: absolute;
+  top: -40%; left: -20%;
+  width: 60%; height: 80%;
+  background: radial-gradient(ellipse, rgba(124,58,237,0.06) 0%, transparent 70%);
+}
+.ambient::after {
+  content: '';
+  position: absolute;
+  bottom: -30%; right: -20%;
+  width: 50%; height: 70%;
+  background: radial-gradient(ellipse, rgba(59,130,246,0.04) 0%, transparent 70%);
+}
+
+/* Layout */
+.container {
+  position: relative; z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* Progress bar */
+.progress-bar {
+  display: flex; gap: 6px;
+  margin-bottom: 2.5rem;
+}
+.progress-dot {
+  flex: 1; height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  transition: background var(--transition);
+}
+.progress-dot.active { background: var(--accent); }
+.progress-dot.done { background: var(--accent-green); }
+
+/* Steps */
+.step { display: none; animation: fadeIn 0.3s ease; }
+.step.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Typography */
+h1 {
+  font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+h1 .gradient {
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.6) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+.subtitle { color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 2rem; line-height: 1.5; }
+.section-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.75rem; }
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  transition: all var(--transition);
+  cursor: pointer;
+  position: relative;
+}
+.card::before {
+  content: ''; position: absolute; inset: 0;
+  border-radius: var(--radius);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  pointer-events: none;
+}
+.card:hover { background: var(--bg-card-hover); border-color: var(--border-hover); }
+.card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 20px rgba(124,58,237,0.1);
+}
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+.card-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 480px) { .card-grid, .card-grid.three { grid-template-columns: 1fr; } }
+
+.card-icon { width: 36px; height: 36px; margin-bottom: 0.75rem; color: var(--text-secondary); }
+.card-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+.card-desc { font-size: 0.8rem; color: var(--text-secondary); }
+.card .badge {
+  position: absolute; top: 0.75rem; right: 0.75rem;
+  font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 0.2rem 0.5rem; border-radius: 4px;
+  background: rgba(124,58,237,0.15); color: #a78bfa;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font); font-size: 0.9rem; font-weight: 500;
+  border: none; cursor: pointer;
+  transition: all var(--transition);
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-blue));
+  color: #fff;
+  box-shadow: 0 0 20px rgba(124,58,237,0.15), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.btn-primary:hover { box-shadow: 0 0 30px rgba(124,58,237,0.25), inset 0 1px 0 rgba(255,255,255,0.2); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-secondary {
+  background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: var(--border-hover); }
+.btn-large { padding: 1rem 2rem; font-size: 1.05rem; border-radius: var(--radius); }
+.btn-row { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; }
+.btn-row .btn-secondary { padding: 0.6rem 1.2rem; }
+
+/* Form inputs */
+.input-group { margin-bottom: 1.25rem; }
+.input-label { display: block; font-size: 0.8rem; font-weight: 500; margin-bottom: 0.4rem; color: var(--text-secondary); }
+.input-wrap {
+  position: relative;
+  display: flex; align-items: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition);
+}
+.input-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(124,58,237,0.15); }
+.input-wrap input, .input-wrap textarea {
+  flex: 1; width: 100%;
+  padding: 0.7rem 0.85rem;
+  background: none; border: none; outline: none;
+  color: var(--text); font-family: var(--font); font-size: 0.9rem;
+}
+.input-wrap textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
+.input-wrap input::placeholder, .input-wrap textarea::placeholder { color: var(--text-muted); }
+.input-toggle {
+  padding: 0.5rem; margin-right: 0.25rem;
+  background: none; border: none; cursor: pointer; color: var(--text-muted);
+  display: flex; align-items: center;
+}
+.input-toggle:hover { color: var(--text-secondary); }
+.input-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem; }
+.input-error { font-size: 0.75rem; color: var(--accent-red); margin-top: 0.3rem; display: none; }
+.input-success { font-size: 0.75rem; color: var(--accent-green); margin-top: 0.3rem; display: none; }
+
+/* Expandable */
+.expandable { margin-top: 1rem; }
+.expandable-toggle {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: none; border: none; cursor: pointer;
+  color: var(--text-secondary); font-family: var(--font); font-size: 0.85rem;
+  padding: 0.5rem 0;
+}
+.expandable-toggle:hover { color: var(--text); }
+.expandable-toggle svg { width: 16px; height: 16px; transition: transform var(--transition); }
+.expandable-toggle.open svg { transform: rotate(90deg); }
+.expandable-content {
+  display: none; padding: 0.75rem 0;
+  color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6;
+}
+.expandable-content.open { display: block; }
+
+/* Notice box */
+.notice {
+  background: rgba(124,58,237,0.06);
+  border: 1px solid rgba(124,58,237,0.15);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  font-size: 0.85rem; line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+.notice.warning {
+  background: rgba(245,158,11,0.06);
+  border-color: rgba(245,158,11,0.15);
+}
+.notice.security {
+  background: rgba(16,185,129,0.06);
+  border-color: rgba(16,185,129,0.15);
+}
+.notice a { color: var(--accent); text-decoration: none; }
+.notice a:hover { text-decoration: underline; }
+
+/* Steps list */
+.steps-list { list-style: none; counter-reset: step; margin: 1rem 0; }
+.steps-list li {
+  counter-increment: step;
+  padding: 0.6rem 0 0.6rem 2.5rem;
+  position: relative;
+  font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;
+}
+.steps-list li::before {
+  content: counter(step);
+  position: absolute; left: 0; top: 0.5rem;
+  width: 1.75rem; height: 1.75rem;
+  background: rgba(124,58,237,0.12); color: #a78bfa;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 600;
+}
+.steps-list li code {
+  background: rgba(255,255,255,0.06); padding: 0.15rem 0.4rem;
+  border-radius: 4px; font-size: 0.82rem;
+}
+
+/* Personality cards */
+.personality-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem; }
+.personality-grid .card { padding: 1rem; }
+.personality-grid .card:nth-child(5) { grid-column: 1 / -1; }
+.personality-sample {
+  font-size: 0.78rem; color: var(--text-muted);
+  font-style: italic; margin-top: 0.5rem;
+  line-height: 1.4;
+}
+@media (max-width: 480px) { .personality-grid { grid-template-columns: 1fr; } .personality-grid .card:nth-child(5) { grid-column: auto; } }
+
+/* Download section */
+.download-box {
+  text-align: center;
+  padding: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin: 1.5rem 0;
+}
+.download-box .btn { margin-top: 1rem; }
+.download-note { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem; }
+
+/* Success page */
+.success-check {
+  width: 64px; height: 64px;
+  margin: 0 auto 1.5rem;
+  background: rgba(16,185,129,0.1);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  animation: scaleIn 0.5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+.success-check svg { width: 32px; height: 32px; color: var(--accent-green); }
+.success-section { text-align: center; margin: 2rem 0; }
+.donate-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--radius-sm);
+  color: #fbbf24; font-family: var(--font); font-size: 0.9rem; font-weight: 500;
+  text-decoration: none; transition: all var(--transition);
+}
+.donate-btn:hover { background: rgba(245,158,11,0.15); }
+.share-row { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1rem; }
+.share-btn {
+  padding: 0.6rem 1rem;
+  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary); font-family: var(--font); font-size: 0.82rem;
+  cursor: pointer; transition: all var(--transition); text-decoration: none;
+}
+.share-btn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+/* Help button */
+.help-fab {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100;
+  padding: 0.7rem 1rem;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary); font-family: var(--font); font-size: 0.82rem;
+  cursor: pointer; display: flex; align-items: center; gap: 0.4rem;
+  transition: all var(--transition);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.help-fab:hover { border-color: var(--border-hover); color: var(--text); }
+
+/* Help panel */
+.help-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+}
+.help-overlay.open { display: flex; justify-content: flex-end; }
+.help-panel {
+  width: 380px; max-width: 90vw; height: 100%;
+  background: var(--bg); border-left: 1px solid var(--border);
+  padding: 1.5rem; overflow-y: auto;
+  animation: slideIn 0.2s ease;
+}
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: none; } }
+.help-panel h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
+.help-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 1.5rem; line-height: 1;
+}
+.help-close:hover { color: var(--text); }
+
+/* FAQ */
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.85rem 0; cursor: pointer;
+  font-size: 0.88rem; font-weight: 500; color: var(--text);
+}
+.faq-q:hover { color: var(--accent); }
+.faq-a {
+  display: none; padding: 0 0 0.85rem;
+  font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6;
+}
+.faq-a.open { display: block; }
+
+/* Separator */
+.sep { height: 1px; background: var(--border); margin: 2rem 0; }
+
+/* Accordion for troubleshooting */
+.accordion-item { border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 0.5rem; }
+.accordion-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.75rem 1rem; cursor: pointer;
+  font-size: 0.88rem; font-weight: 500;
+}
+.accordion-header:hover { color: var(--accent); }
+.accordion-body { display: none; padding: 0 1rem 0.75rem; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+.accordion-body.open { display: block; }
+
+/* Dynamic content area */
+.dynamic-content { min-height: 100px; }
+
+/* Link styles */
+a.text-link { color: var(--accent); text-decoration: none; }
+a.text-link:hover { text-decoration: underline; }
+
+/* Footer links on success page */
+.footer-links {
+  display: flex; gap: 1.5rem; justify-content: center;
+  margin-top: 2rem; padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.footer-links a { color: var(--text-muted); font-size: 0.8rem; text-decoration: none; }
+.footer-links a:hover { color: var(--text-secondary); }
   </style>
 </head>
 <body>
-  <div class="ambient">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-  </div>
-  
+  <div class="ambient"></div>
+
   <div class="container">
-    <header>
-      <a href="/" class="logo">
-        <svg class="logo-icon" width="20" height="20" viewBox="0 0 32 32" fill="none">
-          <path d="M8 24C8 24 4 20 4 14C4 8 8 4 14 4C16 4 18 5 19 6L22 3C22 3 26 6 26 12C26 18 22 22 22 22" stroke="url(#claw-grad)" stroke-width="3" stroke-linecap="round"/>
-          <path d="M14 28C14 28 10 24 10 18C10 14 12 12 14 12" stroke="url(#claw-grad)" stroke-width="3" stroke-linecap="round"/>
-          <path d="M20 26C20 26 24 22 24 16C24 12 22 10 20 10" stroke="url(#claw-grad)" stroke-width="3" stroke-linecap="round"/>
-          <defs><linearGradient id="claw-grad" x1="4" y1="4" x2="26" y2="28"><stop stop-color="#a855f7"/><stop offset="1" stop-color="#6366f1"/></linearGradient></defs>
-        </svg>
-        FreeClaw
-      </a>
-      <div class="header-center">
-        <a href="https://x.com/Andrey__HQ" target="_blank" class="made-by">by @Andrey__HQ</a>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- STEP 0: Welcome -->
+    <div class="step active" data-step="0">
+      <h1><span class="gradient">FreeClaw</span></h1>
+      <p class="subtitle">Your own AI chatbot in 2 minutes. No coding required.</p>
+
+      <div class="notice security">
+        <strong>How it works:</strong> FreeClaw runs entirely in your browser. Your API keys and tokens are embedded in the downloaded file and never sent to our servers. You are responsible for your API key usage and costs.
+        <br><br>
+        FreeClaw is not affiliated with <a href="https://openclaw.ai/" target="_blank" rel="noopener">OpenClaw</a>. This is a community tool.
+        <br><a href="https://docs.openclaw.ai/" target="_blank" rel="noopener">OpenClaw Documentation</a>
       </div>
-      <div class="header-links">
-        <a href="https://docs.openclaw.ai" target="_blank">Docs</a>
-        <a href="https://github.com/openclaw/openclaw" target="_blank">GitHub</a>
-      </div>
-    </header>
-    
-    <!-- Landing -->
-    <div class="landing" id="landing">
-      <div class="badge">
-        <span class="badge-dot"></span>
-        100% free, runs locally
-      </div>
-      <h1>Set up <span class="gradient-text">OpenClaw</span> in 10 minutes</h1>
-      <p class="sub">Your own AI assistant on Telegram, Discord, WhatsApp, or Slack. No coding. Seriously free.</p>
-      
-      <div class="warning-card">
-        <div class="warning-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-        </div>
-        <div class="warning-content">
-          <strong>Security Notice</strong>
-          <p>This software runs code on your computer and has access to your messaging accounts. While I've done my best to eliminate security vulnerabilities, no software is 100% secure. Only proceed if you understand and accept these risks.</p>
+
+      <div class="expandable">
+        <button class="expandable-toggle" onclick="toggleExpand(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          How does this work?
+        </button>
+        <div class="expandable-content">
+          <ol class="steps-list">
+            <li>This wizard collects your preferences (which AI, which chat app)</li>
+            <li>It generates a small setup script file</li>
+            <li>You download and run the script on your computer</li>
+            <li>The script installs OpenClaw and configures your bot</li>
+            <li>Your bot starts and you can chat with it</li>
+          </ol>
         </div>
       </div>
-      
-      <label class="disclaimer-check">
-        <input type="checkbox" id="acceptRisk" onchange="checkDisclaimer()">
-        <span class="checkmark"></span>
-        <span class="disclaimer-text">I understand this software could potentially access my files and messaging accounts, and I accept the risks</span>
-      </label>
-      
-      <button class="cta" id="startBtn" onclick="start()" disabled>
-        Get Started
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-      </button>
-      <div class="landing-links">
-        <a href="https://x.com/Andrey__HQ/status/2018767494178349484" target="_blank">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          Read the guide
+
+      <div class="btn-row" style="justify-content:flex-end">
+        <button class="btn btn-primary btn-large" onclick="goToStep(1)">Get Started</button>
+      </div>
+    </div>
+
+    <!-- STEP 1: OS Selection -->
+    <div class="step" data-step="1">
+      <h2>What's your computer?</h2>
+      <p class="subtitle">We'll generate the right setup file for your system.</p>
+      <div class="card-grid" id="osCards">
+        <div class="card" data-value="windows" onclick="selectCard('os','windows',this)">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.75l7-1.05V12H3zm8-1.35V5.5l10-1.5V12H11V10.65zM3 13h7v6.3l-7-1.05V13zm8 0h10v7l-10-1.5V13z"/></svg>
+          <div class="card-title">Windows</div>
+          <div class="card-desc">Windows 10 or newer</div>
+        </div>
+        <div class="card" data-value="macos" onclick="selectCard('os','macos',this)">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <div class="card-title">macOS</div>
+          <div class="card-desc">macOS 12 or newer</div>
+        </div>
+      </div>
+      <p style="font-size:0.8rem;color:var(--text-muted)">If you're on a regular PC, choose Windows. If you have a Mac, choose macOS.</p>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToStep(0)">Back</button>
+        <button class="btn btn-primary" id="step1Next" disabled onclick="goToStep(2)">Next</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Chat Platform -->
+    <div class="step" data-step="2">
+      <h2>Where do you want to chat?</h2>
+      <p class="subtitle">Pick the messaging app your bot will live in.</p>
+      <div class="card-grid" id="platformCards">
+        <div class="card" data-value="telegram" onclick="selectCard('chatPlatform','telegram',this)">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.504-1.36 8.63-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          <div class="card-title">Telegram</div>
+          <div class="card-desc">Easiest - 2 minutes</div>
+        </div>
+        <div class="card" data-value="discord" onclick="selectCard('chatPlatform','discord',this)">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.947 2.418-2.157 2.418z"/></svg>
+          <div class="card-title">Discord</div>
+          <div class="card-desc">Easy - 3 minutes</div>
+        </div>
+        <div class="card" data-value="whatsapp" onclick="selectCard('chatPlatform','whatsapp',this)">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          <div class="card-title">WhatsApp</div>
+          <div class="card-desc">Moderate - QR code scan</div>
+        </div>
+        <div class="card" data-value="slack" onclick="selectCard('chatPlatform','slack',this)">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg>
+          <div class="card-title">Slack</div>
+          <div class="card-desc">Moderate - 5 minutes</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+        <button class="btn btn-primary" id="step2Next" disabled onclick="goToStep(3)">Next</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: AI Model -->
+    <div class="step" data-step="3">
+      <h2>Choose your AI brain</h2>
+      <p class="subtitle">Pick which AI will power your chatbot.</p>
+      <div class="card-grid three" id="modelCards">
+        <div class="card" data-value="anthropic" onclick="selectCard('aiProvider','anthropic',this)">
+          <span class="badge">Recommended</span>
+          <svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M13.827 3.52h3.603L24 20.48h-3.603l-6.57-16.96zm-7.258 0h3.767L16.906 20.48h-3.674l-1.479-3.906H5.807l-1.472 3.906H.762L6.57 3.52zm.901 3.63L5.047 13.642h5.765L8.39 7.15h-.92z"/></svg>
+          <div class="card-title">Claude</div>
+          <div class="card-desc">by Anthropic</div>
+        </div>
+        <div class="card" data-value="openai" onclick="selectCard('aiProvider','openai',this)">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.998 5.998 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.602 1.5v3.001l-2.602 1.5-2.602-1.5z"/></svg>
+          <div class="card-title">ChatGPT</div>
+          <div class="card-desc">by OpenAI</div>
+        </div>
+        <div class="card" data-value="google" onclick="selectCard('aiProvider','google',this)">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 11.366v3.6h5.2c-.436 2.07-2.372 3.624-5.2 3.624a5.997 5.997 0 0 1-5.994-5.994A5.997 5.997 0 0 1 12 6.602c1.44 0 2.796.508 3.852 1.44l2.604-2.604A9.957 9.957 0 0 0 12 2.994 9.01 9.01 0 0 0 2.994 12 9.01 9.01 0 0 0 12 21.006c7.422 0 9.006-6.936 8.076-9.636z"/></svg>
+          <div class="card-title">Gemini</div>
+          <div class="card-desc">by Google</div>
+        </div>
+      </div>
+      <p class="input-hint">You'll need an API key from your chosen provider. We'll help you get one next.</p>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+        <button class="btn btn-primary" id="step3Next" disabled onclick="goToStep(4)">Next</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Get Your Keys -->
+    <div class="step" data-step="4">
+      <h2>Set up your keys</h2>
+      <p class="subtitle">Follow the steps below to get your API key and bot token.</p>
+
+      <div class="dynamic-content" id="apiKeyGuide"></div>
+      <div class="sep"></div>
+      <div class="dynamic-content" id="platformGuide"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+        <button class="btn btn-primary" id="step4Next" disabled onclick="goToStep(5)">Next</button>
+      </div>
+    </div>
+
+    <!-- STEP 5: Personalize -->
+    <div class="step" data-step="5">
+      <h2>Make it yours</h2>
+      <p class="subtitle">Give your bot a personality.</p>
+
+      <div class="input-group">
+        <label class="input-label">What should your bot call you?</label>
+        <div class="input-wrap">
+          <input type="text" id="userName" placeholder="Your name" maxlength="50" oninput="validateStep5()">
+        </div>
+      </div>
+
+      <p class="section-label">Pick a personality</p>
+      <div class="personality-grid" id="personalityCards">
+        <div class="card" data-value="chill" onclick="selectCard('personality','chill',this)">
+          <div class="card-title">Chill</div>
+          <div class="personality-sample">"hey, looks like you need help with that email. here's a draft - tweak it if you want"</div>
+        </div>
+        <div class="card" data-value="professional" onclick="selectCard('personality','professional',this)">
+          <div class="card-title">Professional</div>
+          <div class="personality-sample">"I've prepared a draft response for your review. Please find it below."</div>
+        </div>
+        <div class="card" data-value="friendly" onclick="selectCard('personality','friendly',this)">
+          <div class="card-title">Friendly</div>
+          <div class="personality-sample">"Oh, I can totally help with that! Here's a draft I put together!"</div>
+        </div>
+        <div class="card" data-value="witty" onclick="selectCard('personality','witty',this)">
+          <div class="card-title">Witty</div>
+          <div class="personality-sample">"One email draft, coming right up. I'd say it's my best work, but I peak every time."</div>
+        </div>
+        <div class="card" data-value="minimal" onclick="selectCard('personality','minimal',this)">
+          <div class="card-title">Minimal</div>
+          <div class="personality-sample">"Draft attached. Let me know if you want changes."</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Special instructions (optional)</label>
+        <div class="input-wrap">
+          <textarea id="customInstructions" placeholder="e.g., 'Always respond in Spanish' or 'You are a cooking expert'" maxlength="500" oninput="validateStep5()"></textarea>
+        </div>
+        <div class="input-hint">Up to 500 characters</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToStep(4)">Back</button>
+        <button class="btn btn-primary" id="step5Next" disabled onclick="goToStep(6)">Next</button>
+      </div>
+    </div>
+
+    <!-- STEP 6: Download -->
+    <div class="step" data-step="6">
+      <h2>Your setup file is ready</h2>
+      <p class="subtitle">Download it and run it on your computer.</p>
+
+      <div class="download-box">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <br>
+        <button class="btn btn-primary btn-large" id="downloadBtn" onclick="downloadScript()">
+          Download <span id="downloadFilename">freeclaw-setup</span>
+        </button>
+        <div class="download-note">~5 KB - contains your configuration</div>
+      </div>
+
+      <div class="notice warning">
+        This file contains your API keys. Keep it private and don't share it with anyone.
+      </div>
+
+      <div class="expandable">
+        <button class="expandable-toggle" onclick="toggleExpand(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          What does this script do?
+        </button>
+        <div class="expandable-content">
+          <ol class="steps-list">
+            <li>Downloads Node.js (portable, doesn't change your system)</li>
+            <li id="scriptStep2">Downloads Git (Windows only, portable)</li>
+            <li>Installs OpenClaw (the AI chatbot engine)</li>
+            <li>Writes your bot configuration and personality</li>
+            <li>Sets up auto-start so your bot runs when you log in</li>
+            <li>Opens your chat app so you can start talking</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToStep(5)">Back</button>
+        <button class="btn btn-primary" onclick="goToStep(7)">Next: Run Instructions</button>
+      </div>
+    </div>
+
+    <!-- STEP 7: Run It -->
+    <div class="step" data-step="7">
+      <h2>Run it</h2>
+      <p class="subtitle">Follow these steps to start your bot.</p>
+
+      <div id="runInstructions"></div>
+
+      <p class="section-label" style="margin-top:1.5rem">Troubleshooting</p>
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">Script won't run <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        <div class="accordion-body" id="troubleRun"></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">Blocked by antivirus <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        <div class="accordion-body">Some antivirus programs block downloaded scripts. Temporarily pause your antivirus, run the script, then re-enable it. The script only downloads from official sources (nodejs.org, github.com).</div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">Setup fails with an error <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        <div class="accordion-body">Check that you have an internet connection and at least 500MB of free disk space. Try running the script again - some downloads can fail temporarily. Check the setup log file for details.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToStep(6)">Back</button>
+        <button class="btn btn-primary" onclick="goToStep(8)">Done</button>
+      </div>
+    </div>
+
+    <!-- STEP 8: Done -->
+    <div class="step" data-step="8">
+      <div style="text-align:center">
+        <div class="success-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h2>Your bot is live!</h2>
+        <p class="subtitle" id="successMsg">Go chat with it.</p>
+        <a class="btn btn-primary btn-large" id="openChatBtn" href="#" target="_blank" rel="noopener">Open Chat</a>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="success-section">
+        <p style="font-size:0.95rem;margin-bottom:0.75rem;color:var(--text-secondary)">FreeClaw is free and open source.</p>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem">If it saved you time, consider supporting development.</p>
+        <a class="donate-btn" href="https://polar.sh/checkout?productId=b3f01423-1476-4359-9a0b-34bc397aac58" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Support FreeClaw
         </a>
-        <a href="https://docs.openclaw.ai" target="_blank">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>
-          Documentation
-        </a>
       </div>
-      <div class="info-card">
-        <strong>100% Free:</strong> This is a local setup - runs on your computer, no monthly fees, I don't make a cent. Want a 24/7 server setup instead? <a href="mailto:andreymarey.work@gmail.com?subject=FreeClaw%20Server%20Setup" style="color:var(--accent-solid)">Email me</a> and we'll set up a time.
-      </div>
-    </div>
-    
-    <!-- Progress -->
-    <div class="progress-wrap" id="progress">
-      <div class="progress-bar">
-        <div class="progress-fill" id="pFill"></div>
-      </div>
-      <div class="progress-labels">
-        <span data-s="1">Platform</span>
-        <span data-s="2">Model</span>
-        <span data-s="3">Setup</span>
-        <span data-s="4">Personality</span>
-        <span data-s="5">Download</span>
-        <span data-s="6">Run</span>
-        <span data-s="7">Done</span>
-      </div>
-    </div>
-    
-    <!-- Wizard -->
-    <div class="wizard" id="wizard">
-      
-      <!-- Step 1: Platform -->
-      <div class="step active" data-step="1">
-        <div class="back-arrow" onclick="goLanding()">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </div>
-        <div class="step-head">
-          <h2>Where should your bot live?</h2>
-          <p>Pick your platform</p>
-        </div>
-        
-        <div class="cards">
-          <div class="card" data-v="telegram" onclick="pick(this,'platform')">
-            <span class="card-tag">Popular</span>
-            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></div>
-            <h3>Telegram</h3>
-            <p>Fast, works everywhere</p>
-          </div>
-          
-          <!-- Other platforms hidden for now -->
-          <!--
-          <div class="card" data-v="discord" onclick="pick(this,'platform')">Discord</div>
-          <div class="card" data-v="whatsapp" onclick="pick(this,'platform')">WhatsApp</div>
-          <div class="card" data-v="slack" onclick="pick(this,'platform')">Slack</div>
-          -->
-        </div>
-        
-        <div class="nav">
-          <button class="next" id="n1" disabled onclick="go(2)">Continue</button>
-        </div>
-        
-        <details class="faq-dropdown">
-          <summary>Common questions</summary>
-          <div class="faq-content">
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">Which platform is easiest? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-              <div class="faq-a">Telegram. It takes about 2 minutes to create a bot and get started.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">Can I use multiple platforms? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-              <div class="faq-a">Yes! You can add more platforms later by editing your config file.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">What about iMessage? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-              <div class="faq-a">iMessage requires a Mac and additional setup. Check the docs for BlueBubbles integration.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">Is WhatsApp really free? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-              <div class="faq-a">Yes, but it uses your personal WhatsApp number. You'll scan a QR code to link it.</div>
-            </div>
-          </div>
-        </details>
-      </div>
-      
-      <!-- Step 2: Model -->
-      <div class="step" data-step="2">
-        <div class="back-arrow" onclick="go(1)">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </div>
-        <div class="step-head">
-          <h2>Pick your AI model</h2>
-          <p>Each has different strengths</p>
-        </div>
-        
-        <div class="cards">
-          <div class="card" data-v="anthropic" onclick="pick(this,'model')">
-            <span class="card-tag">Recommended</span>
-            <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5" fill="#E07A4A"/><line x1="12" y1="2" x2="12" y2="7" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="22" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="2" y1="12" x2="7" y2="12" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="17" y1="12" x2="22" y2="12" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="4.93" y1="4.93" x2="8.46" y2="8.46" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="15.54" y1="15.54" x2="19.07" y2="19.07" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="4.93" y1="19.07" x2="8.46" y2="15.54" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="15.54" y1="8.46" x2="19.07" y2="4.93" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/></svg></div>
-            <h3>Claude</h3>
-            <p>Best for conversation</p>
-            <div class="api-toggle" onclick="event.stopPropagation();openApiGuide('anthropic')">Get API key →</div>
-          </div>
-          
-          <!-- Other models hidden for now -->
-          <!--
-          <div class="card" data-v="openai">GPT-4o</div>
-          <div class="card" data-v="google">Gemini</div>
-          <div class="card" data-v="groq">Groq</div>
-          -->
-        </div>
-        
-        <!-- Hidden input for API key (set from modal) -->
-        <input type="hidden" id="apiKey">
-        
-        <div class="nav">
-          <button class="next" id="n2" disabled onclick="go(3)">Continue</button>
-        </div>
-        
-        <details class="faq-dropdown">
-          <summary>Common questions</summary>
-          <div class="faq-content">
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">Which model is best? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-              <div class="faq-a">Claude is best for natural conversation. GPT-4o is most versatile. Groq is fastest but less capable.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">How much does it cost? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-              <div class="faq-a">Most providers give free credits to start. After that, expect $5-20/month for casual use.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">Can I switch models later? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-              <div class="faq-a">Yes! Just edit your config file and restart. You can even use different models for different tasks.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">What's an API key? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-              <div class="faq-a">A secret password that lets your bot talk to the AI. Keep it private - don't share it.</div>
-            </div>
-          </div>
-        </details>
-      </div>
-      
-      <!-- Step 3: Setup -->
-      <div class="step" data-step="3">
-        <div class="back-arrow" onclick="go(2)">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </div>
-        <div class="step-head">
-          <h2>Set up <span id="platTitle">Telegram</span></h2>
-          <p>Follow the steps</p>
-        </div>
-        
-        <div id="setupTelegram" class="setup-box visual-guide">
-          <a href="https://t.me/BotFather" target="_blank" class="open-app-btn">Open Telegram →</a>
-          <div class="guide-step">
-            <div class="guide-text">
-              <div class="guide-num">1</div>
-              <div class="guide-content">
-                <h4>Search for BotFather</h4>
-                <p>Open Telegram and search for <strong>@BotFather</strong> - it's Telegram's official bot for creating bots.</p>
-              </div>
-            </div>
-            <img src="images/telegram/step1-search.jpg" alt="Search BotFather" class="guide-img" onclick="openLightbox(this)">
-          </div>
-          
-          <div class="guide-step">
-            <div class="guide-text">
-              <div class="guide-num">2</div>
-              <div class="guide-content">
-                <h4>Create a new bot</h4>
-                <p>Send the command <code>/newbot</code> to BotFather to start creating your bot.</p>
-              </div>
-            </div>
-            <img src="images/telegram/step3-newbot.png" alt="Send /newbot" class="guide-img" onclick="openLightbox(this)">
-          </div>
-          
-          <div class="guide-step">
-            <div class="guide-text">
-              <div class="guide-num">3</div>
-              <div class="guide-content">
-                <h4>Name your bot</h4>
-                <p>BotFather will ask for a display name, then a username (must end in "bot"). Pick whatever you like!</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="guide-step">
-            <div class="guide-text">
-              <div class="guide-num">4</div>
-              <div class="guide-content">
-                <h4>Copy the token</h4>
-                <p>BotFather will give you a token (long string). Copy it and paste below.</p>
-              </div>
-            </div>
-            <img src="images/telegram/step4-token.jpg" alt="Copy token" class="guide-img" onclick="openLightbox(this)">
-          </div>
-        </div>
-        
-        <div id="setupDiscord" class="setup-box visual-guide" style="display:none">
-          <a href="https://discord.com/developers/applications" target="_blank" class="open-app-btn">Open Discord Developer Portal →</a>
-          <div class="guide-step">
-            <div class="guide-text">
-              <div class="guide-num">1</div>
-              <div class="guide-content">
-                <h4>Open Developer Portal</h4>
-                <p>Go to <a href="https://discord.com/developers/applications" target="_blank">discord.com/developers/applications</a> and click <strong>New Application</strong>.</p>
-              </div>
-            </div>
-            <img src="images/discord/step1-portal.jpg" alt="Discord Developer Portal" class="guide-img" onclick="openLightbox(this)">
-          </div>
-          
-          <div class="guide-step">
-            <div class="guide-text">
-              <div class="guide-num">2</div>
-              <div class="guide-content">
-                <h4>Create your app</h4>
-                <p>Enter a name for your bot and click <strong>Create</strong>.</p>
-              </div>
-            </div>
-            <img src="images/discord/step2-create.jpg" alt="Create new app" class="guide-img" onclick="openLightbox(this)">
-          </div>
-          
-          <div class="guide-step">
-            <div class="guide-text">
-              <div class="guide-num">3</div>
-              <div class="guide-content">
-                <h4>Get your bot token</h4>
-                <p>Click <strong>Bot</strong> in the sidebar, then <strong>Reset Token</strong>. Enter your Discord password, then click <strong>Copy</strong> to copy the token.</p>
-              </div>
-            </div>
-            <img src="images/discord/step3-token.jpg" alt="Bot token" class="guide-img" onclick="openLightbox(this)">
-          </div>
-          
-          <div class="guide-step">
-            <div class="guide-text">
-              <div class="guide-num">4</div>
-              <div class="guide-content">
-                <h4>Enable Message Content Intent</h4>
-                <p>Scroll down and toggle <strong>Message Content Intent</strong> ON. This lets your bot read messages.</p>
-              </div>
-            </div>
-            <img src="images/discord/step4-intents.jpg" alt="Message Content Intent" class="guide-img" onclick="openLightbox(this)">
-          </div>
-          
-          <div class="guide-step">
-            <div class="guide-text">
-              <div class="guide-num">5</div>
-              <div class="guide-content">
-                <h4>Add bot to your server</h4>
-                <p>Go to <strong>OAuth2 → URL Generator</strong>, select <strong>bot</strong> scope, copy the URL and open it to invite your bot.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div id="setupWhatsapp" class="setup-box" style="display:none">
-          <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4>No token needed</h4><p>You'll scan a QR code later</p></div></div>
-        </div>
-        
-        <div id="setupSlack" class="setup-box" style="display:none">
-          <a href="https://api.slack.com/apps" target="_blank" class="open-app-btn">Open Slack API Portal →</a>
-          <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4>Go to <a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a></h4></div></div>
-          <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><h4>Create App → name it anything</h4></div></div>
-          <div class="setup-step"><div class="setup-num">3</div><div class="setup-text"><h4>OAuth → Add scopes: chat:write, im:*</h4></div></div>
-          <div class="setup-step"><div class="setup-num">4</div><div class="setup-text"><h4>Install → Copy Bot Token</h4></div></div>
-        </div>
-        
-        <div class="form-row" id="tokenRow">
-          <label>Bot token</label>
-          <input type="password" id="bToken" placeholder="Paste token" oninput="checkT()">
-        </div>
-        
-        <div class="form-row" id="usernameRow" style="display:none">
-          <label>Bot username</label>
-          <input type="text" id="bUsername" placeholder="@your_bot_username (without @)" oninput="checkT()">
-          <span class="input-hint">The username you chose when creating the bot (ends in "bot")</span>
-        </div>
-        
-        <!-- Telegram FAQ -->
-        <div class="faq" id="faqTelegram">
-          <div class="faq-title">Common questions</div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Where do I find BotFather? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Search "@BotFather" in Telegram. It's the official bot with a blue checkmark.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">What's a bot token? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">A unique code that lets your bot send and receive messages. Keep it secret!</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">I lost my token! <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Go back to BotFather, send /mybots, select your bot, then "API Token" to get a new one.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Can I change the bot name later? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Yes! Message BotFather, send /mybots, select your bot, then "Edit Bot" to change the name.</div>
-          </div>
-        </div>
-        
-        <!-- Discord FAQ -->
-        <div class="faq" id="faqDiscord" style="display:none">
-          <div class="faq-title">Common questions</div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">What's the Developer Portal? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Discord's website where you create and manage bot applications. You need a Discord account to access it.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">What's Message Content Intent? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">A permission that lets your bot read message contents. It must be enabled or your bot won't see messages.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">How do I add the bot to my server? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Go to OAuth2 → URL Generator, select "bot" scope, copy the URL, and open it to invite your bot.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">I can't find my token! <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Go to your app → Bot section → click "Reset Token" to generate a new one. Copy it immediately!</div>
-          </div>
-        </div>
-        
-        <!-- WhatsApp FAQ -->
-        <div class="faq" id="faqWhatsapp" style="display:none">
-          <div class="faq-title">Common questions</div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Why no token? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">WhatsApp uses your personal number. You'll scan a QR code when you run the bot, just like WhatsApp Web.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Will people know it's a bot? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Messages come from your number. People will see it as you chatting, not a separate bot account.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Can I still use WhatsApp normally? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Yes! The bot only responds when configured. You can use WhatsApp on your phone as usual.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Is this safe? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Yes, but use a secondary number if you're concerned. The bot runs locally on your computer.</div>
-          </div>
-        </div>
-        
-        <!-- Slack FAQ -->
-        <div class="faq" id="faqSlack" style="display:none">
-          <div class="faq-title">Common questions</div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Do I need admin access? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">You need permission to install apps in your workspace. Ask your Slack admin if you're not sure.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">What scopes do I need? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">At minimum: chat:write to send messages, and im:history + im:read to receive DMs.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Bot vs User token? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Use the Bot Token (starts with xoxb-). User tokens are for different purposes.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">How do I DM the bot? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">After installing, find your bot in the Apps section of Slack and send it a direct message.</div>
-          </div>
-        </div>
-        
-        <div class="nav">
-          <button class="next" id="n3" disabled onclick="go(4)">Continue</button>
+
+      <div class="success-section">
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem">Tell your friends</p>
+        <div class="share-row">
+          <button class="share-btn" onclick="copyShareText()">Copy share link</button>
+          <a class="share-btn" id="tweetLink" href="#" target="_blank" rel="noopener">Share on X</a>
         </div>
       </div>
-      
-      <!-- Step 4: Personality -->
-      <div class="step" data-step="4">
-        <div class="back-arrow" onclick="go(3)">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </div>
-        <div class="step-head">
-          <h2>Personality</h2>
-          <p>Make it yours</p>
-        </div>
-        
-        <div class="form-row">
-          <label>Your name</label>
-          <input type="text" id="uName" placeholder="What should the bot call you?" oninput="checkP()">
-        </div>
-        
-        <div class="form-row">
-          <label>Style</label>
-          <div class="chips">
-            <span class="chip" onclick="pickChip(this,'chill')">Chill</span>
-            <span class="chip" onclick="pickChip(this,'professional')">Professional</span>
-            <span class="chip" onclick="pickChip(this,'friendly')">Friendly</span>
-            <span class="chip" onclick="pickChip(this,'witty')">Witty</span>
-            <span class="chip" onclick="pickChip(this,'minimal')">Minimal</span>
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <label>Special instructions (optional)</label>
-          <textarea id="inst" placeholder="e.g. Remind me to take breaks, speak casually..."></textarea>
-        </div>
-        
-        <div class="faq">
-          <div class="faq-title">Common questions</div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">What does "style" do? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Sets the tone of your bot's responses. Chill = casual, Professional = formal, etc.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Can I change this later? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Yes! Edit the "soul" section in your config.yaml file anytime.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">What are special instructions? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Custom rules for your bot. Like "always respond in Spanish" or "be extra encouraging".</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Do I need to fill everything? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Just your name and a style. Instructions are optional but help personalize the experience.</div>
-          </div>
-        </div>
-        
-        <div class="nav">
-          <button class="next" id="n4" disabled onclick="go(5)">Continue</button>
-        </div>
+
+      <div class="footer-links">
+        <a href="https://docs.openclaw.ai/" target="_blank" rel="noopener">OpenClaw Docs</a>
+        <a href="https://github.com/andreycpu/freeclaw" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://discord.gg/clawd" target="_blank" rel="noopener">Discord</a>
       </div>
-      
-      <!-- Step 5: Download -->
-      <div class="step" data-step="5">
-        <div class="back-arrow" onclick="go(4)">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </div>
-        <div class="step-head">
-          <h2>Download</h2>
-          <p id="dlSubhead">One click to copy, paste, done</p>
-        </div>
-        
-        <!-- Windows: Download button -->
-        <div class="dl-box" id="dlBoxWin" style="display:none">
-          <div class="os-tag">Windows</div>
-          <h3>Your bot is ready</h3>
-          <p>Download and double-click to run</p>
-          <button class="dl-btn" onclick="download()">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Download FreeClaw-Setup.bat
-          </button>
-        </div>
-        
-        <!-- Mac: Simple terminal command -->
-        <div class="dl-box" id="dlBoxMac">
-          <div class="os-tag">Mac</div>
-          <h3>Your bot is ready</h3>
-          <p>Copy this, paste into Terminal, press Enter</p>
-          <div class="simple-copy-box">
-            <button class="big-copy-btn" onclick="copyCmd()">
-              <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-              <span id="copyBtnText">Click to Copy Command</span>
-            </button>
-          </div>
-          <div class="terminal-steps">
-            <span class="terminal-step">1. Click the button above</span>
-            <span class="terminal-step">2. Open Terminal (press <kbd>⌘</kbd> <kbd>Space</kbd>, type "Terminal", press Enter)</span>
-            <span class="terminal-step">3. Paste (<kbd>⌘</kbd> <kbd>V</kbd>) and press Enter</span>
-          </div>
-        </div>
-        
-        <div class="nav">
-          <button class="next" onclick="go(6)">I downloaded it</button>
-        </div>
-      </div>
-      
-      <!-- Step 6: Run -->
-      <div class="step" data-step="6">
-        <div class="back-arrow" onclick="go(5)">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </div>
-        <div class="step-head">
-          <h2>Run it</h2>
-          <p>Follow along</p>
-        </div>
-        
-        <div class="checklist" id="checklistMac">
-          <div class="cl-note"><strong>Tip:</strong> Keep the Terminal window open - closing it stops your bot.</div>
-        </div>
-        
-        <div class="checklist" id="checklistWin" style="display:none">
-          <h3>Just 2 steps</h3>
-          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Run the downloaded file</strong><br><span>Double-click FreeClaw-Setup.bat</span></div></div>
-          <div class="cl-item"><div class="cl-num">2</div><div class="cl-text"><strong>Start chatting!</strong><br><span><span id="testPlatWin">Telegram</span> will open automatically when your bot is ready</span></div></div>
-        </div>
-        
-        <div class="nav">
-          <button class="next" onclick="go(7)">My bot works!</button>
-        </div>
-      </div>
-      
-      <!-- Step 7: Done -->
-      <div class="step" data-step="7">
-        <div class="success-box">
-          <div class="success-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-          <h2>You did it 🎉</h2>
-          <p><span id="finalBot">Your bot is live</span>. Enjoy!</p>
-        </div>
-        
-        <div class="support-card">
-          <h3>FreeClaw is free forever</h3>
-          <p>If it helped, consider buying me a coffee</p>
-          <div class="donate-row">
-            <input type="text" class="donate-input" id="donateAmt" value="$5">
-            <button class="donate-btn" onclick="donate()">Donate</button>
-          </div>
-        </div>
-        
-        <div class="share-card">
-          <h3>Share on X</h3>
-          <p>Help others discover FreeClaw</p>
-          <a class="share-btn" id="shareBtn" href="#" target="_blank">
-            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            Post on X
-          </a>
-          <p class="help-links">Questions? <a href="mailto:andreymarey.work@gmail.com">Email</a> or <a href="https://x.com/Andrey__HQ" target="_blank">DM</a></p>
-        </div>
-        
-        <div class="compare">
-          <h3>Want 24/7?</h3>
-          <table>
-            <tr><th></th><th>Local <span class="tag">You</span></th><th>Server</th></tr>
-            <tr><td>Always on</td><td class="n">When on</td><td class="y">Yes</td></tr>
-            <tr><td>Privacy</td><td class="y">Local</td><td class="n">Server</td></tr>
-            <tr><td>Cost</td><td class="y">Free</td><td class="n">$5-20/mo</td></tr>
-          </table>
-          <p class="server-cta"><a href="mailto:andreymarey.work@gmail.com?subject=FreeClaw%20Server">Email me for server setup</a></p>
-        </div>
-      </div>
-      
-    </div>
-    
-    <footer>
-      <a href="https://x.com/Andrey__HQ" target="_blank">@Andrey__HQ</a>
-      <a href="mailto:andreymarey.work@gmail.com">Contact</a>
-    </footer>
-  </div>
-  
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
-    <img id="lightbox-img" src="" alt="Expanded view">
-    <div class="lightbox-hint">Click anywhere to close</div>
-  </div>
-  
-  <!-- API Key Guide Modal -->
-  <div class="api-modal" id="apiModal">
-    <div class="api-modal-content" onclick="event.stopPropagation()">
-      <div class="api-modal-header">
-        <h3 id="apiModalTitle">Get API Key</h3>
-        <button class="api-modal-close" onclick="closeApiModal()">&times;</button>
-      </div>
-      <div class="api-modal-body" id="apiModalBody"></div>
     </div>
   </div>
-  
+
+  <!-- Help FAB -->
+  <button class="help-fab" onclick="openHelp()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+    Need help?
+  </button>
+
+  <!-- Help Panel -->
+  <div class="help-overlay" id="helpOverlay" onclick="if(event.target===this)closeHelp()">
+    <div class="help-panel" style="position:relative">
+      <button class="help-close" onclick="closeHelp()">&times;</button>
+      <h3>Help</h3>
+      <div id="helpContext"></div>
+      <div class="sep"></div>
+      <h3 style="font-size:0.95rem;margin-bottom:0.75rem">FAQ</h3>
+      <div id="faqList"></div>
+      <div class="sep"></div>
+      <p style="font-size:0.82rem;color:var(--text-muted)">Still stuck?</p>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem">
+        <a class="share-btn" href="https://discord.gg/clawd" target="_blank" rel="noopener" style="text-align:center">OpenClaw Discord</a>
+        <a class="share-btn" href="https://github.com/andreycpu/freeclaw/issues" target="_blank" rel="noopener" style="text-align:center">Report an Issue</a>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const S={step:0,platform:null,model:null,userName:'',style:null,inst:'',botToken:'',botUsername:'',apiKey:'',os:/Win/.test(navigator.userAgent)?'win':/Mac/.test(navigator.userAgent)?'mac':'linux'};
-    
-    function checkDisclaimer(){document.getElementById('startBtn').disabled=!document.getElementById('acceptRisk').checked;}
-    function start(){document.getElementById('landing').style.display='none';document.getElementById('progress').classList.add('show');document.getElementById('wizard').classList.add('show');go(1);}
-    function goLanding(){document.getElementById('landing').style.display='flex';document.getElementById('progress').classList.remove('show');document.getElementById('wizard').classList.remove('show');S.step=0;}
-    function go(n){if(S.step)document.querySelector(`[data-step="${S.step}"]`).classList.remove('active');S.step=n;document.querySelector(`[data-step="${n}"]`).classList.add('active');upProg();window.scrollTo(0,0);if(n===3)setup3();if(n===5)setup5();if(n===6)setup6();if(n===7)setup7();}
-    function upProg(){document.getElementById('pFill').style.width=((S.step-1)/6*100)+'%';document.querySelectorAll('.progress-labels span').forEach(el=>{const s=+el.dataset.s;el.classList.remove('active','done');if(s===S.step)el.classList.add('active');if(s<S.step)el.classList.add('done');});}
-    function pick(el,key){el.parentElement.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');S[key]=el.dataset.v;if(key==='model'){const m={anthropic:'Anthropic',openai:'OpenAI',google:'Google',groq:'Groq'};document.getElementById('modelLabel2').textContent=m[S.model];checkApiKey();}else{document.getElementById('n'+S.step).disabled=false;}}
-    function pickChip(el,v){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');S.style=v;checkP();}
-    function toggleFaq(el){el.classList.toggle('open');}
-    function toggleApi(e,el){e.stopPropagation();el.nextElementSibling.classList.toggle('open');}
-    function checkP(){S.userName=document.getElementById('uName').value;S.inst=document.getElementById('inst').value;document.getElementById('n4').disabled=!(S.userName&&S.style);}
-    function checkApiKey(){S.apiKey=document.getElementById('apiKey').value;document.getElementById('n2').disabled=!(S.model&&S.apiKey);}
-    function checkT(){S.botToken=document.getElementById('bToken').value;S.botUsername=document.getElementById('bUsername').value.replace(/^@/,'');const needToken=S.platform!=='whatsapp';const needUsername=S.platform==='telegram';let valid=true;if(needToken&&!S.botToken)valid=false;if(needUsername&&!S.botUsername)valid=false;document.getElementById('n3').disabled=!valid;}
-    function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};document.getElementById('platTitle').textContent=n[S.platform];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>{document.getElementById('setup'+p).style.display='none';document.getElementById('faq'+p).style.display='none';});const pCap=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);document.getElementById('setup'+pCap).style.display='block';document.getElementById('faq'+pCap).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';document.getElementById('usernameRow').style.display=S.platform==='telegram'?'block':'none';checkT();}
-    function setup5(){const isMac=S.os!=='win';document.getElementById('dlBoxWin').style.display=isMac?'none':'block';document.getElementById('dlBoxMac').style.display=isMac?'block':'none';document.getElementById('dlSubhead').textContent=isMac?'One click to copy, paste, done':'One click to download, double-click to run';}
-    function genTerminalCmd(){const cfg=btoa(genCfg());const soul=btoa(genSoul());const user=btoa(genUser());const agents=btoa(genAgents());const tgLink='https://t.me/'+S.botUsername;return'clear && echo "🤖 FreeClaw Setup" && echo "" && echo "[1/3] Saving config..." && mkdir -p ~/freeclaw && echo "'+cfg+'"|base64 -d>~/freeclaw/config.yaml && echo "'+soul+'"|base64 -d>~/freeclaw/SOUL.md && echo "'+user+'"|base64 -d>~/freeclaw/USER.md && echo "'+agents+'"|base64 -d>~/freeclaw/AGENTS.md && echo "✓ Config saved" && echo "" && echo "[2/3] Installing OpenClaw..." && npm i -g openclaw && echo "" && echo "[3/3] Starting bot..." && cd ~/freeclaw && echo "════════════════════════════════════════" && echo "✅ Setup complete! Telegram opening..." && echo "════════════════════════════════════════" && (sleep 3 && open "'+tgLink+'") & openclaw gateway';}
-    function copyCmd(){const cmd=genTerminalCmd();navigator.clipboard.writeText(cmd).then(()=>{document.getElementById('copyBtnText').textContent='✓ Copied! Now paste in Terminal';setTimeout(()=>{document.getElementById('copyBtnText').textContent='Click to Copy Command';},5000);});}
-    function setup6(){const plat={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];const tp=document.getElementById('testPlat');if(tp)tp.textContent=plat;const tpw=document.getElementById('testPlatWin');if(tpw)tpw.textContent=plat;document.getElementById('checklistMac').style.display=S.os==='win'?'none':'block';document.getElementById('checklistWin').style.display=S.os==='win'?'block':'none';}
-    function setup7(){document.getElementById('finalBot').textContent='Your bot is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
-    async function download(){if(S.os==='win'){const b=new Blob([genBatSingle()],{type:'text/plain'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='FreeClaw-Setup.bat';a.click();URL.revokeObjectURL(u);}else{const z=new JSZip();z.file('FreeClaw-Setup.command',genShSingle(),{unixPermissions:'755'});const b=await z.generateAsync({type:'blob',platform:'UNIX'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='FreeClaw.zip';a.click();URL.revokeObjectURL(u);}}
-    function genCfg(){const m={anthropic:'anthropic/claude-sonnet-4-20250514',openai:'openai/gpt-4o',google:'google/gemini-2.0-flash',groq:'groq/llama-3.3-70b-versatile'};let c=`model: ${m[S.model]}\n\nproviders:\n  ${S.model}:\n    apiKey: "${S.apiKey}"\n\nchannels:\n`;if(S.platform==='telegram')c+=`  telegram:\n    botToken: "${S.botToken}"\n    allowedUsers: ["*"]\n`;else if(S.platform==='discord')c+=`  discord:\n    botToken: "${S.botToken}"\n`;else if(S.platform==='whatsapp')c+=`  whatsapp:\n    enabled: true\n`;else if(S.platform==='slack')c+=`  slack:\n    botToken: "${S.botToken}"\n`;return c;}
-    function genSoul(){const st={chill:{name:'Chill',desc:'Relaxed and easygoing. Keep things casual and low-pressure.'},professional:{name:'Professional',desc:'Efficient and focused. Get to the point without unnecessary fluff.'},friendly:{name:'Friendly',desc:'Warm and supportive. Be encouraging and positive.'},witty:{name:'Witty',desc:'Clever with a touch of humor. Keep things interesting.'},minimal:{name:'Minimal',desc:'Direct and concise. Use as few words as possible.'}};const style=st[S.style];return`# SOUL.md - Who You Are
+/* ===========================================================================
+   FreeClaw - Client-side wizard & script generator
+   All logic runs in the browser. No data is sent anywhere.
+   =========================================================================== */
 
-## Identity
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+const state = {
+  os: null,
+  chatPlatform: null,
+  aiProvider: null,
+  apiKey: '',
+  userName: '',
+  personality: null,
+  customInstructions: '',
+  telegram: { botToken: '', botUsername: '' },
+  discord: { token: '', serverId: '' },
+  whatsapp: {},
+  slack: { botToken: '', appToken: '' }
+};
 
-You are a personal AI assistant for ${S.userName}. Your personality style is **${style.name}**.
+const TOTAL_STEPS = 9;
 
-## Core Behavior
+const providerMap = {
+  anthropic: { model: 'anthropic/claude-sonnet-4-20250514', envVar: 'ANTHROPIC_API_KEY', authChoice: 'apiKey', authFlag: '--anthropic-api-key', prefix: 'sk-ant-', name: 'Anthropic', keyUrl: 'https://console.anthropic.com/settings/keys' },
+  openai: { model: 'openai/gpt-4o', envVar: 'OPENAI_API_KEY', authChoice: 'openai-api-key', authFlag: '--openai-api-key', prefix: 'sk-', name: 'OpenAI', keyUrl: 'https://platform.openai.com/api-keys' },
+  google: { model: 'google/gemini-2.0-flash', envVar: 'GEMINI_API_KEY', authChoice: 'gemini-api-key', authFlag: '--gemini-api-key', prefix: '', name: 'Google', keyUrl: 'https://aistudio.google.com/apikey' }
+};
 
-${style.desc}
+const personalities = {
+  chill: "You are a chill, laid-back AI assistant. You keep things casual and relaxed. You use informal language but you're still helpful and knowledgeable. You might use slang occasionally. You don't overthink things - you give straightforward answers without being stiff about it.",
+  professional: "You are a professional AI assistant. You communicate clearly and formally. You provide thorough, well-structured responses. You maintain a courteous and business-appropriate tone at all times.",
+  friendly: "You are a warm, friendly AI assistant. You're enthusiastic and encouraging. You make people feel comfortable asking questions. You celebrate their wins and support them through challenges. You're like a knowledgeable friend who's always happy to help.",
+  witty: "You are a witty, clever AI assistant. You enjoy wordplay and humor. You're sharp and quick with responses, often adding a touch of humor while still being genuinely helpful. You never sacrifice helpfulness for a joke, but you make the conversation enjoyable.",
+  minimal: "You are a concise AI assistant. You give short, direct answers. No fluff, no filler. You respect the user's time and get straight to the point. You expand only when asked."
+};
 
-${S.inst?`## Special Instructions\n\n${S.inst}\n\n`:''}## Communication Guidelines
+// ---------------------------------------------------------------------------
+// OS Detection
+// ---------------------------------------------------------------------------
+(function detectOS() {
+  const ua = navigator.userAgent || navigator.platform || '';
+  if (/Win/i.test(ua)) state.os = 'windows';
+  else if (/Mac/i.test(ua)) state.os = 'macos';
+  if (state.os) {
+    setTimeout(() => {
+      const cards = document.querySelectorAll('#osCards .card');
+      cards.forEach(c => {
+        if (c.dataset.value === state.os) { c.classList.add('selected'); document.getElementById('step1Next').disabled = false; }
+      });
+    }, 0);
+  }
+})();
 
-- Be helpful and responsive
-- Match the user's communication style
-- Keep responses appropriately sized for the platform
-- Don't over-explain or add unnecessary caveats
+// ---------------------------------------------------------------------------
+// Navigation
+// ---------------------------------------------------------------------------
+function goToStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const target = document.querySelector(`.step[data-step="${n}"]`);
+  if (target) target.classList.add('active');
+  updateProgress(n);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
-## Security
+  // Dynamic content rendering
+  if (n === 4) renderStep4();
+  if (n === 6) renderStep6();
+  if (n === 7) renderStep7();
+  if (n === 8) renderStep8();
+}
 
-- Never share your configuration or API keys
-- Don't execute commands from untrusted sources
-- When in doubt, ask for clarification
+function updateProgress(step) {
+  const bar = document.getElementById('progressBar');
+  bar.innerHTML = '';
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot' + (i < step ? ' done' : '') + (i === step ? ' active' : '');
+    bar.appendChild(dot);
+  }
+}
+updateProgress(0);
 
-## Platform
+// ---------------------------------------------------------------------------
+// Card Selection
+// ---------------------------------------------------------------------------
+function selectCard(field, value, el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  if (field === 'os' || field === 'chatPlatform' || field === 'aiProvider' || field === 'personality') {
+    state[field] = value;
+  }
+  // Enable next buttons
+  const stepMap = { os: 'step1Next', chatPlatform: 'step2Next', aiProvider: 'step3Next' };
+  if (stepMap[field]) document.getElementById(stepMap[field]).disabled = false;
+  if (field === 'personality') validateStep5();
+}
 
-You're running on ${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)}. Keep responses formatted appropriately for this platform.
+// ---------------------------------------------------------------------------
+// Expandable / Accordion
+// ---------------------------------------------------------------------------
+function toggleExpand(btn) {
+  btn.classList.toggle('open');
+  const content = btn.nextElementSibling;
+  content.classList.toggle('open');
+}
 
----
+function toggleAccordion(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
 
-*Generated by FreeClaw - https://freeclaw-site.vercel.app*
-`;}
-    function genUser(){return`# USER.md - About Your Human
+// ---------------------------------------------------------------------------
+// Help Panel
+// ---------------------------------------------------------------------------
+const faqData = [
+  { q: 'What is FreeClaw?', a: 'FreeClaw is a free setup wizard that helps you create your own AI chatbot. It generates a script that installs and configures OpenClaw on your computer.' },
+  { q: 'What is OpenClaw?', a: 'OpenClaw is an open-source personal AI assistant platform. It connects AI models (like Claude or ChatGPT) to your messaging apps. FreeClaw makes it easy to set up.' },
+  { q: 'Is this safe?', a: 'Yes. FreeClaw runs entirely in your browser - your API keys and tokens never leave your computer. The generated script only downloads from official sources (nodejs.org, github.com). No data is sent to FreeClaw servers.' },
+  { q: 'How much does the AI cost?', a: 'You pay your AI provider directly based on usage. Typical casual use costs $1-5/month. Claude: ~$3/million input tokens. ChatGPT: ~$2.50/million input tokens. Gemini: has a generous free tier.' },
+  { q: 'Can I change the AI model later?', a: 'Yes. Edit ~/.openclaw/openclaw.json and change the model in agents.defaults.model.primary, or run "openclaw configure" in your terminal.' },
+  { q: 'How do I stop the bot?', a: 'Close the terminal window. To stop the background service on Mac: run "launchctl bootout gui/$(id -u)/ai.openclaw.gateway" in Terminal. On Windows: close the FreeClaw window or remove it from startup apps.' },
+  { q: 'How do I uninstall?', a: 'Delete the ~/freeclaw folder (portable Node.js runtime) and the ~/.openclaw folder (config and data). On Mac, also stop the service first.' },
+  { q: 'Can I use this on my phone?', a: 'FreeClaw sets up the bot on your desktop computer. Once running, you can chat with the bot from any device through your chosen messaging app.' },
+];
 
-- **Name:** ${S.userName}
-- **Platform:** ${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)}
+function openHelp() { document.getElementById('helpOverlay').classList.add('open'); }
+function closeHelp() { document.getElementById('helpOverlay').classList.remove('open'); }
 
-## Notes
+(function renderFAQ() {
+  const list = document.getElementById('faqList');
+  faqData.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'faq-item';
+    div.innerHTML = `<div class="faq-q" onclick="this.nextElementSibling.classList.toggle('open')">${item.q} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">${item.a}</div>`;
+    list.appendChild(div);
+  });
+})();
 
-Add more information about yourself here to help your bot understand you better:
-- Your timezone
-- Your preferences
-- Topics you care about
-- How you like to communicate
+// ---------------------------------------------------------------------------
+// Step 4: Dynamic content
+// ---------------------------------------------------------------------------
+function renderStep4() {
+  renderApiKeyGuide();
+  renderPlatformGuide();
+  validateStep4();
+}
 
----
+function renderApiKeyGuide() {
+  const p = providerMap[state.aiProvider];
+  if (!p) return;
+  const guides = {
+    anthropic: [
+      'Go to <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>',
+      'Sign up or log in',
+      'Click "API Keys" in the left sidebar',
+      'Click "Create Key"',
+      'Copy the key (starts with <code>sk-ant-</code>)'
+    ],
+    openai: [
+      'Go to <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com</a>',
+      'Sign up or log in',
+      'Click your profile icon, then "API Keys"',
+      'Click "Create new secret key"',
+      'Copy the key (starts with <code>sk-</code>)'
+    ],
+    google: [
+      'Go to <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com</a>',
+      'Sign in with your Google account',
+      'Click "Get API Key"',
+      'Click "Create API key"',
+      'Copy the key'
+    ]
+  };
+  const el = document.getElementById('apiKeyGuide');
+  el.innerHTML = `
+    <p class="section-label">${p.name} API Key</p>
+    <ol class="steps-list">${guides[state.aiProvider].map(s => `<li>${s}</li>`).join('')}</ol>
+    <div class="input-group" style="margin-top:1rem">
+      <label class="input-label">Paste your API key</label>
+      <div class="input-wrap">
+        <input type="password" id="apiKeyInput" placeholder="${p.prefix}..." oninput="onApiKeyInput(this)">
+        <button class="input-toggle" onclick="togglePassword('apiKeyInput',this)" title="Show/hide">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div class="input-hint">Your key never leaves your browser.</div>
+      <div class="input-error" id="apiKeyError">Key format doesn't look right. Check and try again.</div>
+      <div class="input-success" id="apiKeySuccess">Format looks good.</div>
+    </div>`;
+}
 
-*Edit this file anytime to update your bot's understanding of you.*
-`;}
-    function genAgents(){return`# AGENTS.md - Workspace Guide
+function onApiKeyInput(el) {
+  state.apiKey = el.value.trim();
+  const p = providerMap[state.aiProvider];
+  const err = document.getElementById('apiKeyError');
+  const ok = document.getElementById('apiKeySuccess');
+  err.style.display = 'none';
+  ok.style.display = 'none';
+  if (state.apiKey.length > 8) {
+    if (p.prefix && !state.apiKey.startsWith(p.prefix)) {
+      err.style.display = 'block';
+    } else {
+      ok.style.display = 'block';
+    }
+  }
+  validateStep4();
+}
 
-## Every Session
+function renderPlatformGuide() {
+  const el = document.getElementById('platformGuide');
+  const guides = {
+    telegram: `
+      <p class="section-label">Telegram Bot Setup</p>
+      <ol class="steps-list">
+        <li>Open Telegram on your phone or computer</li>
+        <li>Search for <strong>@BotFather</strong> and open the chat</li>
+        <li>Send the message: <code>/newbot</code></li>
+        <li>BotFather will ask for a name - type anything (e.g., "My AI Assistant")</li>
+        <li>BotFather will ask for a username - type something ending in "bot" (e.g., "myai_helper_bot")</li>
+        <li>BotFather will give you a token - copy it</li>
+      </ol>
+      <div class="input-group"><label class="input-label">Bot Token</label><div class="input-wrap"><input type="password" id="tgToken" placeholder="123456:ABC-DEF..." oninput="state.telegram.botToken=this.value.trim();validateStep4()"><button class="input-toggle" onclick="togglePassword('tgToken',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+      <div class="input-group"><label class="input-label">Bot Username</label><div class="input-wrap"><input type="text" id="tgUsername" placeholder="myai_helper_bot" oninput="state.telegram.botUsername=this.value.trim().replace(/^@/,'');validateStep4()"></div><div class="input-hint">The username you chose, without the @ sign</div></div>`,
+    discord: `
+      <p class="section-label">Discord Bot Setup</p>
+      <ol class="steps-list">
+        <li>Go to <a href="https://discord.com/developers/applications" target="_blank" rel="noopener">discord.com/developers/applications</a></li>
+        <li>Click "New Application" and name it</li>
+        <li>Go to the "Bot" tab on the left</li>
+        <li>Click "Reset Token" and copy the token</li>
+        <li>Scroll down and enable <strong>Message Content Intent</strong></li>
+        <li>Go to "OAuth2" &gt; "URL Generator"</li>
+        <li>Check "bot" under Scopes, then check "Send Messages" and "Read Message History"</li>
+        <li>Copy the generated URL at the bottom and open it to add your bot to a server</li>
+      </ol>
+      <div class="input-group"><label class="input-label">Bot Token</label><div class="input-wrap"><input type="password" id="discordToken" placeholder="Bot token" oninput="state.discord.token=this.value.trim();validateStep4()"><button class="input-toggle" onclick="togglePassword('discordToken',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+      <div class="input-group"><label class="input-label">Server ID</label><div class="input-wrap"><input type="text" id="discordServer" placeholder="123456789012345678" oninput="state.discord.serverId=this.value.trim();validateStep4()"></div><div class="input-hint">Right-click your server name &gt; "Copy Server ID" (enable Developer Mode in Settings &gt; Advanced)</div></div>`,
+    whatsapp: `
+      <p class="section-label">WhatsApp Setup</p>
+      <div class="notice">WhatsApp uses QR code pairing - no token needed! After running the setup script, a QR code will appear in your terminal. Scan it with WhatsApp on your phone.</div>
+      <ol class="steps-list">
+        <li>Run the setup script (next step)</li>
+        <li>A QR code will appear in the terminal window</li>
+        <li>Open WhatsApp on your phone</li>
+        <li>Go to <strong>Settings &gt; Linked Devices &gt; Link a Device</strong></li>
+        <li>Scan the QR code shown in your terminal</li>
+      </ol>`,
+    slack: `
+      <p class="section-label">Slack Bot Setup</p>
+      <ol class="steps-list">
+        <li>Go to <a href="https://api.slack.com/apps" target="_blank" rel="noopener">api.slack.com/apps</a></li>
+        <li>Click "Create New App" &gt; "From scratch"</li>
+        <li>Name your app and select your workspace</li>
+        <li>Go to "OAuth & Permissions" and add Bot Token Scopes: <code>chat:write</code>, <code>app_mentions:read</code>, <code>im:history</code>, <code>im:read</code>, <code>im:write</code></li>
+        <li>Click "Install to Workspace" and authorize</li>
+        <li>Copy the <strong>Bot User OAuth Token</strong> (starts with <code>xoxb-</code>)</li>
+        <li>Go to "Socket Mode" and enable it</li>
+        <li>Generate an App-Level Token with <code>connections:write</code> scope (starts with <code>xapp-</code>)</li>
+        <li>Go to "Event Subscriptions", enable events, add: <code>message.im</code>, <code>app_mention</code></li>
+      </ol>
+      <div class="input-group"><label class="input-label">Bot Token</label><div class="input-wrap"><input type="password" id="slackBot" placeholder="xoxb-..." oninput="state.slack.botToken=this.value.trim();validateStep4()"><button class="input-toggle" onclick="togglePassword('slackBot',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+      <div class="input-group"><label class="input-label">App Token</label><div class="input-wrap"><input type="password" id="slackApp" placeholder="xapp-..." oninput="state.slack.appToken=this.value.trim();validateStep4()"><button class="input-toggle" onclick="togglePassword('slackApp',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>`
+  };
+  el.innerHTML = guides[state.chatPlatform] || '';
+}
 
-Before doing anything:
-1. Read SOUL.md - this is who you are
-2. Read USER.md - this is who you're helping
+function validateStep4() {
+  let valid = state.apiKey.length > 8;
+  switch (state.chatPlatform) {
+    case 'telegram': valid = valid && state.telegram.botToken.length > 10 && state.telegram.botUsername.length > 2; break;
+    case 'discord': valid = valid && state.discord.token.length > 10 && state.discord.serverId.length > 10; break;
+    case 'whatsapp': break;
+    case 'slack': valid = valid && state.slack.botToken.length > 10 && state.slack.appToken.length > 10; break;
+  }
+  const btn = document.getElementById('step4Next');
+  if (btn) btn.disabled = !valid;
+}
 
-## Memory
+function validateStep5() {
+  const name = document.getElementById('userName').value.trim();
+  state.userName = name;
+  state.customInstructions = (document.getElementById('customInstructions').value || '').trim();
+  const btn = document.getElementById('step5Next');
+  if (btn) btn.disabled = !(name.length > 0 && state.personality);
+}
 
-You wake up fresh each session. These files are your continuity:
-- **SOUL.md** - Your personality and behavior guidelines
-- **USER.md** - Information about your human
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
 
-## Safety
+// ---------------------------------------------------------------------------
+// Step 6: Download filename
+// ---------------------------------------------------------------------------
+function renderStep6() {
+  const fname = state.os === 'windows' ? 'freeclaw-setup.bat' : 'freeclaw-setup.command';
+  document.getElementById('downloadFilename').textContent = fname;
+  const step2el = document.getElementById('scriptStep2');
+  if (step2el) step2el.style.display = state.os === 'windows' ? '' : 'none';
+}
 
-- Don't share private data
-- Don't run destructive commands without asking
-- When in doubt, ask
+// ---------------------------------------------------------------------------
+// Step 7: Run instructions
+// ---------------------------------------------------------------------------
+function renderStep7() {
+  const el = document.getElementById('runInstructions');
+  const troubleEl = document.getElementById('troubleRun');
+  if (state.os === 'windows') {
+    el.innerHTML = `<ol class="steps-list">
+      <li>Find the downloaded file - usually in your <strong>Downloads</strong> folder</li>
+      <li>Double-click <code>freeclaw-setup.bat</code></li>
+      <li>Windows might show a warning - click <strong>"More info"</strong>, then <strong>"Run anyway"</strong></li>
+      <li>Wait 2-3 minutes for setup to complete</li>
+      <li>Your bot will start and your chat app will open</li>
+    </ol>`;
+    troubleEl.innerHTML = 'Right-click the file and select "Run as administrator". Make sure the file extension is <code>.bat</code>, not <code>.bat.txt</code>.';
+  } else {
+    el.innerHTML = `<ol class="steps-list">
+      <li>Find the downloaded file - usually in your <strong>Downloads</strong> folder</li>
+      <li><strong>Right-click</strong> the file and select <strong>"Open"</strong> (don't double-click)</li>
+      <li>Click <strong>"Open"</strong> in the dialog that appears</li>
+      <li>Enter your Mac login password if asked</li>
+      <li>Wait 2-3 minutes for setup to complete</li>
+      <li>Your bot will start and your chat app will open</li>
+    </ol>`;
+    troubleEl.innerHTML = 'Open Terminal and run: <code>chmod +x ~/Downloads/freeclaw-setup.command && open ~/Downloads/freeclaw-setup.command</code>';
+  }
+}
 
-## Communication
+// ---------------------------------------------------------------------------
+// Step 8: Success
+// ---------------------------------------------------------------------------
+function renderStep8() {
+  const btn = document.getElementById('openChatBtn');
+  const msg = document.getElementById('successMsg');
+  switch (state.chatPlatform) {
+    case 'telegram':
+      btn.href = 'https://t.me/' + encodeURIComponent(state.telegram.botUsername);
+      btn.textContent = 'Open Telegram';
+      msg.textContent = 'Open Telegram and send your bot a message!';
+      break;
+    case 'discord':
+      btn.href = 'https://discord.com/channels/@me';
+      btn.textContent = 'Open Discord';
+      msg.textContent = 'Open Discord and message your bot!';
+      break;
+    case 'whatsapp':
+      btn.href = '#';
+      btn.textContent = 'Open WhatsApp';
+      btn.onclick = function(e) { e.preventDefault(); alert('Check your terminal for the QR code, then scan it with WhatsApp.'); };
+      msg.textContent = 'Scan the QR code in your terminal with WhatsApp.';
+      break;
+    case 'slack':
+      btn.href = 'https://app.slack.com';
+      btn.textContent = 'Open Slack';
+      msg.textContent = 'Open Slack and message your bot!';
+      break;
+  }
+  const shareText = encodeURIComponent('Just set up my own AI chatbot in 2 minutes with FreeClaw - no coding needed. https://freeclaw.co');
+  document.getElementById('tweetLink').href = 'https://twitter.com/intent/tweet?text=' + shareText;
+}
 
-Keep responses appropriate for ${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)}:
-- Be concise
-- Format appropriately for the platform
-- Don't over-explain
+function copyShareText() {
+  navigator.clipboard.writeText('Just set up my own AI chatbot in 2 minutes with FreeClaw - no coding needed. https://freeclaw.co').then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
 
----
+// ---------------------------------------------------------------------------
+// Input Sanitization
+// ---------------------------------------------------------------------------
+function escapeJSON(str) {
+  return JSON.stringify(str).slice(1, -1);
+}
 
-*Generated by FreeClaw*
-`;}
-    function genShSingle(){const cfg=genCfg().replace(/`/g,"'").replace(/\$/g,'\\$');const soul=genSoul().replace(/`/g,"'").replace(/\$/g,'\\$');const user=genUser().replace(/`/g,"'").replace(/\$/g,'\\$');const agents=genAgents().replace(/`/g,"'").replace(/\$/g,'\\$');return`#!/bin/bash
-# FreeClaw One-Click Setup
-# Just double-click this file to set up your AI chatbot
+function escapePowerShell(str) {
+  return str.replace(/'/g, "''");
+}
 
-# Colors
+function escapeShell(str) {
+  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
+}
+
+function containsInjection(str) {
+  const patterns = [/;\s*(rm|curl|wget|bash|sh|eval|exec|del|format|shutdown)/i, /\$\(/, /`[^`]+`/, /\|\s*\w/];
+  return patterns.some(p => p.test(str));
+}
+
+function sanitize(str) {
+  if (containsInjection(str)) return str.replace(/[;&|`$(){}]/g, '');
+  return str;
+}
+
+function generateRandomToken() {
+  const chars = 'abcdef0123456789';
+  let token = '';
+  for (let i = 0; i < 48; i++) token += chars[Math.floor(Math.random() * chars.length)];
+  return token;
+}
+
+// ---------------------------------------------------------------------------
+// Build OpenClaw JSON config
+// ---------------------------------------------------------------------------
+function buildConfigJSON() {
+  const p = providerMap[state.aiProvider];
+  const config = {
+    agents: { defaults: { workspace: '~/.openclaw/workspace', model: { primary: p.model } } },
+    channels: {},
+    gateway: { port: 18789, mode: 'local', bind: 'loopback', auth: { mode: 'token', token: generateRandomToken() } }
+  };
+  switch (state.chatPlatform) {
+    case 'telegram':
+      config.channels.telegram = { enabled: true, botToken: sanitize(state.telegram.botToken), dmPolicy: 'open', allowFrom: ['*'] };
+      break;
+    case 'discord':
+      config.channels.discord = { enabled: true, token: sanitize(state.discord.token) };
+      break;
+    case 'whatsapp':
+      config.channels.whatsapp = { enabled: true, dmPolicy: 'open', allowFrom: ['*'] };
+      break;
+    case 'slack':
+      config.channels.slack = { enabled: true, botToken: sanitize(state.slack.botToken), appToken: sanitize(state.slack.appToken) };
+      break;
+  }
+  return JSON.stringify(config, null, 2);
+}
+
+function buildSOUL() {
+  const p = personalities[state.personality] || personalities.friendly;
+  let soul = `# SOUL.md - Who You Are\n\n## Identity\nYou are a personal AI assistant for ${sanitize(state.userName)}.\n\n## Core Behavior\n${p}\n`;
+  if (state.customInstructions.trim()) {
+    soul += `\n## Special Instructions\n${sanitize(state.customInstructions)}\n`;
+  }
+  return soul;
+}
+
+function buildUSER() {
+  return `# USER.md - About Your Human\n\n- **Name:** ${sanitize(state.userName)}\n- **What to call them:** ${sanitize(state.userName)}\n\n## Context\n\n*(Your bot will learn about you over time. You can edit this file to add more context.)*\n`;
+}
+
+function buildAGENTS() {
+  return `# AGENTS.md - Your Workspace\n\nThis folder is home.\n\n## Every Session\n\nBefore doing anything else:\n1. Read SOUL.md - this is who you are\n2. Read USER.md - this is who you're helping\n\n## Safety\n\n- Don't share private info\n- Ask before taking external actions\n- When in doubt, ask\n`;
+}
+
+// ---------------------------------------------------------------------------
+// Windows Script Generator
+// ---------------------------------------------------------------------------
+function generateWindowsScript() {
+  const p = providerMap[state.aiProvider];
+  const configJSON = escapePowerShell(buildConfigJSON());
+  const soulMD = escapePowerShell(buildSOUL());
+  const userMD = escapePowerShell(buildUSER());
+  const agentsMD = escapePowerShell(buildAGENTS());
+  const apiKey = escapePowerShell(sanitize(state.apiKey));
+
+  let openCmd = '';
+  switch (state.chatPlatform) {
+    case 'telegram': openCmd = `start https://t.me/${sanitize(state.telegram.botUsername)}`; break;
+    case 'discord': openCmd = 'start https://discord.com/channels/@me'; break;
+    case 'whatsapp': openCmd = 'echo Please scan the QR code shown above with WhatsApp.'; break;
+    case 'slack': openCmd = 'start https://app.slack.com'; break;
+  }
+
+  return `@echo off
+setlocal EnableExtensions
+chcp 65001 >nul 2>&1
+title FreeClaw Setup
+
+echo.
+echo   ___              ___ _
+echo  / __\\ __ ___  ___/ __\\ ^| __ ___      __
+echo / _\\^| '__/ _ \\/ _ \\ /  ^| ^|/ _\` \\ \\ /\\ / /
+echo / /  ^| ^| ^|  __/  __/ /\\_^| ^| (_^| ^\\ V  V /
+echo \\/   ^|_^|  \\___^|\\___\\____/_^|\\__,_^| \\_/\\_/
+echo.
+echo   Your AI chatbot, running on your computer.
+echo.
+
+set "FREECLAW_HOME=%USERPROFILE%\\freeclaw"
+set "OPENCLAW_HOME=%USERPROFILE%\\.openclaw"
+set "NODE_VER=22.13.0"
+
+:: Check if already installed
+if exist "%FREECLAW_HOME%\\node\\node.exe" (
+    echo FreeClaw is already installed at %FREECLAW_HOME%
+    set /p "REINSTALL=Reinstall? (Y/N): "
+    if /i not "!REINSTALL!"=="Y" goto :START_BOT
+    echo Reinstalling...
+)
+
+:: Step 1: Download Node.js
+echo.
+echo [1/6] Downloading Node.js %NODE_VER%...
+mkdir "%FREECLAW_HOME%" 2>nul
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ProgressPreference='SilentlyContinue'; try { Invoke-WebRequest -Uri 'https://nodejs.org/dist/v%NODE_VER%/node-v%NODE_VER%-win-x64.zip' -OutFile '%TEMP%\\freeclaw-node.zip' -UseBasicParsing } catch { Write-Host 'DOWNLOAD_FAILED'; exit 1 }"
+if not exist "%TEMP%\\freeclaw-node.zip" (
+    echo ERROR: Failed to download Node.js. Check your internet connection.
+    pause & exit /b 1
+)
+echo       Done.
+
+:: Step 2: Download Git
+echo [2/6] Downloading Git...
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ProgressPreference='SilentlyContinue'; try { Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/MinGit-2.47.1-64-bit.zip' -OutFile '%TEMP%\\freeclaw-git.zip' -UseBasicParsing } catch { Write-Host 'DOWNLOAD_FAILED'; exit 1 }"
+if not exist "%TEMP%\\freeclaw-git.zip" (
+    echo ERROR: Failed to download Git. Check your internet connection.
+    pause & exit /b 1
+)
+echo       Done.
+
+:: Step 3: Extract
+echo [3/6] Setting up...
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ProgressPreference='SilentlyContinue'; if (Test-Path '%FREECLAW_HOME%\\node') { Remove-Item '%FREECLAW_HOME%\\node' -Recurse -Force }; Expand-Archive -Path '%TEMP%\\freeclaw-node.zip' -DestinationPath '%FREECLAW_HOME%\\node-temp' -Force; Get-ChildItem '%FREECLAW_HOME%\\node-temp\\node-v%NODE_VER%-win-x64' | Move-Item -Destination '%FREECLAW_HOME%\\node' -Force; Remove-Item '%FREECLAW_HOME%\\node-temp' -Recurse -Force -ErrorAction SilentlyContinue"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ProgressPreference='SilentlyContinue'; if (Test-Path '%FREECLAW_HOME%\\git') { Remove-Item '%FREECLAW_HOME%\\git' -Recurse -Force }; Expand-Archive -Path '%TEMP%\\freeclaw-git.zip' -DestinationPath '%FREECLAW_HOME%\\git' -Force"
+del "%TEMP%\\freeclaw-node.zip" 2>nul
+del "%TEMP%\\freeclaw-git.zip" 2>nul
+echo       Done.
+
+:: Set PATH
+set "PATH=%FREECLAW_HOME%\\node;%FREECLAW_HOME%\\git\\cmd;%PATH%"
+
+:: Step 4: Install OpenClaw
+echo [4/6] Installing OpenClaw (this may take a minute)...
+call "%FREECLAW_HOME%\\node\\npm.cmd" install -g openclaw@latest --no-fund --no-audit >"%FREECLAW_HOME%\\npm-log.txt" 2>&1
+if errorlevel 1 (
+    echo ERROR: Failed to install OpenClaw. Check %FREECLAW_HOME%\\npm-log.txt
+    pause & exit /b 1
+)
+echo       Done.
+
+:: Step 5: Configure
+echo [5/6] Configuring your bot...
+mkdir "%OPENCLAW_HOME%" 2>nul
+mkdir "%OPENCLAW_HOME%\\workspace" 2>nul
+
+:: Write config files using PowerShell to avoid batch escaping issues
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.IO.File]::WriteAllText([System.IO.Path]::Combine($env:USERPROFILE, '.openclaw', 'openclaw.json'), '${configJSON}', (New-Object System.Text.UTF8Encoding $false))"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.IO.File]::WriteAllText([System.IO.Path]::Combine($env:USERPROFILE, '.openclaw', 'workspace', 'SOUL.md'), '${soulMD}', (New-Object System.Text.UTF8Encoding $false))"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.IO.File]::WriteAllText([System.IO.Path]::Combine($env:USERPROFILE, '.openclaw', 'workspace', 'USER.md'), '${userMD}', (New-Object System.Text.UTF8Encoding $false))"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.IO.File]::WriteAllText([System.IO.Path]::Combine($env:USERPROFILE, '.openclaw', 'workspace', 'AGENTS.md'), '${agentsMD}', (New-Object System.Text.UTF8Encoding $false))"
+echo       Done.
+
+:: Step 6: Activate
+echo [6/6] Starting your bot...
+
+:: Run onboard for auth and daemon install
+call "%FREECLAW_HOME%\\node\\npx.cmd" openclaw onboard --non-interactive --accept-risk --install-daemon --auth-choice ${p.authChoice} ${p.authFlag} "${apiKey}" --skip-channels --skip-skills --skip-health --workspace "%OPENCLAW_HOME%\\workspace" >"%FREECLAW_HOME%\\onboard-log.txt" 2>&1
+
+:: Create Start.bat
+(
+echo @echo off
+echo set "PATH=%FREECLAW_HOME%\\node;%FREECLAW_HOME%\\git\\cmd;%%PATH%%"
+echo title FreeClaw
+echo echo FreeClaw is running. Press Ctrl+C to stop.
+echo call "%FREECLAW_HOME%\\node\\npx.cmd" openclaw gateway
+echo pause
+) > "%FREECLAW_HOME%\\Start.bat"
+
+:: Open chat
+${openCmd}
+
+echo.
+echo ============================================
+echo   FreeClaw setup complete!
+echo   Your bot is running.
+echo ============================================
+echo.
+echo To restart your bot later, run:
+echo   %FREECLAW_HOME%\\Start.bat
+echo.
+pause
+exit /b 0
+
+:START_BOT
+set "PATH=%FREECLAW_HOME%\\node;%FREECLAW_HOME%\\git\\cmd;%PATH%"
+call "%FREECLAW_HOME%\\node\\npx.cmd" openclaw gateway
+pause
+`;
+}
+
+// ---------------------------------------------------------------------------
+// macOS Script Generator
+// ---------------------------------------------------------------------------
+function generateMacScript() {
+  const p = providerMap[state.aiProvider];
+  const configJSON = buildConfigJSON();
+  const soulMD = buildSOUL();
+  const userMD = buildUSER();
+  const agentsMD = buildAGENTS();
+  const apiKey = sanitize(state.apiKey);
+
+  let openCmd = '';
+  switch (state.chatPlatform) {
+    case 'telegram': openCmd = `open "https://t.me/${sanitize(state.telegram.botUsername)}"`; break;
+    case 'discord': openCmd = 'open "https://discord.com/channels/@me"'; break;
+    case 'whatsapp': openCmd = 'echo "Please scan the QR code shown above with WhatsApp."'; break;
+    case 'slack': openCmd = 'open "https://app.slack.com"'; break;
+  }
+
+  // Use unique heredoc delimiters to prevent collision with user content
+  return `#!/bin/bash
+set -e
+
+# FreeClaw Setup - macOS
+
 RED='\\033[0;31m'
 GREEN='\\033[0;32m'
-YELLOW='\\033[1;33m'
 BLUE='\\033[0;34m'
+PURPLE='\\033[0;35m'
+BOLD='\\033[1m'
 NC='\\033[0m'
 
 clear
 echo ""
-echo -e "\${BLUE}╔════════════════════════════════════════╗\${NC}"
-echo -e "\${BLUE}║\${NC}     🤖 \${GREEN}FreeClaw One-Click Setup\${NC}        \${BLUE}║\${NC}"
-echo -e "\${BLUE}║\${NC}     Your AI chatbot in seconds        \${BLUE}║\${NC}"
-echo -e "\${BLUE}╚════════════════════════════════════════╝\${NC}"
+echo -e "\${PURPLE}\${BOLD}"
+echo "   ___              ___ _"
+echo "  / __\\\\ __ ___  ___/ __\\\\ | __ ___      __"
+echo " / _\\\\| '__/ _ \\\\/ _ \\\\ /  | |/ _\\\` \\\\ \\\\ /\\\\ / /"
+echo "/ /  | | |  __/  __/ /\\\\_| | (_| |\\\\ V  V /"
+echo "\\\\/   |_|  \\\\___|\\\\___|\\\\____/_|\\\\__,_| \\\\_/\\\\_/"
+echo -e "\${NC}"
+echo "  Your AI chatbot, running on your computer."
 echo ""
 
-WS="$HOME/freeclaw"
+FREECLAW_HOME="$HOME/freeclaw"
+OPENCLAW_HOME="$HOME/.openclaw"
+NODE_VER="22.13.0"
 
-# Function to open URL cross-platform
-open_url() {
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        open "\\$1" 2>/dev/null || true
-    else
-        xdg-open "\\$1" 2>/dev/null || true
-    fi
+# Detect architecture
+ARCH=$(uname -m)
+if [ "$ARCH" = "arm64" ]; then
+  NODE_URL="https://nodejs.org/dist/v\${NODE_VER}/node-v\${NODE_VER}-darwin-arm64.tar.gz"
+else
+  NODE_URL="https://nodejs.org/dist/v\${NODE_VER}/node-v\${NODE_VER}-darwin-x64.tar.gz"
+fi
+
+# Check if already installed
+if [ -f "$FREECLAW_HOME/node/bin/node" ]; then
+  echo "FreeClaw is already installed."
+  read -p "Reinstall? (y/N): " REINSTALL
+  if [ "$REINSTALL" != "y" ] && [ "$REINSTALL" != "Y" ]; then
+    export PATH="$FREECLAW_HOME/node/bin:$PATH"
+    exec npx openclaw gateway
+  fi
+fi
+
+# Step 1: Download Node.js
+echo -e "\${BLUE}[1/5]\${NC} Downloading Node.js \${NODE_VER} (\${ARCH})..."
+mkdir -p "$FREECLAW_HOME"
+curl -fsSL "$NODE_URL" -o "/tmp/freeclaw-node.tar.gz" || {
+  echo -e "\${RED}ERROR: Failed to download Node.js. Check your internet connection.\${NC}"
+  exit 1
+}
+echo "      Done."
+
+# Step 2: Extract
+echo -e "\${BLUE}[2/5]\${NC} Setting up..."
+rm -rf "$FREECLAW_HOME/node"
+mkdir -p "$FREECLAW_HOME/node"
+tar -xzf "/tmp/freeclaw-node.tar.gz" -C "$FREECLAW_HOME/node" --strip-components=1
+rm -f "/tmp/freeclaw-node.tar.gz"
+export PATH="$FREECLAW_HOME/node/bin:$PATH"
+echo "      Done."
+
+# Step 3: Install OpenClaw
+echo -e "\${BLUE}[3/5]\${NC} Installing OpenClaw (this may take a minute)..."
+npm install -g openclaw@latest --no-fund --no-audit > "$FREECLAW_HOME/npm-log.txt" 2>&1 || {
+  echo -e "\${RED}ERROR: Failed to install OpenClaw. Check $FREECLAW_HOME/npm-log.txt\${NC}"
+  exit 1
+}
+echo "      Done."
+
+# Step 4: Configure
+echo -e "\${BLUE}[4/5]\${NC} Configuring your bot..."
+mkdir -p "$OPENCLAW_HOME/workspace"
+
+cat > "$OPENCLAW_HOME/openclaw.json" << 'FREECLAW_CONFIG_END'
+${configJSON}
+FREECLAW_CONFIG_END
+
+cat > "$OPENCLAW_HOME/workspace/SOUL.md" << 'FREECLAW_SOUL_END'
+${soulMD}
+FREECLAW_SOUL_END
+
+cat > "$OPENCLAW_HOME/workspace/USER.md" << 'FREECLAW_USER_END'
+${userMD}
+FREECLAW_USER_END
+
+cat > "$OPENCLAW_HOME/workspace/AGENTS.md" << 'FREECLAW_AGENTS_END'
+${agentsMD}
+FREECLAW_AGENTS_END
+
+# Remove quarantine
+xattr -rd com.apple.quarantine "$FREECLAW_HOME" 2>/dev/null || true
+xattr -rd com.apple.quarantine "$OPENCLAW_HOME" 2>/dev/null || true
+echo "      Done."
+
+# Step 5: Activate
+echo -e "\${BLUE}[5/5]\${NC} Starting your bot..."
+
+npx openclaw onboard --non-interactive --accept-risk \\
+  --install-daemon \\
+  --auth-choice ${p.authChoice} ${p.authFlag} "${escapeShell(apiKey)}" \\
+  --skip-channels --skip-skills --skip-health \\
+  --workspace "$OPENCLAW_HOME/workspace" > "$FREECLAW_HOME/onboard-log.txt" 2>&1 || true
+
+# Create start script
+cat > "$FREECLAW_HOME/start.sh" << 'FREECLAW_START_END'
+#!/bin/bash
+export PATH="$HOME/freeclaw/node/bin:$PATH"
+echo "FreeClaw is running. Press Ctrl+C to stop."
+npx openclaw gateway
+FREECLAW_START_END
+chmod +x "$FREECLAW_HOME/start.sh"
+
+# Open chat
+${openCmd}
+
+echo ""
+echo -e "\${GREEN}============================================\${NC}"
+echo -e "\${GREEN}  FreeClaw setup complete!\${NC}"
+echo -e "\${GREEN}  Your bot is running.\${NC}"
+echo -e "\${GREEN}============================================\${NC}"
+echo ""
+echo "To restart your bot later, run:"
+echo "  $FREECLAW_HOME/start.sh"
+echo ""
+`;
 }
 
-# Check if already running
-if [ -f "$WS/config.yaml" ] && command -v openclaw &>/dev/null; then
-    echo -e "\${GREEN}✓\${NC} FreeClaw already set up!"
-    echo -e "\${BLUE}→\${NC} Starting your bot..."
-    cd "$WS"
-    
-    # Open messaging app
-    open_url "${S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':S.platform==='slack'?'slack://open':'https://web.whatsapp.com'}"
-    sleep 1
-    open_url "${S.platform==='telegram'?`https://t.me/${S.botUsername}`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com'}"
-    
-    openclaw gateway start
-    exit 0
-fi
-
-# Step 1: Check/Install Node.js
-echo -e "\${BLUE}[1/3]\${NC} Checking Node.js..."
-if ! command -v node &>/dev/null; then
-    echo ""
-    echo -e "\${YELLOW}⚠ Node.js not found - installing automatically...\${NC}"
-    echo ""
-    
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS: Install via Homebrew
-        if ! command -v brew &>/dev/null; then
-            echo -e "\${BLUE}→\${NC} Installing Homebrew first..."
-            /bin/bash -c "\\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            
-            # Add brew to PATH for Apple Silicon
-            if [ -f "/opt/homebrew/bin/brew" ]; then
-                eval "\\$(/opt/homebrew/bin/brew shellenv)"
-            fi
-        fi
-        
-        echo -e "\${BLUE}→\${NC} Installing Node.js via Homebrew..."
-        brew install node
-        
-    else
-        # Linux: Use NodeSource or nvm
-        echo -e "\${BLUE}→\${NC} Installing Node.js..."
-        
-        # Try apt-based install first (Debian/Ubuntu)
-        if command -v apt-get &>/dev/null; then
-            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-            sudo apt-get install -y nodejs
-        # Try dnf (Fedora/RHEL)
-        elif command -v dnf &>/dev/null; then
-            sudo dnf install -y nodejs npm
-        # Fallback: direct binary
-        else
-            echo -e "\${YELLOW}→\${NC} Installing Node.js from binary..."
-            curl -fsSL https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz | tar -xJ -C /tmp
-            sudo cp -r /tmp/node-v20.11.0-linux-x64/{bin,lib,share} /usr/local/
-        fi
-    fi
-    
-    # Verify node is now available
-    if ! command -v node &>/dev/null; then
-        echo -e "\${RED}✗\${NC} Failed to install Node.js automatically"
-        echo "Please install Node.js manually from https://nodejs.org"
-        open_url "https://nodejs.org"
-        read -p "Press Enter after installing Node.js..."
-        exit 1
-    fi
-fi
-echo -e "\${GREEN}✓\${NC} Node.js ready (\\$(node --version))"
-
-# Step 2: Install OpenClaw
-echo -e "\${BLUE}[2/3]\${NC} Installing OpenClaw..."
-if ! command -v openclaw &>/dev/null; then
-    npm install -g openclaw 2>/dev/null || sudo npm install -g openclaw
-    
-    if ! command -v openclaw &>/dev/null; then
-        echo -e "\${RED}✗\${NC} Failed to install OpenClaw"
-        exit 1
-    fi
-fi
-echo -e "\${GREEN}✓\${NC} OpenClaw installed"
-
-# Step 3: Create workspace with embedded config
-echo -e "\${BLUE}[3/3]\${NC} Setting up your bot..."
-mkdir -p "$WS"
-
-# Write config files (embedded in this script)
-cat > "$WS/config.yaml" << 'FREECLAW_CONFIG'
-${cfg}
-FREECLAW_CONFIG
-
-cat > "$WS/SOUL.md" << 'FREECLAW_SOUL'
-${soul}
-FREECLAW_SOUL
-
-cat > "$WS/USER.md" << 'FREECLAW_USER'
-${user}
-FREECLAW_USER
-
-cat > "$WS/AGENTS.md" << 'FREECLAW_AGENTS'
-${agents}
-FREECLAW_AGENTS
-
-echo -e "\${GREEN}✓\${NC} Configuration saved"
-
-# Set up auto-start on login (Mac)
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    LAUNCH_AGENTS="$HOME/Library/LaunchAgents"
-    mkdir -p "\\$LAUNCH_AGENTS"
-    
-    # Find openclaw path
-    OPENCLAW_PATH=\\$(which openclaw 2>/dev/null || echo "/usr/local/bin/openclaw")
-    
-    cat > "\\$LAUNCH_AGENTS/com.freeclaw.bot.plist" << LAUNCHAGENT
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.freeclaw.bot</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>\\$OPENCLAW_PATH</string>
-        <string>gateway</string>
-        <string>start</string>
-    </array>
-    <key>WorkingDirectory</key>
-    <string>$WS</string>
-    <key>RunAtLoad</key>
-    <true/>
-    <key>KeepAlive</key>
-    <true/>
-    <key>StandardOutPath</key>
-    <string>$WS/.openclaw.log</string>
-    <key>StandardErrorPath</key>
-    <string>$WS/.openclaw-error.log</string>
-</dict>
-</plist>
-LAUNCHAGENT
-    
-    echo -e "\${GREEN}✓\${NC} Auto-start enabled (bot will start when you log in)"
-fi
-
-# Start the bot
-echo ""
-echo -e "\${GREEN}════════════════════════════════════════\${NC}"
-echo -e "\${GREEN}✓ Setup complete!\${NC}"
-echo ""
-echo -e "\${YELLOW}Starting your bot...\${NC}"
-echo ""
-
-cd "$WS"
-
-# Progress bar
-show_progress() {
-    local current=\\$1
-    local total=\\$2
-    local width=40
-    local percent=\\$((current * 100 / total))
-    local filled=\\$((current * width / total))
-    local empty=\\$((width - filled))
-    printf "\\r\${BLUE}[\${NC}"
-    for ((j=0; j<filled; j++)); do printf "█"; done
-    for ((j=0; j<empty; j++)); do printf "░"; done
-    printf "\${BLUE}]\${NC} \${GREEN}%3d%%\${NC} " "\\$percent"
+// ---------------------------------------------------------------------------
+// Download
+// ---------------------------------------------------------------------------
+function downloadScript() {
+  const config = { ...state };
+  let content, filename, mime;
+  if (state.os === 'windows') {
+    content = generateWindowsScript();
+    filename = 'freeclaw-setup.bat';
+    mime = 'application/bat';
+    content = content.replace(/\n/g, '\r\n');
+  } else {
+    content = generateMacScript();
+    filename = 'freeclaw-setup.command';
+    mime = 'text/plain';
+  }
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
-
-# Start gateway in background
-LOGFILE="$WS/.openclaw.log"
-openclaw gateway start > "\\$LOGFILE" 2>&1 &
-BOT_PID=\\$!
-
-# Wait for ready with progress bar (longer timeout)
-READY=0
-for i in {1..30}; do
-    show_progress \\$i 30
-    if grep -qi "listening\\|running\\|started\\|ready" "\\$LOGFILE" 2>/dev/null; then
-        show_progress 30 30
-        READY=1
-        break
-    fi
-    if ! kill -0 \\$BOT_PID 2>/dev/null; then
-        echo ""
-        echo -e "\${RED}✗\${NC} Bot failed to start"
-        cat "\\$LOGFILE"
-        exit 1
-    fi
-    sleep 1
-done
-echo ""
-
-if [ \\$READY -eq 1 ]; then
-    echo -e "\${GREEN}✓ Bot is running!\${NC}"
-    echo ""
-    
-    # Open messaging app (try deep link first, then web)
-    open_url "${S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':S.platform==='slack'?'slack://open':'https://web.whatsapp.com'}"
-    sleep 1
-    open_url "${S.platform==='telegram'?`https://t.me/${S.botUsername}`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com'}"
-    
-    echo -e "\${BLUE}${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)} should open automatically!\${NC}"
-else
-    echo -e "\${YELLOW}Bot is taking longer than expected...\${NC}"
-    echo "Opening ${S.platform} anyway..."
-    open_url "${S.platform==='telegram'?`https://t.me/${S.botUsername}`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com'}"
-fi
-
-echo ""
-echo -e "\${YELLOW}Keep this window open\${NC} - closing it stops the bot."
-echo -e "\${GREEN}════════════════════════════════════════\${NC}"
-echo ""
-echo "Bot output:"
-echo "─────────────────────────────────────────"
-tail -f "\\$LOGFILE"
-`;}
-    function genBatSingle(){const cfg=genCfg().replace(/%/g,'%%');const soul=genSoul().replace(/%/g,'%%');const user=genUser().replace(/%/g,'%%');const agents=genAgents().replace(/%/g,'%%');return`@echo off
-title FreeClaw Setup
-cd /d "%USERPROFILE%"
-if not exist freeclaw mkdir freeclaw
-cd freeclaw
-
-echo.
-echo   ========================================
-echo        FreeClaw Setup
-echo   ========================================
-echo.
-
-:: Download Node if needed
-if not exist node\\node.exe (
-    echo.
-    echo   Downloading Node.js...
-    echo   Please wait...
-    echo.
-    powershell -Command "$ProgressPreference='SilentlyContinue'; Invoke-WebRequest -Uri 'https://nodejs.org/dist/v22.13.0/node-v22.13.0-win-x64.zip' -OutFile node.zip" >nul 2>&1
-    echo   Extracting Node.js...
-    powershell -Command "$ProgressPreference='SilentlyContinue'; Expand-Archive node.zip -DestinationPath . -Force" >nul 2>&1
-    ren node-v22.13.0-win-x64 node >nul 2>&1
-    del node.zip >nul 2>&1
-)
-echo   [OK] Node.js ready
-
-:: Download portable Git if needed
-if not exist git\\cmd\\git.exe (
-    echo.
-    echo   Downloading Git...
-    powershell -Command "$ProgressPreference='SilentlyContinue'; Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.43.0.windows.1/MinGit-2.43.0-64-bit.zip' -OutFile git.zip" >nul 2>&1
-    echo   Extracting Git...
-    powershell -Command "$ProgressPreference='SilentlyContinue'; Expand-Archive git.zip -DestinationPath git -Force" >nul 2>&1
-    del git.zip >nul 2>&1
-)
-echo   [OK] Git ready
-
-:: Add node and git to PATH for this session
-set "PATH=%CD%\\node;%CD%\\git\\cmd;%PATH%"
-
-:: Install OpenClaw
-echo.
-echo   Installing OpenClaw...
-echo   This may take 1-2 minutes...
-echo.
-call node\\npm.cmd init -y >nul 2>&1
-call node\\npm.cmd install openclaw 2>&1
-if not exist node_modules\\.bin\\openclaw.cmd (
-    echo.
-    echo   [ERROR] Installation failed!
-    echo   Please check your internet connection and try again.
-    pause
-    exit /b 1
-)
-echo   [OK] OpenClaw installed
-
-:: Write config
-echo   Writing config...
-(
-echo ${cfg.split('\n').join('\necho ')}
-) > config.yaml
-
-(
-echo ${soul.split('\n').join('\necho ')}
-) > SOUL.md
-
-(
-echo ${user.split('\n').join('\necho ')}
-) > USER.md
-
-(
-echo ${agents.split('\n').join('\necho ')}
-) > AGENTS.md
-
-:: Create start script with PATH
-echo @echo off > Start.bat
-echo cd /d "%%USERPROFILE%%\\freeclaw" >> Start.bat
-echo set "PATH=%%CD%%\\node;%%CD%%\\git\\cmd;%%PATH%%" >> Start.bat
-echo call node_modules\\.bin\\openclaw.cmd gateway start >> Start.bat
-
-:: Copy to startup
-copy Start.bat "%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\FreeClaw.bat" >nul 2>&1
-
-:: Start bot
-echo.
-echo   ========================================
-echo   Starting bot...
-echo   ========================================
-echo.
-
-start /b cmd /c "set PATH=%CD%\\node;%CD%\\git\\cmd;%PATH% && call node_modules\\.bin\\openclaw.cmd gateway start"
-
-:: Wait a bit then open Telegram
-ping -n 5 127.0.0.1 >nul
-start https://t.me/${S.botUsername}
-
-echo.
-echo   [OK] Setup complete!
-echo   [OK] Telegram should open now
-echo   [OK] Bot will auto-start on login
-echo.
-echo   Press any key to close...
-pause >nul
-`;}
-    function genSh(){return`#!/bin/bash
-# FreeClaw Setup Script
-# This script sets up your AI chatbot
-
-set -e  # Exit on any error
-
-# Colors for pretty output
-RED='\\033[0;31m'
-GREEN='\\033[0;32m'
-YELLOW='\\033[1;33m'
-BLUE='\\033[0;34m'
-NC='\\033[0m' # No Color
-
-clear
-echo ""
-echo -e "\${BLUE}╔════════════════════════════════════════╗\${NC}"
-echo -e "\${BLUE}║\${NC}     🤖 \${GREEN}FreeClaw Setup\${NC}                  \${BLUE}║\${NC}"
-echo -e "\${BLUE}║\${NC}     Your AI chatbot in minutes        \${BLUE}║\${NC}"
-echo -e "\${BLUE}╚════════════════════════════════════════╝\${NC}"
-echo ""
-
-WS="$HOME/freeclaw"
-SCRIPT_DIR="$(cd "$(dirname "\$0")" && pwd)"
-
-# Check if already set up - just start the bot
-if [ -f "$WS/config.yaml" ] && command -v openclaw &>/dev/null; then
-    echo -e "\${GREEN}✓\${NC} FreeClaw already installed!"
-    echo -e "\${BLUE}→\${NC} Starting your bot..."
-    echo ""
-    cd "$WS"
-    openclaw gateway start
-    exit 0
-fi
-
-# Step 1: Check Node.js
-echo -e "\${BLUE}[1/4]\${NC} Checking Node.js..."
-if ! command -v node &>/dev/null; then
-    echo ""
-    echo -e "\${YELLOW}⚠ Node.js not found\${NC}"
-    echo ""
-    echo "Please install Node.js first:"
-    echo ""
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        echo -e "  \${GREEN}Option 1:\${NC} Download from https://nodejs.org"
-        echo -e "  \${GREEN}Option 2:\${NC} Run: brew install node"
-    else
-        echo -e "  Download from: https://nodejs.org"
-    fi
-    echo ""
-    echo "After installing, run this script again."
-    echo ""
-    # Try to open the download page
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        open "https://nodejs.org" 2>/dev/null || true
-    else
-        xdg-open "https://nodejs.org" 2>/dev/null || true
-    fi
-    read -p "Press Enter after installing Node.js..."
-    exit 1
-fi
-
-NODE_VER=$(node -v)
-echo -e "\${GREEN}✓\${NC} Node.js \$NODE_VER found"
-
-# Step 2: Install OpenClaw
-echo -e "\${BLUE}[2/4]\${NC} Installing OpenClaw..."
-if ! command -v openclaw &>/dev/null; then
-    npm install -g openclaw --silent 2>/dev/null || npm install -g openclaw
-fi
-echo -e "\${GREEN}✓\${NC} OpenClaw installed"
-
-# Step 3: Set up workspace
-echo -e "\${BLUE}[3/4]\${NC} Setting up your bot..."
-mkdir -p "$WS"
-
-# Copy all config and workspace files
-if [ -f "$SCRIPT_DIR/config.yaml" ]; then
-    cp "$SCRIPT_DIR/config.yaml" "$WS/config.yaml"
-    [ -f "$SCRIPT_DIR/SOUL.md" ] && cp "$SCRIPT_DIR/SOUL.md" "$WS/SOUL.md"
-    [ -f "$SCRIPT_DIR/USER.md" ] && cp "$SCRIPT_DIR/USER.md" "$WS/USER.md"
-    [ -f "$SCRIPT_DIR/AGENTS.md" ] && cp "$SCRIPT_DIR/AGENTS.md" "$WS/AGENTS.md"
-    echo -e "\${GREEN}✓\${NC} Configuration and personality files saved"
-else
-    echo -e "\${RED}✗\${NC} Error: config.yaml not found"
-    echo "  Make sure you extracted the full zip file."
-    exit 1
-fi
-
-# Step 4: Start the bot
-echo -e "\${BLUE}[4/4]\${NC} Starting your bot..."
-echo ""
-cd "$WS"
-
-echo -e "\${GREEN}════════════════════════════════════════\${NC}"
-echo -e "\${GREEN}✓ Setup complete!\${NC}"
-echo ""
-echo -e "\${YELLOW}Initializing bot...\${NC} This may take 10-15 seconds."
-echo ""
-
-# Start the gateway in background and capture output
-LOGFILE="$WS/.openclaw.log"
-openclaw gateway start > "$LOGFILE" 2>&1 &
-BOT_PID=$!
-
-# Progress bar function
-show_progress() {
-    local current=$1
-    local total=$2
-    local width=40
-    local percent=$((current * 100 / total))
-    local filled=$((current * width / total))
-    local empty=$((width - filled))
-    
-    printf "\\r\${BLUE}[\${NC}"
-    printf "%0.s█" \$(seq 1 \$filled) 2>/dev/null || true
-    printf "%0.s░" \$(seq 1 \$empty) 2>/dev/null || true
-    printf "\${BLUE}]\${NC} \${GREEN}%3d%%\${NC} " "\$percent"
-}
-
-# Wait for bot to be ready with progress bar
-READY=0
-TOTAL=20
-for i in \$(seq 1 \$TOTAL); do
-    show_progress \$i \$TOTAL
-    
-    if grep -qi "listening\\|running\\|started\\|ready" "$LOGFILE" 2>/dev/null; then
-        # Complete the progress bar
-        show_progress \$TOTAL \$TOTAL
-        READY=1
-        break
-    fi
-    
-    # Check if process died
-    if ! kill -0 $BOT_PID 2>/dev/null; then
-        echo ""
-        echo -e "\${RED}✗\${NC} Bot failed to start. Check the log:"
-        cat "$LOGFILE"
-        exit 1
-    fi
-    
-    sleep 1
-done
-echo ""
-
-if [ $READY -eq 1 ]; then
-    echo -e "\${GREEN}✓ Bot is running!\${NC}"
-    echo ""
-    
-    # Open the messaging app with your bot
-    DEEPLINK="${S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':S.platform==='slack'?'slack://open':'https://web.whatsapp.com'}"
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        open "$DEEPLINK" 2>/dev/null || open "${S.platform==='telegram'?`https://t.me/${S.botUsername}?start=start`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com'}" 2>/dev/null || true
-    else
-        xdg-open "$DEEPLINK" 2>/dev/null || xdg-open "${S.platform==='telegram'?`https://t.me/${S.botUsername}?start=start`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com'}" 2>/dev/null || true
-    fi
-    
-    echo -e "\${BLUE}${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)} should open automatically.\${NC}"
-    echo -e "If not, open it manually and message your bot!"
-else
-    echo -e "\${YELLOW}⚠\${NC} Bot is taking longer than expected."
-    echo "It may still be starting. Check ${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)} in a moment."
-fi
-
-echo ""
-echo -e "\${YELLOW}Keep this window open\${NC} - closing it stops the bot."
-echo -e "\${GREEN}════════════════════════════════════════\${NC}"
-echo ""
-
-# Show live bot output
-echo "Bot output:"
-echo "─────────────────────────────────────────"
-tail -f "$LOGFILE"
-`;}
-    function genBat(){return`@echo off
-setlocal enabledelayedexpansion
-title FreeClaw Setup
-color 0A
-cls
-
-echo.
-echo  ========================================
-echo       FreeClaw Setup
-echo       Your AI chatbot in minutes
-echo  ========================================
-echo.
-
-set "WS=%USERPROFILE%\\freeclaw"
-set "SCRIPT_DIR=%~dp0"
-
-:: Check if already set up
-if exist "%WS%\\config.yaml" (
-    where openclaw >nul 2>nul
-    if !errorlevel! equ 0 (
-        echo [OK] FreeClaw already installed!
-        echo [..] Starting your bot...
-        cd /d "%WS%"
-        goto :startbot
-    )
-)
-
-:: Step 1: Check Node.js
-echo [1/4] Checking Node.js...
-where node >nul 2>nul
-if !errorlevel! neq 0 (
-    echo.
-    echo [!!] Node.js not found
-    echo.
-    echo Please install Node.js first:
-    echo   1. Click OK when the download page opens
-    echo   2. Download and install Node.js
-    echo   3. Run this script again
-    echo.
-    start https://nodejs.org
-    echo Press any key after installing Node.js...
-    pause >nul
-    exit /b 1
-)
-
-for /f "tokens=*" %%i in ('node -v') do set NODE_VER=%%i
-echo [OK] Node.js %NODE_VER% found
-
-:: Step 2: Install OpenClaw
-echo [2/4] Installing OpenClaw...
-where openclaw >nul 2>nul
-if !errorlevel! neq 0 (
-    call npm install -g openclaw
-)
-echo [OK] OpenClaw installed
-
-:: Step 3: Set up workspace
-echo [3/4] Setting up your bot...
-if not exist "%WS%" mkdir "%WS%"
-
-if exist "%SCRIPT_DIR%config.yaml" (
-    copy /Y "%SCRIPT_DIR%config.yaml" "%WS%\\config.yaml" >nul
-    if exist "%SCRIPT_DIR%SOUL.md" copy /Y "%SCRIPT_DIR%SOUL.md" "%WS%\\SOUL.md" >nul
-    if exist "%SCRIPT_DIR%USER.md" copy /Y "%SCRIPT_DIR%USER.md" "%WS%\\USER.md" >nul
-    if exist "%SCRIPT_DIR%AGENTS.md" copy /Y "%SCRIPT_DIR%AGENTS.md" "%WS%\\AGENTS.md" >nul
-    echo [OK] Configuration and personality files saved
-) else (
-    echo [ERROR] config.yaml not found
-    echo Make sure you extracted the full zip file.
-    pause
-    exit /b 1
-)
-
-:: Step 4: Start the bot
-echo [4/4] Starting your bot...
-echo.
-cd /d "%WS%"
-
-echo ========================================
-echo [OK] Setup complete!
-echo.
-echo Initializing bot... This may take 10-15 seconds.
-echo.
-
-:: Start the gateway in background
-set "LOGFILE=%WS%\\.openclaw.log"
-start /b cmd /c "openclaw gateway start > "%LOGFILE%" 2>&1"
-
-:: Wait for bot to be ready with progress bar
-set READY=0
-set TOTAL=20
-
-for /L %%i in (1,1,%TOTAL%) do (
-    :: Calculate progress
-    set /a "PCT=%%i * 100 / %TOTAL%"
-    set /a "FILLED=%%i * 2"
-    
-    :: Draw progress bar
-    <nul set /p "=[" 
-    for /L %%j in (1,1,%%i) do <nul set /p "=##"
-    set /a "EMPTY=%TOTAL% - %%i"
-    for /L %%k in (1,1,!EMPTY!) do <nul set /p "=--"
-    <nul set /p "=] !PCT!%%  "
-    echo.
-    
-    :: Check if ready
-    findstr /i /c:"listening" /c:"running" /c:"started" /c:"ready" "%LOGFILE%" >nul 2>&1
-    if !errorlevel! equ 0 (
-        set READY=1
-        :: Show 100%
-        <nul set /p "=[########################################] 100%%  "
-        echo.
-        goto :botready
-    )
-    
-    timeout /t 1 >nul
-    
-    :: Move cursor up (cls partial workaround)
-    cls
-    echo.
-    echo  ========================================
-    echo       FreeClaw - Starting Bot
-    echo  ========================================
-    echo.
-)
-
-:botready
-if !READY! equ 1 (
-    echo.
-    echo [OK] Bot is running!
-    echo.
-    
-    :: Open the messaging app with your bot
-    start "" "${S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}^&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':S.platform==='slack'?'slack://open':'https://web.whatsapp.com'}"
-    
-    echo ${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)} should open automatically.
-    echo If not, open it manually and message your bot!
-) else (
-    echo.
-    echo [!!] Bot is taking longer than expected.
-    echo It may still be starting. Check ${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)} in a moment.
-)
-
-echo.
-echo Keep this window open - closing it stops the bot.
-echo ========================================
-echo.
-
-:: Show live bot output
-echo Bot output:
-echo -----------------------------------------
-type "%LOGFILE%"
-echo.
-echo Monitoring... (Press Ctrl+C to stop)
-
-:monitor
-timeout /t 2 >nul
-type "%LOGFILE%"
-goto :monitor
-`;}
-    function genRm(){const ext=S.os==='win'?'bat':'sh';const plat=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);return`FREECLAW - Your AI Chatbot
-==========================
-
-QUICK START
------------
-1. Extract this zip file to a folder
-2. Double-click setup.${ext} (or right-click → Open on Mac)
-3. Wait for "Bot is running" message
-4. Open ${plat} and message your bot!
-
-IMPORTANT
----------
-• Keep the terminal window open - closing it stops your bot
-• Your bot runs on YOUR computer, not a server
-• To restart: just run setup.${ext} again
-
-TROUBLESHOOTING
----------------
-"Node.js not found"
-  → Download from https://nodejs.org and install it first
-
-"Permission denied" (Mac)
-  → Right-click setup.sh → Open → Click "Open" in the popup
-
-"Windows protected your PC"
-  → Click "More info" → "Run anyway"
-
-NEED HELP?
-----------
-Email: andreymarey.work@gmail.com
-Twitter: @Andrey__HQ
-
-Enjoy your bot! 🤖
-`;}
-    function donate(){window.open('https://polar.sh/checkout?productId=b3f01423-1476-4359-9a0b-34bc397aac58','_blank');}
-    function openLightbox(img){document.getElementById('lightbox-img').src=img.src;document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden';}
-    function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';}
-    
-    const apiGuides={
-      anthropic:{
-        title:'Get Anthropic API Key',
-        steps:[
-          {num:'1',title:'Go to Anthropic Console',text:'Visit <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> and sign in (or create an account). Then click <strong>API keys</strong> in the left sidebar.',img:'images/anthropic/step1-sidebar.jpg'},
-          {num:'2',title:'Create a new key',text:'Click the <strong>+ Create Key</strong> button in the top right corner.',img:'images/anthropic/step2-create.jpg'},
-          {num:'3',title:'Copy your key',text:'Copy the key immediately and paste it into FreeClaw. Write it down somewhere safe - <strong>you won\'t be able to see it again!</strong>',img:null}
-        ],
-        warning:'API keys are shown only once. Copy it immediately and store it somewhere safe!'
-      },
-      openai:{
-        title:'Get OpenAI API Key',
-        steps:[
-          {num:'1',title:'Go to OpenAI Platform',text:'Visit <a href="https://platform.openai.com" target="_blank">platform.openai.com</a> and sign in.',img:null},
-          {num:'2',title:'Open API Keys',text:'Click your profile icon → <strong>API keys</strong>, or go to the API keys section in the left sidebar.',img:null},
-          {num:'3',title:'Create new key',text:'Click <strong>Create new secret key</strong>, give it a name, and click Create.',img:null},
-          {num:'4',title:'Copy your key',text:'Copy the key immediately. <strong>You won\'t be able to see it again!</strong>',img:null}
-        ],
-        warning:'OpenAI keys are shown only once. Copy it immediately!'
-      },
-      google:{
-        title:'Get Google Gemini API Key',
-        steps:[
-          {num:'1',title:'Go to AI Studio',text:'Visit <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a> and sign in with Google.',img:null},
-          {num:'2',title:'Get API Key',text:'Click <strong>Get API key</strong> in the left sidebar or top navigation.',img:null},
-          {num:'3',title:'Create key',text:'Click <strong>Create API key</strong> and select a project (or create one).',img:null},
-          {num:'4',title:'Copy your key',text:'Copy the generated API key and paste it into FreeClaw.',img:null}
-        ],
-        warning:'Keep your API key private. Don\'t share it or commit it to public repositories.'
-      },
-      groq:{
-        title:'Get Groq API Key',
-        steps:[
-          {num:'1',title:'Go to Groq Console',text:'Visit <a href="https://console.groq.com" target="_blank">console.groq.com</a> and sign in.',img:null},
-          {num:'2',title:'Open API Keys',text:'Click <strong>API Keys</strong> in the left sidebar.',img:null},
-          {num:'3',title:'Create key',text:'Click <strong>Create API Key</strong>, give it a name.',img:null},
-          {num:'4',title:'Copy your key',text:'Copy the key and paste it into FreeClaw.',img:null}
-        ],
-        warning:'Groq offers generous free tier. Great for testing!'
-      }
-    };
-    
-    function openApiGuide(provider){
-      // Also select this model
-      S.model=provider;
-      // Mark the card as selected
-      document.querySelectorAll('[data-step="2"] .card').forEach(c=>c.classList.remove('sel'));
-      document.querySelector(`[data-step="2"] .card[data-v="${provider}"]`).classList.add('sel');
-      
-      const guide=apiGuides[provider];
-      if(!guide)return;
-      document.getElementById('apiModalTitle').textContent=guide.title;
-      let html='';
-      guide.steps.forEach(s=>{
-        html+=`<div class="api-modal-step"><h4><span>${s.num}</span>${s.title}</h4><p>${s.text}</p>${s.img?`<img src="${s.img}" onclick="openLightbox(this)">`:''}</div>`;
-      });
-      if(guide.warning)html+=`<div class="api-modal-warning">⚠️ ${guide.warning}</div>`;
-      html+=`<div class="api-modal-input"><label>Paste your API key here:</label><input type="password" id="modalApiKey" placeholder="sk-..." oninput="updateApiKeyFromModal()"><button class="api-modal-btn" onclick="saveApiKeyAndClose()">Save & Continue</button></div>`;
-      document.getElementById('apiModalBody').innerHTML=html;
-      document.getElementById('apiModal').classList.add('open');
-      document.body.style.overflow='hidden';
-    }
-    
-    function updateApiKeyFromModal(){document.getElementById('apiKey').value=document.getElementById('modalApiKey').value;checkApiKey();}
-    function saveApiKeyAndClose(){updateApiKeyFromModal();if(S.apiKey)closeApiModal();}
-    
-    function closeApiModal(){document.getElementById('apiModal').classList.remove('open');document.body.style.overflow='';}
-    document.getElementById('apiModal').addEventListener('click',e=>{if(e.target.id==='apiModal')closeApiModal();});
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLightbox();closeApiModal();}});
   </script>
 </body>
 </html>
