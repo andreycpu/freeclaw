@@ -1499,20 +1499,25 @@ function buildConfigJSON() {
   const config = {
     agents: { defaults: { workspace: '~/.openclaw/workspace', model: { primary: p.model } } },
     channels: {},
+    plugins: { entries: {} },
     gateway: { port: 18789, mode: 'local', bind: 'loopback', auth: { mode: 'token', token: generateRandomToken() } }
   };
   switch (state.chatPlatform) {
     case 'telegram':
       config.channels.telegram = { enabled: true, botToken: sanitize(state.telegram.botToken), dmPolicy: 'open', allowFrom: ['*'] };
+      config.plugins.entries.telegram = { enabled: true };
       break;
     case 'discord':
       config.channels.discord = { enabled: true, token: sanitize(state.discord.token) };
+      config.plugins.entries.discord = { enabled: true };
       break;
     case 'whatsapp':
       config.channels.whatsapp = { dmPolicy: 'open', allowFrom: ['*'] };
+      config.plugins.entries.whatsapp = { enabled: true };
       break;
     case 'slack':
       config.channels.slack = { enabled: true, botToken: sanitize(state.slack.botToken), appToken: sanitize(state.slack.appToken) };
+      config.plugins.entries.slack = { enabled: true };
       break;
   }
   return JSON.stringify(config, null, 2);
@@ -1586,26 +1591,44 @@ if exist "%FREECLAW_HOME%\\node\\node.exe" (
 echo.
 echo [1/6] Downloading Node.js %NODE_VER%...
 mkdir "%FREECLAW_HOME%" 2>nul
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ProgressPreference='SilentlyContinue'; try { Invoke-WebRequest -Uri 'https://nodejs.org/dist/v%NODE_VER%/node-v%NODE_VER%-win-x64.zip' -OutFile '%TEMP%\\freeclaw-node.zip' -UseBasicParsing } catch { Write-Host 'DOWNLOAD_FAILED'; exit 1 }"
-if not exist "%TEMP%\\freeclaw-node.zip" (
+del "%TEMP%\\freeclaw-node.zip" 2>nul
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12; $ProgressPreference='SilentlyContinue'; try { Invoke-WebRequest -Uri 'https://nodejs.org/dist/v%NODE_VER%/node-v%NODE_VER%-win-x64.zip' -OutFile '%TEMP%\\freeclaw-node.zip' -UseBasicParsing } catch { Write-Host 'DOWNLOAD_FAILED'; exit 1 }"
+if errorlevel 1 (
     echo ERROR: Failed to download Node.js. Check your internet connection.
+    pause & exit /b 1
+)
+if not exist "%TEMP%\\freeclaw-node.zip" (
+    echo ERROR: Failed to download Node.js. File not found after download.
     pause & exit /b 1
 )
 echo       Done.
 
 :: Step 2: Download Git
 echo [2/6] Downloading Git...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ProgressPreference='SilentlyContinue'; try { Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/MinGit-2.47.1-64-bit.zip' -OutFile '%TEMP%\\freeclaw-git.zip' -UseBasicParsing } catch { Write-Host 'DOWNLOAD_FAILED'; exit 1 }"
-if not exist "%TEMP%\\freeclaw-git.zip" (
+del "%TEMP%\\freeclaw-git.zip" 2>nul
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12; $ProgressPreference='SilentlyContinue'; try { Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/MinGit-2.47.1-64-bit.zip' -OutFile '%TEMP%\\freeclaw-git.zip' -UseBasicParsing } catch { Write-Host 'DOWNLOAD_FAILED'; exit 1 }"
+if errorlevel 1 (
     echo ERROR: Failed to download Git. Check your internet connection.
+    pause & exit /b 1
+)
+if not exist "%TEMP%\\freeclaw-git.zip" (
+    echo ERROR: Failed to download Git. File not found after download.
     pause & exit /b 1
 )
 echo       Done.
 
 :: Step 3: Extract
 echo [3/6] Setting up...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ProgressPreference='SilentlyContinue'; if (Test-Path '%FREECLAW_HOME%\\node') { Remove-Item '%FREECLAW_HOME%\\node' -Recurse -Force }; Expand-Archive -Path '%TEMP%\\freeclaw-node.zip' -DestinationPath '%FREECLAW_HOME%\\node-temp' -Force; Get-ChildItem '%FREECLAW_HOME%\\node-temp\\node-v%NODE_VER%-win-x64' | Move-Item -Destination '%FREECLAW_HOME%\\node' -Force; Remove-Item '%FREECLAW_HOME%\\node-temp' -Recurse -Force -ErrorAction SilentlyContinue"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ProgressPreference='SilentlyContinue'; if (Test-Path '%FREECLAW_HOME%\\git') { Remove-Item '%FREECLAW_HOME%\\git' -Recurse -Force }; Expand-Archive -Path '%TEMP%\\freeclaw-git.zip' -DestinationPath '%FREECLAW_HOME%\\git' -Force"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $ProgressPreference='SilentlyContinue'; if (Test-Path '%FREECLAW_HOME%\\node') { Remove-Item '%FREECLAW_HOME%\\node' -Recurse -Force }; Expand-Archive -Path '%TEMP%\\freeclaw-node.zip' -DestinationPath '%FREECLAW_HOME%\\node-temp' -Force; Get-ChildItem '%FREECLAW_HOME%\\node-temp\\node-v%NODE_VER%-win-x64' | Move-Item -Destination '%FREECLAW_HOME%\\node' -Force; Remove-Item '%FREECLAW_HOME%\\node-temp' -Recurse -Force -ErrorAction SilentlyContinue"
+if errorlevel 1 (
+    echo ERROR: Failed to extract Node.js. The download may be corrupt - please try again.
+    pause & exit /b 1
+)
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $ProgressPreference='SilentlyContinue'; if (Test-Path '%FREECLAW_HOME%\\git') { Remove-Item '%FREECLAW_HOME%\\git' -Recurse -Force }; Expand-Archive -Path '%TEMP%\\freeclaw-git.zip' -DestinationPath '%FREECLAW_HOME%\\git' -Force"
+if errorlevel 1 (
+    echo ERROR: Failed to extract Git. The download may be corrupt - please try again.
+    pause & exit /b 1
+)
 del "%TEMP%\\freeclaw-node.zip" 2>nul
 del "%TEMP%\\freeclaw-git.zip" 2>nul
 echo       Done.
@@ -1639,6 +1662,9 @@ echo [6/6] Starting your bot...
 
 :: Run onboard for auth and daemon install
 call "%FREECLAW_HOME%\\node\\npx.cmd" openclaw onboard --non-interactive --accept-risk --install-daemon --auth-choice ${p.authChoice} ${p.authFlag} "${apiKey}" --skip-channels --skip-skills --skip-health --workspace "%OPENCLAW_HOME%\\workspace" >"%FREECLAW_HOME%\\onboard-log.txt" 2>&1
+
+:: Auto-fix any config issues (enables channel plugin)
+call "%FREECLAW_HOME%\\node\\npx.cmd" openclaw doctor --fix >"%FREECLAW_HOME%\\doctor-log.txt" 2>&1
 
 :: Create Start.bat
 (
@@ -1796,6 +1822,9 @@ npx openclaw onboard --non-interactive --accept-risk \\
   --auth-choice ${p.authChoice} ${p.authFlag} "${escapeShell(apiKey)}" \\
   --skip-channels --skip-skills --skip-health \\
   --workspace "$OPENCLAW_HOME/workspace" > "$FREECLAW_HOME/onboard-log.txt" 2>&1 || true
+
+# Auto-fix any config issues (enables channel plugin)
+npx openclaw doctor --fix > "$FREECLAW_HOME/doctor-log.txt" 2>&1 || true
 
 # Create start script
 cat > "$FREECLAW_HOME/start.sh" << 'FREECLAW_START_END'
