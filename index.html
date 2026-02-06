@@ -2343,6 +2343,48 @@ FREECLAW_AGENTS
 
 echo -e "\${GREEN}✓\${NC} Configuration saved"
 
+# Set up auto-start on login (Mac)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    LAUNCH_AGENTS="$HOME/Library/LaunchAgents"
+    mkdir -p "\\$LAUNCH_AGENTS"
+    
+    cat > "\\$LAUNCH_AGENTS/com.freeclaw.bot.plist" << 'LAUNCHAGENT'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.freeclaw.bot</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/openclaw</string>
+        <string>gateway</string>
+        <string>start</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>FREECLAW_WS_PLACEHOLDER</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>FREECLAW_WS_PLACEHOLDER/.openclaw.log</string>
+    <key>StandardErrorPath</key>
+    <string>FREECLAW_WS_PLACEHOLDER/.openclaw-error.log</string>
+</dict>
+</plist>
+LAUNCHAGENT
+    
+    # Replace placeholder with actual path
+    sed -i '' "s|FREECLAW_WS_PLACEHOLDER|$WS|g" "\\$LAUNCH_AGENTS/com.freeclaw.bot.plist"
+    
+    # Also try npm global path
+    OPENCLAW_PATH=\\$(which openclaw 2>/dev/null || echo "/usr/local/bin/openclaw")
+    sed -i '' "s|/usr/local/bin/openclaw|\\$OPENCLAW_PATH|g" "\\$LAUNCH_AGENTS/com.freeclaw.bot.plist"
+    
+    echo -e "\${GREEN}✓\${NC} Auto-start enabled (bot will start when you log in)"
+fi
+
 # Start the bot
 echo ""
 echo -e "\${GREEN}════════════════════════════════════════\${NC}"
@@ -2493,6 +2535,15 @@ echo ${agents.split('\n').join('\necho ')}
 ) > "%WS%\\AGENTS.md"
 
 echo [OK] Configuration saved
+
+:: Set up auto-start on Windows login
+set "STARTUP=%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup"
+(
+echo @echo off
+echo cd /d "%WS%"
+echo start /min cmd /c "openclaw gateway start"
+) > "%STARTUP%\\FreeClaw.bat"
+echo [OK] Auto-start enabled (bot will start when you log in)
 
 :: Start the bot
 echo.
