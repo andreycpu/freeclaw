@@ -2655,19 +2655,26 @@ echo.
 
 :: Download Node if needed
 if not exist node\\node.exe (
-    echo   Downloading Node.js...
-    powershell -Command "Invoke-WebRequest -Uri 'https://nodejs.org/dist/v20.11.0/node-v20.11.0-win-x64.zip' -OutFile node.zip"
-    echo   Extracting...
-    powershell -Command "Expand-Archive node.zip -DestinationPath . -Force"
-    ren node-v20.11.0-win-x64 node
-    del node.zip
+    echo.
+    echo   Downloading required files...
+    echo   This may take a minute, please wait...
+    echo.
+    powershell -Command "$ProgressPreference='SilentlyContinue'; Invoke-WebRequest -Uri 'https://nodejs.org/dist/v20.11.0/node-v20.11.0-win-x64.zip' -OutFile node.zip" >nul 2>&1
+    echo   Download complete. Extracting...
+    powershell -Command "$ProgressPreference='SilentlyContinue'; Expand-Archive node.zip -DestinationPath . -Force" >nul 2>&1
+    ren node-v20.11.0-win-x64 node >nul 2>&1
+    del node.zip >nul 2>&1
+    echo   [OK] Files extracted
 )
 echo   [OK] Node.js ready
 
 :: Install OpenClaw
+echo.
 echo   Installing OpenClaw...
+echo   This may take 1-2 minutes...
+echo.
 call node\\npm.cmd init -y >nul 2>&1
-call node\\npm.cmd install openclaw 2>&1
+call node\\npm.cmd install openclaw >nul 2>&1
 echo   [OK] OpenClaw installed
 
 :: Write config
