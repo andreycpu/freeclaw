@@ -2761,10 +2761,17 @@ set /p NODEVER=<"%TEMP%\\node-ver.txt"
 echo   Node version: %NODEVER%
 echo [OK] Node version: %NODEVER% >> "%LOGFILE%"
 
-"%NPM%" --version > "%TEMP%\\npm-ver.txt" 2>&1
-set /p NPMVER=<"%TEMP%\\npm-ver.txt"
-echo   npm version: %NPMVER%
-echo [OK] npm version: %NPMVER% >> "%LOGFILE%"
+if exist "%NPM%" (
+    "%NPM%" --version > "%TEMP%\\npm-ver.txt" 2>&1
+    set /p NPMVER=<"%TEMP%\\npm-ver.txt"
+    echo   npm version: !NPMVER!
+    echo [OK] npm version: !NPMVER! >> "%LOGFILE%"
+) else (
+    echo   [WARN] npm.cmd not found at %NPM%
+    echo [WARN] npm.cmd not found >> "%LOGFILE%"
+    echo   Contents of node folder:
+    dir "%NODEDIR%" 2>&1
+)
 
 :: ============================================
 :: STEP 3: INSTALL OPENCLAW
