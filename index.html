@@ -621,9 +621,15 @@
     
     /* Cards */
     .cards {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      display: flex;
+      flex-wrap: wrap;
       gap: 12px;
+      justify-content: center;
+    }
+    
+    .cards .card {
+      flex: 0 1 280px;
+      max-width: 320px;
     }
     
     .card {
@@ -1832,7 +1838,7 @@
           <div class="card" data-v="anthropic" onclick="pick(this,'model')">
             <span class="card-tag">Recommended</span>
             <div class="card-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M17.604 3.332 12.46 20.668h-2.464l5.144-17.336h2.464ZM5.5 20.668l5.228-9.672L9.04 7.836 3.5 17.52V3.332H1v17.336h4.5Zm13 0h4.5V3.332h-2.5v14.188l-5.54-9.684-1.688 3.16 5.228 9.672Z"/></svg></div>
+            <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5" fill="#E07A4A"/><line x1="12" y1="2" x2="12" y2="7" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="22" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="2" y1="12" x2="7" y2="12" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="17" y1="12" x2="22" y2="12" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="4.93" y1="4.93" x2="8.46" y2="8.46" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="15.54" y1="15.54" x2="19.07" y2="19.07" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="4.93" y1="19.07" x2="8.46" y2="15.54" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/><line x1="15.54" y1="8.46" x2="19.07" y2="4.93" stroke="#E07A4A" stroke-width="2" stroke-linecap="round"/></svg></div>
             <h3>Claude</h3>
             <p>Best for conversation</p>
             <div class="api-toggle" onclick="event.stopPropagation();openApiGuide('anthropic')">Get API key →</div>
