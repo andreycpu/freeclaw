@@ -543,6 +543,43 @@
       display: block;
     }
     
+    /* FAQ Dropdown */
+    .faq-dropdown {
+      margin-top: 24px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+    }
+    
+    .faq-dropdown summary {
+      padding: 14px 18px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .faq-dropdown summary::-webkit-details-marker {
+      display: none;
+    }
+    
+    .faq-dropdown summary::after {
+      content: '▼';
+      font-size: 0.6rem;
+      transition: transform 0.2s;
+    }
+    
+    .faq-dropdown[open] summary::after {
+      transform: rotate(180deg);
+    }
+    
+    .faq-dropdown .faq-content {
+      padding: 0 18px 18px;
+    }
+    
     /* Form */
     .form-row {
       margin-bottom: 18px;
@@ -1531,35 +1568,34 @@
           </div>
         </div>
         
-        <div class="faq">
-          <div class="faq-title">Common questions</div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Which model is best? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Claude is best for natural conversation. GPT-4o is most versatile. Groq is fastest but less capable.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">How much does it cost? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Most providers give free credits to start. After that, expect $5-20/month for casual use.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Can I switch models later? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">Yes! Just edit your config file and restart. You can even use different models for different tasks.</div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">What's an API key? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-            <div class="faq-a">A secret password that lets your bot talk to the AI. Keep it private - don't share it.</div>
-          </div>
-        </div>
-        
-        <div class="form-row" id="apiKeyRow" style="margin-top: 24px;">
-          <label><span id="modelLabel2">Model</span> API key</label>
-          <input type="password" id="apiKey" placeholder="Paste your API key" oninput="checkApiKey()">
-          <p class="form-hint" style="font-size: 0.7rem; color: var(--text-muted); margin-top: 6px;">Click "Get API key" on your selected model above</p>
-        </div>
+        <!-- Hidden input for API key (set from modal) -->
+        <input type="hidden" id="apiKey">
         
         <div class="nav">
           <button class="next" id="n2" disabled onclick="go(3)">Continue</button>
         </div>
+        
+        <details class="faq-dropdown">
+          <summary>Common questions</summary>
+          <div class="faq-content">
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">Which model is best? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+              <div class="faq-a">Claude is best for natural conversation. GPT-4o is most versatile. Groq is fastest but less capable.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">How much does it cost? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+              <div class="faq-a">Most providers give free credits to start. After that, expect $5-20/month for casual use.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">Can I switch models later? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+              <div class="faq-a">Yes! Just edit your config file and restart. You can even use different models for different tasks.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">What's an API key? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
+              <div class="faq-a">A secret password that lets your bot talk to the AI. Keep it private - don't share it.</div>
+            </div>
+          </div>
+        </details>
       </div>
       
       <!-- Step 3: Setup -->
@@ -2252,6 +2288,14 @@ Enjoy your bot! 🤖
     };
     
     function openApiGuide(provider){
+      // Also select this model
+      S.model=provider;
+      const m={anthropic:'Anthropic',openai:'OpenAI',google:'Google',groq:'Groq'};
+      document.getElementById('modelLabel2').textContent=m[provider];
+      // Mark the card as selected
+      document.querySelectorAll('[data-step="2"] .card').forEach(c=>c.classList.remove('sel'));
+      document.querySelector(`[data-step="2"] .card[data-v="${provider}"]`).classList.add('sel');
+      
       const guide=apiGuides[provider];
       if(!guide)return;
       document.getElementById('apiModalTitle').textContent=guide.title;
