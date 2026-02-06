@@ -2342,22 +2342,7 @@
     function checkT(){S.botToken=document.getElementById('bToken').value;S.botUsername=document.getElementById('bUsername').value.replace(/^@/,'');const needToken=S.platform!=='whatsapp';const needUsername=S.platform==='telegram';let valid=true;if(needToken&&!S.botToken)valid=false;if(needUsername&&!S.botUsername)valid=false;document.getElementById('n3').disabled=!valid;}
     function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};document.getElementById('platTitle').textContent=n[S.platform];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>{document.getElementById('setup'+p).style.display='none';document.getElementById('faq'+p).style.display='none';});const pCap=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);document.getElementById('setup'+pCap).style.display='block';document.getElementById('faq'+pCap).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';document.getElementById('usernameRow').style.display=S.platform==='telegram'?'block':'none';checkT();}
     function setup5(){const isMac=S.os!=='win';document.getElementById('dlBoxWin').style.display=isMac?'none':'block';document.getElementById('dlBoxMac').style.display=isMac?'block':'none';document.getElementById('dlSubhead').textContent=isMac?'One click to copy, paste, done':'One click to download, double-click to run';}
-    function genTerminalCmd(){const cfg=genCfg().replace(/'/g,"'\\''");const soul=genSoul().replace(/'/g,"'\\''");const user=genUser().replace(/'/g,"'\\''");const agents=genAgents().replace(/'/g,"'\\''");const deeplink=S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}\\&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com';return`/bin/bash -c 'WS=~/freeclaw && mkdir -p "$WS" && cat > "$WS/config.yaml" << '\\''EOFCFG'\\''
-${cfg}
-EOFCFG
-cat > "$WS/SOUL.md" << '\\''EOFSOUL'\\''
-${soul}
-EOFSOUL
-cat > "$WS/USER.md" << '\\''EOFUSER'\\''
-${user}
-EOFUSER
-cat > "$WS/AGENTS.md" << '\\''EOFAGENTS'\\''
-${agents}
-EOFAGENTS
-echo "✓ Files created" && npm install -g openclaw 2>/dev/null || npm install -g openclaw && echo "✓ OpenClaw installed" && mkdir -p ~/Library/LaunchAgents && cat > ~/Library/LaunchAgents/com.freeclaw.bot.plist << '\\''EOFPLIST'\\''
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>Label</key><string>com.freeclaw.bot</string><key>ProgramArguments</key><array><string>'\\''$(which openclaw)'\\''</string><string>gateway</string><string>start</string></array><key>WorkingDirectory</key><string>'\\''$WS'\\''</string><key>RunAtLoad</key><true/><key>KeepAlive</key><true/></dict></plist>
-EOFPLIST
-echo "✓ Auto-start enabled" && cd "$WS" && echo "Starting bot..." && open "${deeplink}" 2>/dev/null; openclaw gateway start'`;}
+    function genTerminalCmd(){const cfg=btoa(genCfg());const soul=btoa(genSoul());const user=btoa(genUser());const agents=btoa(genAgents());const deeplink=S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}\\&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com';return`mkdir -p ~/freeclaw && echo "${cfg}"|base64 -d>~/freeclaw/config.yaml && echo "${soul}"|base64 -d>~/freeclaw/SOUL.md && echo "${user}"|base64 -d>~/freeclaw/USER.md && echo "${agents}"|base64 -d>~/freeclaw/AGENTS.md && echo "✓ Config saved" && npm i -g openclaw && echo "✓ Installed" && cd ~/freeclaw && open "${deeplink}" 2>/dev/null; openclaw gateway start`;}
     function copyCmd(){const cmd=genTerminalCmd();navigator.clipboard.writeText(cmd).then(()=>{document.getElementById('copyBtnText').textContent='✓ Copied! Now paste in Terminal';setTimeout(()=>{document.getElementById('copyBtnText').textContent='Click to Copy Command';},5000);});}
     function setup6(){const plat={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];document.getElementById('testPlat').textContent=plat;document.getElementById('testPlatWin').textContent=plat;document.getElementById('checklistMac').style.display=S.os==='win'?'none':'block';document.getElementById('checklistWin').style.display=S.os==='win'?'block':'none';}
     function setup7(){document.getElementById('finalBot').textContent='Your bot is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
