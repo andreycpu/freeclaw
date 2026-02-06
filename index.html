@@ -2314,30 +2314,7 @@
     function checkT(){S.botToken=document.getElementById('bToken').value;S.botUsername=document.getElementById('bUsername').value.replace(/^@/,'');const needToken=S.platform!=='whatsapp';const needUsername=S.platform==='telegram';let valid=true;if(needToken&&!S.botToken)valid=false;if(needUsername&&!S.botUsername)valid=false;document.getElementById('n3').disabled=!valid;}
     function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};document.getElementById('platTitle').textContent=n[S.platform];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>{document.getElementById('setup'+p).style.display='none';document.getElementById('faq'+p).style.display='none';});const pCap=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);document.getElementById('setup'+pCap).style.display='block';document.getElementById('faq'+pCap).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';document.getElementById('usernameRow').style.display=S.platform==='telegram'?'block':'none';checkT();}
     function setup5(){const isMac=S.os!=='win';document.getElementById('dlBoxWin').style.display=isMac?'none':'block';document.getElementById('dlBoxMac').style.display=isMac?'block':'none';document.getElementById('dlSubhead').textContent=isMac?'One click to copy, paste, done':'One click to download, double-click to run';}
-    function genTerminalCmd(){const cfg=btoa(genCfg());const soul=btoa(genSoul());const user=btoa(genUser());const agents=btoa(genAgents());const tgLink=`https://t.me/${S.botUsername}`;return`clear
-echo "🤖 FreeClaw Setup"
-echo ""
-echo "[1/3] Saving config..."
-mkdir -p ~/freeclaw
-echo "${cfg}"|base64 -d>~/freeclaw/config.yaml
-echo "${soul}"|base64 -d>~/freeclaw/SOUL.md
-echo "${user}"|base64 -d>~/freeclaw/USER.md
-echo "${agents}"|base64 -d>~/freeclaw/AGENTS.md
-echo "✓ Config saved"
-echo ""
-echo "[2/3] Installing OpenClaw (this takes ~30 seconds)..."
-npm i -g openclaw
-echo ""
-echo "[3/3] Starting bot..."
-cd ~/freeclaw
-echo ""
-echo "════════════════════════════════════════"
-echo "✅ Setup complete!"
-echo "Telegram will open in 5 seconds..."
-echo "════════════════════════════════════════"
-echo ""
-(sleep 5 && open "${tgLink}") &
-openclaw gateway`;}
+    function genTerminalCmd(){const cfg=btoa(genCfg());const soul=btoa(genSoul());const user=btoa(genUser());const agents=btoa(genAgents());const tgLink='https://t.me/'+S.botUsername;return'clear && echo "🤖 FreeClaw Setup" && echo "" && echo "[1/3] Saving config..." && mkdir -p ~/freeclaw && echo "'+cfg+'"|base64 -d>~/freeclaw/config.yaml && echo "'+soul+'"|base64 -d>~/freeclaw/SOUL.md && echo "'+user+'"|base64 -d>~/freeclaw/USER.md && echo "'+agents+'"|base64 -d>~/freeclaw/AGENTS.md && echo "✓ Config saved" && echo "" && echo "[2/3] Installing OpenClaw..." && npm i -g openclaw && echo "" && echo "[3/3] Starting bot..." && cd ~/freeclaw && echo "════════════════════════════════════════" && echo "✅ Setup complete! Telegram opening..." && echo "════════════════════════════════════════" && (sleep 3 && open "'+tgLink+'") & openclaw gateway';}
     function copyCmd(){const cmd=genTerminalCmd();navigator.clipboard.writeText(cmd).then(()=>{document.getElementById('copyBtnText').textContent='✓ Copied! Now paste in Terminal';setTimeout(()=>{document.getElementById('copyBtnText').textContent='Click to Copy Command';},5000);});}
     function setup6(){const plat={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];const tp=document.getElementById('testPlat');if(tp)tp.textContent=plat;const tpw=document.getElementById('testPlatWin');if(tpw)tpw.textContent=plat;document.getElementById('checklistMac').style.display=S.os==='win'?'none':'block';document.getElementById('checklistWin').style.display=S.os==='win'?'block':'none';}
     function setup7(){document.getElementById('finalBot').textContent='Your bot is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
