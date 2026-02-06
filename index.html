@@ -2292,8 +2292,6 @@ Enjoy your bot! 🤖
     function openApiGuide(provider){
       // Also select this model
       S.model=provider;
-      const m={anthropic:'Anthropic',openai:'OpenAI',google:'Google',groq:'Groq'};
-      document.getElementById('modelLabel2').textContent=m[provider];
       // Mark the card as selected
       document.querySelectorAll('[data-step="2"] .card').forEach(c=>c.classList.remove('sel'));
       document.querySelector(`[data-step="2"] .card[data-v="${provider}"]`).classList.add('sel');
