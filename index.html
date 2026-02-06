@@ -1092,6 +1092,14 @@ function escapePowerShell(str) {
   return str.replace(/'/g, "''");
 }
 
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+function psWriteFileB64(filePath, b64) {
+  return `powershell -NoProfile -ExecutionPolicy Bypass -Command "$b='${b64}';$t=[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($b));[System.IO.File]::WriteAllText('${filePath}',$t,(New-Object System.Text.UTF8Encoding $false))"`;
+}
+
 function escapeShell(str) {
   return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
 }
@@ -1162,11 +1170,11 @@ function buildAGENTS() {
 // ---------------------------------------------------------------------------
 function generateWindowsScript() {
   const p = providerMap[state.aiProvider];
-  const configJSON = escapePowerShell(buildConfigJSON());
-  const soulMD = escapePowerShell(buildSOUL());
-  const userMD = escapePowerShell(buildUSER());
-  const agentsMD = escapePowerShell(buildAGENTS());
-  const apiKey = escapePowerShell(sanitize(state.apiKey));
+  const configB64 = toBase64(buildConfigJSON());
+  const soulB64 = toBase64(buildSOUL());
+  const userB64 = toBase64(buildUSER());
+  const agentsB64 = toBase64(buildAGENTS());
+  const apiKey = sanitize(state.apiKey);
 
   let openCmd = '';
   switch (state.chatPlatform) {
@@ -1248,11 +1256,11 @@ echo [5/6] Configuring your bot...
 mkdir "%OPENCLAW_HOME%" 2>nul
 mkdir "%OPENCLAW_HOME%\\workspace" 2>nul
 
-:: Write config files using PowerShell to avoid batch escaping issues
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.IO.File]::WriteAllText([System.IO.Path]::Combine($env:USERPROFILE, '.openclaw', 'openclaw.json'), '${configJSON}', (New-Object System.Text.UTF8Encoding $false))"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.IO.File]::WriteAllText([System.IO.Path]::Combine($env:USERPROFILE, '.openclaw', 'workspace', 'SOUL.md'), '${soulMD}', (New-Object System.Text.UTF8Encoding $false))"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.IO.File]::WriteAllText([System.IO.Path]::Combine($env:USERPROFILE, '.openclaw', 'workspace', 'USER.md'), '${userMD}', (New-Object System.Text.UTF8Encoding $false))"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.IO.File]::WriteAllText([System.IO.Path]::Combine($env:USERPROFILE, '.openclaw', 'workspace', 'AGENTS.md'), '${agentsMD}', (New-Object System.Text.UTF8Encoding $false))"
+:: Write config files using Base64 to avoid batch/PowerShell quoting issues
+${psWriteFileB64('%OPENCLAW_HOME%\\openclaw.json', configB64)}
+${psWriteFileB64('%OPENCLAW_HOME%\\workspace\\SOUL.md', soulB64)}
+${psWriteFileB64('%OPENCLAW_HOME%\\workspace\\USER.md', userB64)}
+${psWriteFileB64('%OPENCLAW_HOME%\\workspace\\AGENTS.md', agentsB64)}
 echo       Done.
 
 :: Step 6: Activate
