@@ -2656,17 +2656,30 @@ echo.
 :: Download Node if needed
 if not exist node\\node.exe (
     echo.
-    echo   Downloading required files...
-    echo   This may take a minute, please wait...
+    echo   Downloading Node.js...
+    echo   Please wait...
     echo.
     powershell -Command "$ProgressPreference='SilentlyContinue'; Invoke-WebRequest -Uri 'https://nodejs.org/dist/v20.11.0/node-v20.11.0-win-x64.zip' -OutFile node.zip" >nul 2>&1
-    echo   Download complete. Extracting...
+    echo   Extracting Node.js...
     powershell -Command "$ProgressPreference='SilentlyContinue'; Expand-Archive node.zip -DestinationPath . -Force" >nul 2>&1
     ren node-v20.11.0-win-x64 node >nul 2>&1
     del node.zip >nul 2>&1
-    echo   [OK] Files extracted
 )
 echo   [OK] Node.js ready
+
+:: Download portable Git if needed
+if not exist git\\cmd\\git.exe (
+    echo.
+    echo   Downloading Git...
+    powershell -Command "$ProgressPreference='SilentlyContinue'; Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.43.0.windows.1/MinGit-2.43.0-64-bit.zip' -OutFile git.zip" >nul 2>&1
+    echo   Extracting Git...
+    powershell -Command "$ProgressPreference='SilentlyContinue'; Expand-Archive git.zip -DestinationPath git -Force" >nul 2>&1
+    del git.zip >nul 2>&1
+)
+echo   [OK] Git ready
+
+:: Add git to PATH for this session
+set "PATH=%CD%\\git\\cmd;%PATH%"
 
 :: Install OpenClaw
 echo.
@@ -2674,7 +2687,14 @@ echo   Installing OpenClaw...
 echo   This may take 1-2 minutes...
 echo.
 call node\\npm.cmd init -y >nul 2>&1
-call node\\npm.cmd install openclaw >nul 2>&1
+call node\\npm.cmd install openclaw 2>&1
+if not exist node_modules\\.bin\\openclaw.cmd (
+    echo.
+    echo   [ERROR] Installation failed!
+    echo   Please check your internet connection and try again.
+    pause
+    exit /b 1
+)
 echo   [OK] OpenClaw installed
 
 :: Write config
