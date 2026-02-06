@@ -2642,293 +2642,79 @@ echo "────────────────────────�
 tail -f "\\$LOGFILE"
 `;}
     function genBatSingle(){const cfg=genCfg().replace(/%/g,'%%');const soul=genSoul().replace(/%/g,'%%');const user=genUser().replace(/%/g,'%%');const agents=genAgents().replace(/%/g,'%%');return`@echo off
-setlocal enabledelayedexpansion
-
-:: Keep window open no matter what
-if "%~1"=="" (
-    cmd /k "%~f0" run
-    exit /b
-)
-
 title FreeClaw Setup
-color 0A
+cd /d "%USERPROFILE%"
+if not exist freeclaw mkdir freeclaw
+cd freeclaw
 
-set "WS=%USERPROFILE%\\freeclaw"
-set "LOGFILE=%WS%\\setup.log"
-set "NODEZIP=%TEMP%\\freeclaw-node.zip"
-set "NODEURL=https://nodejs.org/dist/v20.11.0/node-v20.11.0-win-x64.zip"
-set "NODEDIR=%WS%\\node"
-set "NODE=%NODEDIR%\\node.exe"
-set "NPM=%NODEDIR%\\npm.cmd"
-set "OPENCLAW=%WS%\\node_modules\\.bin\\openclaw.cmd"
-
-:: Create workspace
-if not exist "%WS%" mkdir "%WS%"
-cd /d "%WS%"
-
-:: Start logging
-echo ============================================ > "%LOGFILE%"
-echo FreeClaw Setup Log - %date% %time% >> "%LOGFILE%"
-echo ============================================ >> "%LOGFILE%"
-echo. >> "%LOGFILE%"
-echo Workspace: %WS% >> "%LOGFILE%"
-echo Node URL: %NODEURL% >> "%LOGFILE%"
-echo. >> "%LOGFILE%"
-
-cls
 echo.
 echo   ========================================
-echo        FreeClaw One-Click Setup
+echo        FreeClaw Setup
 echo   ========================================
 echo.
-echo   Log file: %LOGFILE%
-echo.
 
-:: ============================================
-:: STEP 1: NODE.JS
-:: ============================================
-echo   [1/4] Checking Node.js...
-echo [STEP 1] Checking Node.js >> "%LOGFILE%"
-
-if exist "%NODE%" (
-    echo   [OK] Node.js already installed
-    echo [OK] Node.js exists at %NODE% >> "%LOGFILE%"
-    goto :step2
+:: Download Node if needed
+if not exist node\\node.exe (
+    echo   Downloading Node.js...
+    powershell -Command "Invoke-WebRequest -Uri 'https://nodejs.org/dist/v20.11.0/node-v20.11.0-win-x64.zip' -OutFile node.zip"
+    echo   Extracting...
+    powershell -Command "Expand-Archive node.zip -DestinationPath . -Force"
+    ren node-v20.11.0-win-x64 node
+    del node.zip
 )
-
-echo.
-echo   Downloading Node.js portable (~15MB)...
-echo   Please wait...
-echo.
-echo [INFO] Downloading Node.js from %NODEURL% >> "%LOGFILE%"
-
-powershell -Command "$ProgressPreference='SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12; try { Invoke-WebRequest -Uri '%NODEURL%' -OutFile '%NODEZIP%' -ErrorAction Stop; Write-Host '   Download complete.' } catch { Write-Host '   ERROR:' $_.Exception.Message; exit 1 }"
-
-if not exist "%NODEZIP%" (
-    echo.
-    echo   [FAIL] Download failed!
-    echo [FAIL] Node.js download failed - zip not found >> "%LOGFILE%"
-    echo.
-    echo   Check your internet connection and try again.
-    goto :end
-)
-echo [OK] Download complete, zip at %NODEZIP% >> "%LOGFILE%"
-
-echo   Extracting...
-echo [INFO] Extracting zip >> "%LOGFILE%"
-
-powershell -Command "$ProgressPreference='SilentlyContinue'; try { Expand-Archive -Path '%NODEZIP%' -DestinationPath '%WS%' -Force -ErrorAction Stop; Write-Host '   Extraction complete.' } catch { Write-Host '   ERROR:' $_.Exception.Message; exit 1 }"
-
-echo [INFO] Looking for extracted folder >> "%LOGFILE%"
-dir "%WS%" >> "%LOGFILE%" 2>&1
-
-:: Find and rename the extracted folder
-for /d %%D in ("%WS%\\node-v*") do (
-    echo [INFO] Found folder: %%D >> "%LOGFILE%"
-    if exist "%NODEDIR%" (
-        echo [INFO] Removing old node folder >> "%LOGFILE%"
-        rd /s /q "%NODEDIR%" 2>>"%LOGFILE%"
-    )
-    echo [INFO] Renaming %%D to node >> "%LOGFILE%"
-    ren "%%D" "node" 2>>"%LOGFILE%"
-)
-
-del "%NODEZIP%" 2>nul
-
-if not exist "%NODE%" (
-    echo.
-    echo   [FAIL] Node.js extraction failed!
-    echo [FAIL] node.exe not found at %NODE% >> "%LOGFILE%"
-    echo.
-    echo   Contents of %WS%:
-    dir "%WS%"
-    goto :end
-)
-
 echo   [OK] Node.js ready
-echo [OK] Node.js ready at %NODE% >> "%LOGFILE%"
 
-:: ============================================
-:: STEP 2: VERIFY NODE WORKS
-:: ============================================
-:step2
-echo.
-echo   [2/4] Verifying Node.js...
-echo [STEP 2] Verifying Node.js >> "%LOGFILE%"
+:: Install OpenClaw
+echo   Installing OpenClaw...
+call node\\npm.cmd init -y >nul 2>&1
+call node\\npm.cmd install openclaw 2>&1
+echo   [OK] OpenClaw installed
 
-"%NODE%" --version > "%TEMP%\\node-ver.txt" 2>&1
-set /p NODEVER=<"%TEMP%\\node-ver.txt"
-echo   Node version: %NODEVER%
-echo [OK] Node version: %NODEVER% >> "%LOGFILE%"
-
-if exist "%NPM%" (
-    "%NPM%" --version > "%TEMP%\\npm-ver.txt" 2>&1
-    set /p NPMVER=<"%TEMP%\\npm-ver.txt"
-    echo   npm version: !NPMVER!
-    echo [OK] npm version: !NPMVER! >> "%LOGFILE%"
-) else (
-    echo   [WARN] npm.cmd not found at %NPM%
-    echo [WARN] npm.cmd not found >> "%LOGFILE%"
-    echo   Contents of node folder:
-    dir "%NODEDIR%" 2>&1
-)
-
-:: ============================================
-:: STEP 3: INSTALL OPENCLAW
-:: ============================================
-echo.
-echo   [3/4] Installing OpenClaw...
-echo [STEP 3] Installing OpenClaw >> "%LOGFILE%"
-
-if exist "%OPENCLAW%" (
-    echo   [OK] OpenClaw already installed
-    echo [OK] OpenClaw exists at %OPENCLAW% >> "%LOGFILE%"
-    goto :step4
-)
-
-cd /d "%WS%"
-echo [INFO] Working directory: %CD% >> "%LOGFILE%"
-
-echo   Creating package.json...
-echo [INFO] Running npm init >> "%LOGFILE%"
-call "%NPM%" init -y >> "%LOGFILE%" 2>&1
-
-echo.
-echo   Installing openclaw package...
-echo   (This may take 1-2 minutes)
-echo.
-echo [INFO] Running npm install openclaw >> "%LOGFILE%"
-echo ---- NPM OUTPUT START ---- >> "%LOGFILE%"
-
-call "%NPM%" install openclaw --save
-if !errorlevel! neq 0 (
-    echo [ERROR] npm install returned error code !errorlevel! >> "%LOGFILE%"
-)
-
-echo ---- NPM OUTPUT END ---- >> "%LOGFILE%"
-
-echo.
-echo [INFO] Checking for openclaw.cmd >> "%LOGFILE%"
-if exist "%OPENCLAW%" (
-    echo   [OK] OpenClaw installed successfully
-    echo [OK] openclaw.cmd found at %OPENCLAW% >> "%LOGFILE%"
-) else (
-    echo   [FAIL] OpenClaw not found after install!
-    echo [FAIL] openclaw.cmd NOT found >> "%LOGFILE%"
-    echo.
-    echo   Contents of node_modules\\.bin:
-    dir "%WS%\\node_modules\\.bin" 2>&1
-    echo.
-    echo   Checking if openclaw folder exists:
-    dir "%WS%\\node_modules\\openclaw" 2>&1
-    echo.
-    echo   Full npm log:
-    type "%WS%\\setup.log"
-    goto :end
-)
-
-:: ============================================
-:: STEP 4: WRITE CONFIG
-:: ============================================
-:step4
-echo.
-echo   [4/4] Writing configuration...
-echo [STEP 4] Writing config files >> "%LOGFILE%"
-
+:: Write config
+echo   Writing config...
 (
 echo ${cfg.split('\n').join('\necho ')}
-) > "%WS%\\config.yaml"
-echo [OK] config.yaml written >> "%LOGFILE%"
+) > config.yaml
 
 (
 echo ${soul.split('\n').join('\necho ')}
-) > "%WS%\\SOUL.md"
-echo [OK] SOUL.md written >> "%LOGFILE%"
+) > SOUL.md
 
 (
 echo ${user.split('\n').join('\necho ')}
-) > "%WS%\\USER.md"
-echo [OK] USER.md written >> "%LOGFILE%"
+) > USER.md
 
 (
 echo ${agents.split('\n').join('\necho ')}
-) > "%WS%\\AGENTS.md"
-echo [OK] AGENTS.md written >> "%LOGFILE%"
+) > AGENTS.md
 
-:: Create launcher
-(
-echo @echo off
-echo cd /d "%WS%"
-echo call "%OPENCLAW%" gateway start
-) > "%WS%\\Start-FreeClaw.bat"
+:: Create start script
+echo @echo off > Start.bat
+echo cd /d "%%USERPROFILE%%\\freeclaw" >> Start.bat
+echo call node_modules\\.bin\\openclaw.cmd gateway start >> Start.bat
 
-:: Auto-start
-set "STARTUP=%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup"
-copy /y "%WS%\\Start-FreeClaw.bat" "%STARTUP%\\FreeClaw.bat" >nul 2>&1
+:: Copy to startup
+copy Start.bat "%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\FreeClaw.bat" >nul 2>&1
 
-echo   [OK] Configuration complete
-echo [OK] All config files written >> "%LOGFILE%"
-
-:: ============================================
-:: START BOT
-:: ============================================
+:: Start bot
 echo.
 echo   ========================================
-echo   Starting your bot...
+echo   Starting bot...
 echo   ========================================
 echo.
-echo [STEP 5] Starting gateway >> "%LOGFILE%"
 
-cd /d "%WS%"
-set "BOTLOG=%WS%\\openclaw.log"
+start /b cmd /c "call node_modules\\.bin\\openclaw.cmd gateway start"
 
-echo [INFO] Running: call "%OPENCLAW%" gateway start >> "%LOGFILE%"
-start /b cmd /c "call "%OPENCLAW%" gateway start > "%BOTLOG%" 2>&1"
-
-echo   Waiting for bot to start...
-set READY=0
-for /L %%i in (1,1,20) do (
-    ping -n 2 127.0.0.1 >nul
-    findstr /i /c:"ready" /c:"listening" /c:"started" /c:"running" "%BOTLOG%" >nul 2>&1
-    if !errorlevel! equ 0 (
-        set READY=1
-        goto :botready
-    )
-    echo   ... waiting (%%i/20)
-)
-
-:botready
-echo.
-if !READY! equ 1 (
-    echo   [OK] Bot is running!
-    echo [OK] Bot started successfully >> "%LOGFILE%"
-) else (
-    echo   [..] Bot is still starting...
-    echo [WARN] Bot not ready after 20 attempts >> "%LOGFILE%"
-    echo.
-    echo   Bot log so far:
-    type "%BOTLOG%" 2>nul
-)
-
-:: Open Telegram
-echo.
-echo   Opening ${S.platform.charAt(0).toUpperCase()+S.platform.slice(1)}...
-start "" "https://t.me/${S.botUsername}"
+:: Wait a bit then open Telegram
+ping -n 5 127.0.0.1 >nul
+start https://t.me/${S.botUsername}
 
 echo.
-echo   ========================================
-echo   SETUP COMPLETE!
-echo   ========================================
+echo   [OK] Setup complete!
+echo   [OK] Telegram should open now
+echo   [OK] Bot will auto-start on login
 echo.
-echo   Your bot should now be running.
-echo   Say hi in Telegram!
-echo.
-echo   Log saved to: %LOGFILE%
-echo.
-
-:end
-echo.
-echo   Press any key to close this window...
+echo   Press any key to close...
 pause >nul
 `;}
     function genSh(){return`#!/bin/bash
