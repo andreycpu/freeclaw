@@ -376,6 +376,61 @@
       cursor: not-allowed;
     }
     
+    .mac-warning {
+      margin-top: 24px;
+      padding: 20px;
+      background: rgba(234, 179, 8, 0.08);
+      border: 1px solid rgba(234, 179, 8, 0.25);
+      border-radius: 12px;
+    }
+    
+    .mac-warning-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      color: #eab308;
+      margin-bottom: 16px;
+    }
+    
+    .mac-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .mac-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .mac-step-num {
+      width: 24px;
+      height: 24px;
+      background: rgba(234, 179, 8, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #eab308;
+      flex-shrink: 0;
+    }
+    
+    .mac-step-text {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+    
+    .mac-warning-note {
+      margin-top: 16px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    
     /* Progress */
     .progress-wrap {
       padding: 20px 0 36px;
@@ -2073,9 +2128,30 @@
         
         <div class="checklist">
           <h3>Just 2 steps</h3>
-          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Run the downloaded file</strong><br><span>Mac: <strong>Right-click → Open</strong> (not double-click). Windows: double-click .bat</span></div></div>
+          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Run the downloaded file</strong><br><span id="runInstructions">Mac: <strong>Right-click → Open</strong>. Windows: double-click .bat</span></div></div>
           <div class="cl-item"><div class="cl-num">2</div><div class="cl-text"><strong>Start chatting!</strong><br><span><span id="testPlat">Telegram</span> will open automatically when your bot is ready</span></div></div>
-          <div class="cl-note"><strong>Mac users:</strong> If you see "cannot be opened", right-click the file and select "Open" - then click "Open" in the popup.</div>
+        </div>
+        
+        <div class="mac-warning" id="macWarning">
+          <div class="mac-warning-title">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            Mac showing a warning? Here's how to open it:
+          </div>
+          <div class="mac-steps">
+            <div class="mac-step">
+              <div class="mac-step-num">1</div>
+              <div class="mac-step-text"><strong>Right-click</strong> (or Control-click) the downloaded file</div>
+            </div>
+            <div class="mac-step">
+              <div class="mac-step-num">2</div>
+              <div class="mac-step-text">Select <strong>"Open"</strong> from the menu</div>
+            </div>
+            <div class="mac-step">
+              <div class="mac-step-num">3</div>
+              <div class="mac-step-text">Click <strong>"Open"</strong> in the popup dialog</div>
+            </div>
+          </div>
+          <p class="mac-warning-note">This is normal - Apple shows this for any file downloaded from the internet that isn't from the App Store.</p>
         </div>
         
         <div class="nav">
@@ -2165,7 +2241,7 @@
     function checkT(){S.botToken=document.getElementById('bToken').value;S.botUsername=document.getElementById('bUsername').value.replace(/^@/,'');const needToken=S.platform!=='whatsapp';const needUsername=S.platform==='telegram';let valid=true;if(needToken&&!S.botToken)valid=false;if(needUsername&&!S.botUsername)valid=false;document.getElementById('n3').disabled=!valid;}
     function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};document.getElementById('platTitle').textContent=n[S.platform];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>{document.getElementById('setup'+p).style.display='none';document.getElementById('faq'+p).style.display='none';});const pCap=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);document.getElementById('setup'+pCap).style.display='block';document.getElementById('faq'+pCap).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';document.getElementById('usernameRow').style.display=S.platform==='telegram'?'block':'none';checkT();}
     function setup5(){document.getElementById('osTag').textContent={mac:'Mac',win:'Windows',linux:'Linux'}[S.os];document.getElementById('dlBtnText').textContent='Download FreeClaw-Setup.'+(S.os==='win'?'bat':'command');}
-    function setup6(){document.getElementById('testPlat').textContent={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];}
+    function setup6(){document.getElementById('testPlat').textContent={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];document.getElementById('macWarning').style.display=S.os==='win'?'none':'block';document.getElementById('runInstructions').innerHTML=S.os==='win'?'Double-click <strong>FreeClaw-Setup.bat</strong>':'<strong>Right-click → Open</strong> the downloaded file';}
     function setup7(){document.getElementById('finalBot').textContent='Your bot is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
     async function download(){const script=S.os==='win'?genBatSingle():genShSingle();const b=new Blob([script],{type:'text/plain'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=S.os==='win'?'FreeClaw-Setup.bat':'FreeClaw-Setup.command';a.click();URL.revokeObjectURL(u);}
     function genCfg(){const m={anthropic:'anthropic/claude-sonnet-4-20250514',openai:'openai/gpt-4o',google:'google/gemini-2.0-flash',groq:'groq/llama-3.3-70b-versatile'};let c=`model: ${m[S.model]}\n\nproviders:\n  ${S.model}:\n    apiKey: "${S.apiKey}"\n\nchannels:\n`;if(S.platform==='telegram')c+=`  telegram:\n    botToken: "${S.botToken}"\n    allowedUsers: ["*"]\n`;else if(S.platform==='discord')c+=`  discord:\n    botToken: "${S.botToken}"\n`;else if(S.platform==='whatsapp')c+=`  whatsapp:\n    enabled: true\n`;else if(S.platform==='slack')c+=`  slack:\n    botToken: "${S.botToken}"\n`;return c;}
