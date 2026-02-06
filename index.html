@@ -2145,33 +2145,17 @@
         </div>
         <div class="step-head">
           <h2>Download</h2>
-          <p id="dlSubtitle">One file, everything included</p>
+          <p>One click to download, one click to run</p>
         </div>
         
-        <!-- Windows: Download button -->
-        <div class="dl-box" id="dlBoxWin" style="display:none">
-          <div class="os-tag">Windows</div>
+        <div class="dl-box">
+          <div class="os-tag" id="osTag">Mac</div>
           <h3>Your bot is ready</h3>
-          <p>Just download and double-click to run</p>
+          <p id="dlDesc">Download and extract, then double-click to run</p>
           <button class="dl-btn" onclick="download()">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Download FreeClaw-Setup.bat
+            <span id="dlBtnText">Download FreeClaw.zip</span>
           </button>
-        </div>
-        
-        <!-- Mac/Linux: Terminal command -->
-        <div class="dl-box" id="dlBoxMac">
-          <div class="os-tag">Mac</div>
-          <h3>Your bot is ready</h3>
-          <p>Copy this command and paste it into Terminal</p>
-          <div class="terminal-cmd">
-            <code id="terminalCmd">Loading...</code>
-            <button class="copy-btn" onclick="copyCmd()">
-              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-              <span id="copyText">Copy</span>
-            </button>
-          </div>
-          <p class="terminal-hint">Open Terminal (Cmd+Space, type "Terminal"), paste the command, press Enter</p>
         </div>
         
         <div class="nav">
@@ -2190,14 +2174,16 @@
         </div>
         
         <div class="checklist" id="checklistMac">
-          <h3>Just 2 steps</h3>
-          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Paste in Terminal</strong><br><span>Open Terminal (Cmd+Space, type "Terminal"), paste the command, press Enter</span></div></div>
-          <div class="cl-item"><div class="cl-num">2</div><div class="cl-text"><strong>Start chatting!</strong><br><span><span id="testPlat">Telegram</span> will open automatically when your bot is ready</span></div></div>
+          <h3>Just 3 steps</h3>
+          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Open the downloaded zip</strong><br><span>Double-click FreeClaw.zip to extract it</span></div></div>
+          <div class="cl-item"><div class="cl-num">2</div><div class="cl-text"><strong>Run FreeClaw-Setup</strong><br><span>Double-click the FreeClaw-Setup.command file</span></div></div>
+          <div class="cl-item"><div class="cl-num">3</div><div class="cl-text"><strong>Start chatting!</strong><br><span><span id="testPlat">Telegram</span> will open automatically when your bot is ready</span></div></div>
+          <div class="cl-note"><strong>If Mac shows a warning:</strong> Right-click the file → Open → click "Open" in the popup</div>
         </div>
         
         <div class="checklist" id="checklistWin" style="display:none">
           <h3>Just 2 steps</h3>
-          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Double-click the downloaded file</strong><br><span>Run FreeClaw-Setup.bat</span></div></div>
+          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Run the downloaded file</strong><br><span>Double-click FreeClaw-Setup.bat</span></div></div>
           <div class="cl-item"><div class="cl-num">2</div><div class="cl-text"><strong>Start chatting!</strong><br><span><span id="testPlatWin">Telegram</span> will open automatically when your bot is ready</span></div></div>
         </div>
         
@@ -2287,7 +2273,7 @@
     function checkApiKey(){S.apiKey=document.getElementById('apiKey').value;document.getElementById('n2').disabled=!(S.model&&S.apiKey);}
     function checkT(){S.botToken=document.getElementById('bToken').value;S.botUsername=document.getElementById('bUsername').value.replace(/^@/,'');const needToken=S.platform!=='whatsapp';const needUsername=S.platform==='telegram';let valid=true;if(needToken&&!S.botToken)valid=false;if(needUsername&&!S.botUsername)valid=false;document.getElementById('n3').disabled=!valid;}
     function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};document.getElementById('platTitle').textContent=n[S.platform];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>{document.getElementById('setup'+p).style.display='none';document.getElementById('faq'+p).style.display='none';});const pCap=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);document.getElementById('setup'+pCap).style.display='block';document.getElementById('faq'+pCap).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';document.getElementById('usernameRow').style.display=S.platform==='telegram'?'block':'none';checkT();}
-    function setup5(){const isMac=S.os!=='win';document.getElementById('dlBoxWin').style.display=isMac?'none':'block';document.getElementById('dlBoxMac').style.display=isMac?'block':'none';document.getElementById('dlSubtitle').textContent=isMac?'Copy and paste into Terminal':'One file, everything included';if(isMac){document.getElementById('terminalCmd').textContent=genTerminalCmd();}}
+    function setup5(){document.getElementById('osTag').textContent={mac:'Mac',win:'Windows',linux:'Linux'}[S.os];if(S.os==='win'){document.getElementById('dlBtnText').textContent='Download FreeClaw-Setup.bat';document.getElementById('dlDesc').textContent='Download and double-click to run';}else{document.getElementById('dlBtnText').textContent='Download FreeClaw.zip';document.getElementById('dlDesc').textContent='Download, extract, then double-click FreeClaw-Setup';}}
     function genTerminalCmd(){const cfg=genCfg().replace(/'/g,"'\\''");const soul=genSoul().replace(/'/g,"'\\''");const user=genUser().replace(/'/g,"'\\''");const agents=genAgents().replace(/'/g,"'\\''");const deeplink=S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}\\&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com';return`/bin/bash -c 'WS=~/freeclaw && mkdir -p "$WS" && cat > "$WS/config.yaml" << '\\''EOFCFG'\\''
 ${cfg}
 EOFCFG
@@ -2307,7 +2293,7 @@ echo "✓ Auto-start enabled" && cd "$WS" && echo "Starting bot..." && open "${d
     function copyCmd(){const cmd=document.getElementById('terminalCmd').textContent;navigator.clipboard.writeText(cmd).then(()=>{document.getElementById('copyText').textContent='Copied!';setTimeout(()=>{document.getElementById('copyText').textContent='Copy';},2000);});}
     function setup6(){const plat={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];document.getElementById('testPlat').textContent=plat;document.getElementById('testPlatWin').textContent=plat;document.getElementById('checklistMac').style.display=S.os==='win'?'none':'block';document.getElementById('checklistWin').style.display=S.os==='win'?'block':'none';}
     function setup7(){document.getElementById('finalBot').textContent='Your bot is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
-    async function download(){const script=S.os==='win'?genBatSingle():genShSingle();const b=new Blob([script],{type:'text/plain'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=S.os==='win'?'FreeClaw-Setup.bat':'FreeClaw-Setup.command';a.click();URL.revokeObjectURL(u);}
+    async function download(){if(S.os==='win'){const b=new Blob([genBatSingle()],{type:'text/plain'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='FreeClaw-Setup.bat';a.click();URL.revokeObjectURL(u);}else{const z=new JSZip();z.file('FreeClaw-Setup.command',genShSingle(),{unixPermissions:'755'});const b=await z.generateAsync({type:'blob',platform:'UNIX'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='FreeClaw.zip';a.click();URL.revokeObjectURL(u);}}
     function genCfg(){const m={anthropic:'anthropic/claude-sonnet-4-20250514',openai:'openai/gpt-4o',google:'google/gemini-2.0-flash',groq:'groq/llama-3.3-70b-versatile'};let c=`model: ${m[S.model]}\n\nproviders:\n  ${S.model}:\n    apiKey: "${S.apiKey}"\n\nchannels:\n`;if(S.platform==='telegram')c+=`  telegram:\n    botToken: "${S.botToken}"\n    allowedUsers: ["*"]\n`;else if(S.platform==='discord')c+=`  discord:\n    botToken: "${S.botToken}"\n`;else if(S.platform==='whatsapp')c+=`  whatsapp:\n    enabled: true\n`;else if(S.platform==='slack')c+=`  slack:\n    botToken: "${S.botToken}"\n`;return c;}
     function genSoul(){const st={chill:{name:'Chill',desc:'Relaxed and easygoing. Keep things casual and low-pressure.'},professional:{name:'Professional',desc:'Efficient and focused. Get to the point without unnecessary fluff.'},friendly:{name:'Friendly',desc:'Warm and supportive. Be encouraging and positive.'},witty:{name:'Witty',desc:'Clever with a touch of humor. Keep things interesting.'},minimal:{name:'Minimal',desc:'Direct and concise. Use as few words as possible.'}};const style=st[S.style];return`# SOUL.md - Who You Are
 
