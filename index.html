@@ -2678,8 +2678,8 @@ if not exist git\\cmd\\git.exe (
 )
 echo   [OK] Git ready
 
-:: Add git to PATH for this session
-set "PATH=%CD%\\git\\cmd;%PATH%"
+:: Add node and git to PATH for this session
+set "PATH=%CD%\\node;%CD%\\git\\cmd;%PATH%"
 
 :: Install OpenClaw
 echo.
