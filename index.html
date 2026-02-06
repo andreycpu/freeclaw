@@ -614,6 +614,13 @@
       border-color: var(--accent-solid);
     }
     
+    .input-hint {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+    
     .form-row input::placeholder,
     .form-row textarea::placeholder {
       color: var(--text-muted);
@@ -1749,6 +1756,12 @@
           <input type="password" id="bToken" placeholder="Paste token" oninput="checkT()">
         </div>
         
+        <div class="form-row" id="usernameRow" style="display:none">
+          <label>Bot username</label>
+          <input type="text" id="bUsername" placeholder="@your_bot_username (without @)" oninput="checkT()">
+          <span class="input-hint">The username you chose when creating the bot (ends in "bot")</span>
+        </div>
+        
         <!-- Telegram FAQ -->
         <div class="faq" id="faqTelegram">
           <div class="faq-title">Common questions</div>
@@ -1930,13 +1943,11 @@
         </div>
         
         <div class="checklist">
-          <h3>Checklist</h3>
-          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Extract the zip</strong></div></div>
-          <div class="cl-item"><div class="cl-num">2</div><div class="cl-text"><strong>Open the folder</strong></div></div>
-          <div class="cl-item"><div class="cl-num">3</div><div class="cl-text"><strong>Run setup.<span id="ext">sh</span></strong><br><span>Mac: drag to Terminal. Windows: double-click .bat</span></div></div>
-          <div class="cl-item"><div class="cl-num">4</div><div class="cl-text"><strong>Wait for "Bot is running"</strong></div></div>
-          <div class="cl-item"><div class="cl-num">5</div><div class="cl-text"><strong>Message your bot on <span id="testPlat">Telegram</span></strong></div></div>
-          <div class="cl-note"><strong>Remember:</strong> Bot runs on your computer. Chat from anywhere including phone. Computer off = bot sleeps.</div>
+          <h3>Just 3 steps</h3>
+          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Extract the zip</strong><br><span>Double-click FreeClaw.zip to unzip it</span></div></div>
+          <div class="cl-item"><div class="cl-num">2</div><div class="cl-text"><strong>Run setup.<span id="ext">sh</span></strong><br><span>Mac: double-click (or right-click → Open). Windows: double-click .bat</span></div></div>
+          <div class="cl-item"><div class="cl-num">3</div><div class="cl-text"><strong>Start chatting!</strong><br><span><span id="testPlat">Telegram</span> will open automatically with your bot ready</span></div></div>
+          <div class="cl-note"><strong>Tip:</strong> Keep the terminal window open. Your bot runs on your computer - closing it stops the bot.</div>
         </div>
         
         <div class="nav">
@@ -2010,7 +2021,7 @@
   </div>
   
   <script>
-    const S={step:0,platform:null,model:null,userName:'',style:null,inst:'',botToken:'',apiKey:'',os:/Win/.test(navigator.userAgent)?'win':/Mac/.test(navigator.userAgent)?'mac':'linux'};
+    const S={step:0,platform:null,model:null,userName:'',style:null,inst:'',botToken:'',botUsername:'',apiKey:'',os:/Win/.test(navigator.userAgent)?'win':/Mac/.test(navigator.userAgent)?'mac':'linux'};
     
     function start(){document.getElementById('landing').style.display='none';document.getElementById('progress').classList.add('show');document.getElementById('wizard').classList.add('show');go(1);}
     function goLanding(){document.getElementById('landing').style.display='flex';document.getElementById('progress').classList.remove('show');document.getElementById('wizard').classList.remove('show');S.step=0;}
@@ -2022,8 +2033,8 @@
     function toggleApi(e,el){e.stopPropagation();el.nextElementSibling.classList.toggle('open');}
     function checkP(){S.userName=document.getElementById('uName').value;S.inst=document.getElementById('inst').value;document.getElementById('n4').disabled=!(S.userName&&S.style);}
     function checkApiKey(){S.apiKey=document.getElementById('apiKey').value;document.getElementById('n2').disabled=!(S.model&&S.apiKey);}
-    function checkT(){S.botToken=document.getElementById('bToken').value;const need=S.platform!=='whatsapp';document.getElementById('n3').disabled=!(need?S.botToken:true);}
-    function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};document.getElementById('platTitle').textContent=n[S.platform];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>{document.getElementById('setup'+p).style.display='none';document.getElementById('faq'+p).style.display='none';});const pCap=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);document.getElementById('setup'+pCap).style.display='block';document.getElementById('faq'+pCap).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';checkT();}
+    function checkT(){S.botToken=document.getElementById('bToken').value;S.botUsername=document.getElementById('bUsername').value.replace(/^@/,'');const needToken=S.platform!=='whatsapp';const needUsername=S.platform==='telegram';let valid=true;if(needToken&&!S.botToken)valid=false;if(needUsername&&!S.botUsername)valid=false;document.getElementById('n3').disabled=!valid;}
+    function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};document.getElementById('platTitle').textContent=n[S.platform];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>{document.getElementById('setup'+p).style.display='none';document.getElementById('faq'+p).style.display='none';});const pCap=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);document.getElementById('setup'+pCap).style.display='block';document.getElementById('faq'+pCap).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';document.getElementById('usernameRow').style.display=S.platform==='telegram'?'block':'none';checkT();}
     function setup5(){document.getElementById('osTag').textContent={mac:'Mac',win:'Windows',linux:'Linux'}[S.os];}
     function setup6(){document.getElementById('testPlat').textContent={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];document.getElementById('ext').textContent=S.os==='win'?'bat':'sh';}
     function setup7(){document.getElementById('finalBot').textContent='Your bot is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
@@ -2129,10 +2140,13 @@ echo -e "\${YELLOW}Keep this window open\${NC} - closing it stops the bot."
 echo -e "\${GREEN}════════════════════════════════════════\${NC}"
 echo ""
 
-# Open Telegram (best effort, won't fail if it doesn't work)
-sleep 2
+# Open the messaging app with your bot (best effort)
+sleep 3
+DEEPLINK="${S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':S.platform==='slack'?'slack://open':'https://web.whatsapp.com'}"
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    open "https://t.me/" 2>/dev/null || true
+    open "$DEEPLINK" 2>/dev/null || open "${S.platform==='telegram'?`https://t.me/${S.botUsername}?start=start`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com'}" 2>/dev/null || true
+else
+    xdg-open "$DEEPLINK" 2>/dev/null || xdg-open "${S.platform==='telegram'?`https://t.me/${S.botUsername}?start=start`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com'}" 2>/dev/null || true
 fi
 
 # Start the gateway
@@ -2223,9 +2237,9 @@ echo Keep this window open - closing it stops the bot.
 echo ========================================
 echo.
 
-:: Open Telegram
-timeout /t 2 >nul
-start https://t.me/
+:: Open the messaging app with your bot
+timeout /t 3 >nul
+start "" "${S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}^&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':S.platform==='slack'?'slack://open':'https://web.whatsapp.com'}"
 
 :startbot
 openclaw gateway start
