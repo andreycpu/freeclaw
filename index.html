@@ -783,6 +783,25 @@
       box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
     }
     
+    .open-app-btn {
+      display: block;
+      text-align: center;
+      padding: 14px 20px;
+      margin-bottom: 16px;
+      background: var(--accent);
+      border-radius: 10px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .open-app-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+    }
+    
     /* Lightbox */
     .lightbox {
       display: none;
@@ -1611,6 +1630,7 @@
         </div>
         
         <div id="setupTelegram" class="setup-box visual-guide">
+          <a href="https://t.me/BotFather" target="_blank" class="open-app-btn">Open Telegram →</a>
           <div class="guide-step">
             <div class="guide-text">
               <div class="guide-num">1</div>
@@ -1656,6 +1676,7 @@
         </div>
         
         <div id="setupDiscord" class="setup-box visual-guide" style="display:none">
+          <a href="https://discord.com/developers/applications" target="_blank" class="open-app-btn">Open Discord Developer Portal →</a>
           <div class="guide-step">
             <div class="guide-text">
               <div class="guide-num">1</div>
@@ -1716,7 +1737,8 @@
         </div>
         
         <div id="setupSlack" class="setup-box" style="display:none">
-          <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4><a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a></h4></div></div>
+          <a href="https://api.slack.com/apps" target="_blank" class="open-app-btn">Open Slack API Portal →</a>
+          <div class="setup-step"><div class="setup-num">1</div><div class="setup-text"><h4>Go to <a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a></h4></div></div>
           <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><h4>Create App → name it anything</h4></div></div>
           <div class="setup-step"><div class="setup-num">3</div><div class="setup-text"><h4>OAuth → Add scopes: chat:write, im:*</h4></div></div>
           <div class="setup-step"><div class="setup-num">4</div><div class="setup-text"><h4>Install → Copy Bot Token</h4></div></div>
