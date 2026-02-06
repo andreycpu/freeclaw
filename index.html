@@ -2646,6 +2646,13 @@ setlocal enabledelayedexpansion
 title FreeClaw Setup
 color 0A
 
+:: Ensure window stays open on any error
+if "%~1"=="" (
+    cmd /k "%~f0" run
+    exit /b
+)
+
+
 set "WS=%USERPROFILE%\\freeclaw"
 set "NODEZIP=%TEMP%\\freeclaw-node.zip"
 set "NODEURL=https://nodejs.org/dist/v20.11.0/node-v20.11.0-win-x64.zip"
@@ -2721,16 +2728,33 @@ echo   [2/3] Installing OpenClaw...
 if not exist "%OPENCLAW%" (
     echo.
     cd /d "%WS%"
-    call "%NPM%" init -y >nul 2>&1
-    echo         Installing packages...
-    call "%NPM%" install openclaw --save 2>&1
+    
+    echo         Initializing...
+    call "%NPM%" init -y 2>nul
+    
+    echo         Installing packages (this may take a minute)...
     echo.
+    call "%NPM%" install openclaw --save
+    echo.
+    
+    if not exist "%OPENCLAW%" (
+        echo   [!!] First attempt failed, retrying...
+        call "%NPM%" cache clean --force 2>nul
+        call "%NPM%" install openclaw --save --verbose
+    )
 )
 
 if not exist "%OPENCLAW%" (
-    echo   [!!] OpenClaw installation failed.
     echo.
-    pause
+    echo   ========================================
+    echo   [!!] OpenClaw installation failed.
+    echo   ========================================
+    echo.
+    echo   Try running this command manually:
+    echo   cd %WS% ^&^& "%NPM%" install openclaw
+    echo.
+    echo   Press any key to exit...
+    pause >nul
     exit /b 1
 )
 echo   [OK] OpenClaw ready
