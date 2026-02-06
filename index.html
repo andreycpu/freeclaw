@@ -478,6 +478,57 @@
       margin-top: 8px;
     }
     
+    .simple-copy-box {
+      margin: 20px 0;
+    }
+    
+    .big-copy-btn {
+      width: 100%;
+      padding: 20px;
+      background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .big-copy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(168, 85, 247, 0.3);
+    }
+    
+    .big-copy-btn:active {
+      transform: translateY(0);
+    }
+    
+    .terminal-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    
+    .terminal-step {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+    
+    .terminal-step kbd {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: inherit;
+      font-size: 0.8rem;
+    }
+    
     /* Progress */
     .progress-wrap {
       padding: 20px 0 36px;
@@ -2145,17 +2196,36 @@
         </div>
         <div class="step-head">
           <h2>Download</h2>
-          <p>One click to download, one click to run</p>
+          <p id="dlSubhead">One click to copy, paste, done</p>
         </div>
         
-        <div class="dl-box">
-          <div class="os-tag" id="osTag">Mac</div>
+        <!-- Windows: Download button -->
+        <div class="dl-box" id="dlBoxWin" style="display:none">
+          <div class="os-tag">Windows</div>
           <h3>Your bot is ready</h3>
-          <p id="dlDesc">Download and extract, then double-click to run</p>
+          <p>Download and double-click to run</p>
           <button class="dl-btn" onclick="download()">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            <span id="dlBtnText">Download FreeClaw.zip</span>
+            Download FreeClaw-Setup.bat
           </button>
+        </div>
+        
+        <!-- Mac: Simple terminal command -->
+        <div class="dl-box" id="dlBoxMac">
+          <div class="os-tag">Mac</div>
+          <h3>Your bot is ready</h3>
+          <p>Copy this, paste into Terminal, press Enter</p>
+          <div class="simple-copy-box">
+            <button class="big-copy-btn" onclick="copyCmd()">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+              <span id="copyBtnText">Click to Copy Command</span>
+            </button>
+          </div>
+          <div class="terminal-steps">
+            <span class="terminal-step">1. Click the button above</span>
+            <span class="terminal-step">2. Open Terminal (press <kbd>⌘</kbd> <kbd>Space</kbd>, type "Terminal", press Enter)</span>
+            <span class="terminal-step">3. Paste (<kbd>⌘</kbd> <kbd>V</kbd>) and press Enter</span>
+          </div>
         </div>
         
         <div class="nav">
@@ -2174,40 +2244,9 @@
         </div>
         
         <div class="checklist" id="checklistMac">
-          <h3>Just 3 steps</h3>
-          <div class="cl-item"><div class="cl-num">1</div><div class="cl-text"><strong>Open the downloaded zip</strong><br><span>Double-click FreeClaw.zip to extract it</span></div></div>
-          <div class="cl-item"><div class="cl-num">2</div><div class="cl-text"><strong>Run FreeClaw-Setup</strong><br><span>Double-click the FreeClaw-Setup.command file</span></div></div>
-          <div class="cl-item"><div class="cl-num">3</div><div class="cl-text"><strong>Start chatting!</strong><br><span><span id="testPlat">Telegram</span> will open automatically when your bot is ready</span></div></div>
-        </div>
-        
-        <div class="mac-warning" id="macGatekeeper">
-          <div class="mac-warning-title">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-            Mac showing "cannot be opened"? Follow these steps:
-          </div>
-          <div class="mac-steps">
-            <div class="mac-step">
-              <div class="mac-step-num">1</div>
-              <div class="mac-step-text">Click <strong>"Done"</strong> on the warning popup</div>
-            </div>
-            <div class="mac-step">
-              <div class="mac-step-num">2</div>
-              <div class="mac-step-text">Open <strong>System Settings</strong> (Apple menu → System Settings)</div>
-            </div>
-            <div class="mac-step">
-              <div class="mac-step-num">3</div>
-              <div class="mac-step-text">Go to <strong>Privacy & Security</strong></div>
-            </div>
-            <div class="mac-step">
-              <div class="mac-step-num">4</div>
-              <div class="mac-step-text">Scroll down and click <strong>"Open Anyway"</strong> next to the blocked file</div>
-            </div>
-            <div class="mac-step">
-              <div class="mac-step-num">5</div>
-              <div class="mac-step-text">Click <strong>"Open"</strong> in the final popup</div>
-            </div>
-          </div>
-          <p class="mac-warning-note">This is a one-time thing. Apple requires this for apps not from the App Store.</p>
+          <h3>That's it!</h3>
+          <div class="cl-item"><div class="cl-num">✓</div><div class="cl-text"><strong>Your bot is installing</strong><br><span>Wait for the progress bar to complete, then <span id="testPlat">Telegram</span> will open automatically</span></div></div>
+          <div class="cl-note"><strong>Tip:</strong> Keep the Terminal window open - closing it stops your bot.</div>
         </div>
         
         <div class="checklist" id="checklistWin" style="display:none">
@@ -2302,7 +2341,7 @@
     function checkApiKey(){S.apiKey=document.getElementById('apiKey').value;document.getElementById('n2').disabled=!(S.model&&S.apiKey);}
     function checkT(){S.botToken=document.getElementById('bToken').value;S.botUsername=document.getElementById('bUsername').value.replace(/^@/,'');const needToken=S.platform!=='whatsapp';const needUsername=S.platform==='telegram';let valid=true;if(needToken&&!S.botToken)valid=false;if(needUsername&&!S.botUsername)valid=false;document.getElementById('n3').disabled=!valid;}
     function setup3(){const n={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'};document.getElementById('platTitle').textContent=n[S.platform];['Telegram','Discord','Whatsapp','Slack'].forEach(p=>{document.getElementById('setup'+p).style.display='none';document.getElementById('faq'+p).style.display='none';});const pCap=S.platform.charAt(0).toUpperCase()+S.platform.slice(1);document.getElementById('setup'+pCap).style.display='block';document.getElementById('faq'+pCap).style.display='block';document.getElementById('tokenRow').style.display=S.platform==='whatsapp'?'none':'block';document.getElementById('usernameRow').style.display=S.platform==='telegram'?'block':'none';checkT();}
-    function setup5(){document.getElementById('osTag').textContent={mac:'Mac',win:'Windows',linux:'Linux'}[S.os];if(S.os==='win'){document.getElementById('dlBtnText').textContent='Download FreeClaw-Setup.bat';document.getElementById('dlDesc').textContent='Download and double-click to run';}else{document.getElementById('dlBtnText').textContent='Download FreeClaw.zip';document.getElementById('dlDesc').textContent='Download, extract, then double-click FreeClaw-Setup';}}
+    function setup5(){const isMac=S.os!=='win';document.getElementById('dlBoxWin').style.display=isMac?'none':'block';document.getElementById('dlBoxMac').style.display=isMac?'block':'none';document.getElementById('dlSubhead').textContent=isMac?'One click to copy, paste, done':'One click to download, double-click to run';}
     function genTerminalCmd(){const cfg=genCfg().replace(/'/g,"'\\''");const soul=genSoul().replace(/'/g,"'\\''");const user=genUser().replace(/'/g,"'\\''");const agents=genAgents().replace(/'/g,"'\\''");const deeplink=S.platform==='telegram'?`tg://resolve?domain=${S.botUsername}\\&start=start`:S.platform==='discord'?'https://discord.com/channels/@me':'https://web.whatsapp.com';return`/bin/bash -c 'WS=~/freeclaw && mkdir -p "$WS" && cat > "$WS/config.yaml" << '\\''EOFCFG'\\''
 ${cfg}
 EOFCFG
@@ -2319,7 +2358,7 @@ echo "✓ Files created" && npm install -g openclaw 2>/dev/null || npm install -
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>Label</key><string>com.freeclaw.bot</string><key>ProgramArguments</key><array><string>'\\''$(which openclaw)'\\''</string><string>gateway</string><string>start</string></array><key>WorkingDirectory</key><string>'\\''$WS'\\''</string><key>RunAtLoad</key><true/><key>KeepAlive</key><true/></dict></plist>
 EOFPLIST
 echo "✓ Auto-start enabled" && cd "$WS" && echo "Starting bot..." && open "${deeplink}" 2>/dev/null; openclaw gateway start'`;}
-    function copyCmd(){const cmd=document.getElementById('terminalCmd').textContent;navigator.clipboard.writeText(cmd).then(()=>{document.getElementById('copyText').textContent='Copied!';setTimeout(()=>{document.getElementById('copyText').textContent='Copy';},2000);});}
+    function copyCmd(){const cmd=genTerminalCmd();navigator.clipboard.writeText(cmd).then(()=>{document.getElementById('copyBtnText').textContent='✓ Copied! Now paste in Terminal';setTimeout(()=>{document.getElementById('copyBtnText').textContent='Click to Copy Command';},5000);});}
     function setup6(){const plat={telegram:'Telegram',discord:'Discord',whatsapp:'WhatsApp',slack:'Slack'}[S.platform];document.getElementById('testPlat').textContent=plat;document.getElementById('testPlatWin').textContent=plat;document.getElementById('checklistMac').style.display=S.os==='win'?'none':'block';document.getElementById('checklistWin').style.display=S.os==='win'?'block':'none';}
     function setup7(){document.getElementById('finalBot').textContent='Your bot is live';const t=encodeURIComponent(`Just set up my own AI chatbot with @Andrey__HQ! Try it:`);const u=encodeURIComponent('https://freeclaw-site.vercel.app');document.getElementById('shareBtn').href=`https://x.com/intent/tweet?text=${t}&url=${u}`;}
     async function download(){if(S.os==='win'){const b=new Blob([genBatSingle()],{type:'text/plain'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='FreeClaw-Setup.bat';a.click();URL.revokeObjectURL(u);}else{const z=new JSZip();z.file('FreeClaw-Setup.command',genShSingle(),{unixPermissions:'755'});const b=await z.generateAsync({type:'blob',platform:'UNIX'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='FreeClaw.zip';a.click();URL.revokeObjectURL(u);}}
