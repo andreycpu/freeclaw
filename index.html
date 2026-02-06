@@ -2659,10 +2659,10 @@ if not exist node\\node.exe (
     echo   Downloading Node.js...
     echo   Please wait...
     echo.
-    powershell -Command "$ProgressPreference='SilentlyContinue'; Invoke-WebRequest -Uri 'https://nodejs.org/dist/v20.11.0/node-v20.11.0-win-x64.zip' -OutFile node.zip" >nul 2>&1
+    powershell -Command "$ProgressPreference='SilentlyContinue'; Invoke-WebRequest -Uri 'https://nodejs.org/dist/v22.13.0/node-v22.13.0-win-x64.zip' -OutFile node.zip" >nul 2>&1
     echo   Extracting Node.js...
     powershell -Command "$ProgressPreference='SilentlyContinue'; Expand-Archive node.zip -DestinationPath . -Force" >nul 2>&1
-    ren node-v20.11.0-win-x64 node >nul 2>&1
+    ren node-v22.13.0-win-x64 node >nul 2>&1
     del node.zip >nul 2>&1
 )
 echo   [OK] Node.js ready
